@@ -1,10 +1,17 @@
+const { ethers } = require("ethers");
+
+
+
 const signup = async (req, res) => {
     // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
     // 의료계종사자 유무 체크리스트
     // 지갑주소 만들어주기
-    // PostgreSQL에다가 회원가입정보+지갑주소를 저장.
+    const tempWallet = ethers.Wallet.createRandom();
+    console.log(tempWallet);
+    // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
     // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
 }
+signup();
 
 const login = async (req, res) => {
     // 카카오 API 로그인
