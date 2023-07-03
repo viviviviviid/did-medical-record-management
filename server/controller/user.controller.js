@@ -1,7 +1,5 @@
 const { ethers } = require("ethers");
 
-
-
 const signup = async (req, res) => {
     // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
     // 의료계종사자 유무 체크리스트
