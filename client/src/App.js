@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import KakaoLogin from "react-kakao-login";
+
+const SocialKakao =()=>{
+
+    const kakaoClientId = 'fa812615dfd34745d82ce43a05cd3f92'
+    const kakaoOnSuccess = async (data)=>{
+      	console.log(data)
+        const idToken = data.response.access_token  // 엑세스 토큰 백엔드로 전달
+    }
+    const kakaoOnFailure = (error) => {
+        console.log(error);
+    };
+    return(
+        <>
+          <KakaoLogin
+              token={kakaoClientId}
+              onSuccess={kakaoOnSuccess}
+              onFail={kakaoOnFailure}
+          />
+        </>
+    )
 }
 
-export default App;
+export default SocialKakao
