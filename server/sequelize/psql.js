@@ -1,8 +1,9 @@
-// const { Client } = require("pg");
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize('medical', 'viviviviviid', 'wlqwnd')
-
+const sequelize = new Sequelize('medical', 'viviviviviid', 'wlqwnd', {
+    host: 'localhost',
+    dialect: 'postgres'
+  });
 
 const testDbConnection = async () => {
     try {
@@ -15,6 +16,16 @@ const testDbConnection = async () => {
 
   testDbConnection()
 
+  module.exports = { sq: sequelize, testDbConnection };
+
+
+
+// sequlize 없이 진행할 때
+
+// const { Client } = require("pg");
+
+// const sequelize = new Sequelize('medical', 'viviviviviid', 'wlqwnd')
+
 // const client = new Client({
 //   user: "viviviviviid",
 //   host: "127.0.0.1",
@@ -24,19 +35,3 @@ const testDbConnection = async () => {
 // });
 
 // client.connect(); // DB 접속
-
-
-
-// const query = {
-//     text: "INSERT INTO member VALUES ($1, $2, $3, $4)",
-//     values: [2, "홍길동", "male", "1997-07-23"],
-//   };
-
-
-// client
-//   .query(query)
-//   .then((res) => {
-//     console.log(res.rows[0]);
-//     client.end();
-//   })
-//   .catch((e) => console.error(e.stack));
