@@ -18,14 +18,9 @@ const testDbConnection = async () => {
 
   module.exports = { sq: sequelize, testDbConnection };
 
-// here
-
-// sequlize 없이 진행할 때
-
+// sequelize 없이 진행할 때
 // const { Client } = require("pg");
-
 // const sequelize = new Sequelize('medical', 'viviviviviid', 'wlqwnd')
-
 // const client = new Client({
 //   user: "viviviviviid",
 //   host: "127.0.0.1",
@@ -33,5 +28,4 @@ const testDbConnection = async () => {
 //   password: "wlqwnd",
 //   port: 5432,
 // });
-
 // client.connect(); // DB 접속
