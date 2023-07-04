@@ -18,7 +18,7 @@ const testDbConnection = async () => {
 
   module.exports = { sq: sequelize, testDbConnection };
 
-
+// here
 
 // sequlize 없이 진행할 때
 
