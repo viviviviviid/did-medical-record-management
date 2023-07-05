@@ -6,48 +6,45 @@ const sequelize = new Sequelize('medical', 'viviviviviid', 'wlqwnd', {
   dialect: 'postgres'
 });
 
-// const testDbConnection = async () => {
-//   try {
-//     await sequelize.authenticate();
-//     console.log("Connection has been established successfully.");
-//   } catch (error) {
-//     console.error("Unable to connect to the database:", error);
-//   }
-// };
+const Member = sequelize.define(
+  "member", // members가 생성됨.
+  {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+      },
+      email: {
+        type: DataTypes.STRING,
+      },
+      birthday: {
+        type: DataTypes.STRING,
+      },
+      update_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize.literal('now()'),
+      }
+  },
+  // options
+  {
+    timestamps: false
+  }
+);
 
-const User = sequelize.define("user", {
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    primaryKey: true,
-  },
-
-  fullName: {
-    type: DataTypes.STRING,
-  },
-  
-  age: {
-    type: DataTypes.INTEGER,
-  },
-
-  employed: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
+Member.sync().then(() => {
+  console.log("Member Model synced");
 });
 
-User.sync().then(() => {
-  console.log("User Model synced");
+Member.create({
+  name: "서민석",
+  email: "seo-minseok@daum.net",
+  birthday: "0814"
 });
-
-// const mike = User.create({
-//   email: "mike@example.com",
-//   fullName: "Mike Smith",
-//   age: 30,
-//   employed: true,
-// });
-
-
 
 // const findUser = async () => {
 //   try{
