@@ -1,6 +1,8 @@
+const psql = require("../sequelize/psql");
 const { ethers } = require("ethers");
 const express = require("express");
-const psql = require("../sequelize/psql")
+const axios = require("axios");
+const { use } = require("../routes/user.route");
 const app = express();
 
 /**
@@ -8,22 +10,19 @@ const app = express();
  * @returns DB 저장유무에 따른 boolean 반환 
  */
 const userCheck = async (req, res) => {
-
   try {
-    // 카카오 API 로그인시 백엔드로 넘어온 엑세스토큰을 가지고, 
     const access_token = req.body.token;
-    console.log(access_token);
-    
-    // 유저가 DB에 있는지 확인
-    // psql.findUser();
-    
-    return res.status(200).send("valid user");
-  }catch{
-      return res.status(400).send("invalid user");
+    const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      }
+    });
+    psql.userFind(userInfo.data.kakao_account);
+    return res.status(200).send("already exist in DB");
+  } catch (error) {
+    return res.status(400).send(error);
   }
-  // 있다면 로그인 완료창을 렌더링, 없다면 회원가입 창으로 렌더링 
-  // 반환값은 true, false로 보내주기 
-}
+};
 
 /**
  * 회원가입

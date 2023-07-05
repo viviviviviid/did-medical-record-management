@@ -40,28 +40,25 @@ Member.sync().then(() => {
   console.log("Member Model synced");
 });
 
-Member.create({
-  name: "서민석",
-  email: "seo-minseok@daum.net",
-  birthday: "0814"
-});
+const userFind = async (userInfo) => {
+  const data = await Member.findOne({where: {email: `${userInfo.email}`}});
+  if(data === null){
+    userRegister(userInfo);
+  }else{
+    console.log("already exist");
+  }
+}
 
-// const findUser = async () => {
-//   try{
-//     const userInfo = await User.findOne({where: {email: "seo-minseok@daum.net"}, from: member});
-//     if(userInfo === NULL){
-//       console.log("null")
-//     }
-//     console.log(userInfo);
+const userRegister = async (userInfo) => {
+  Member.create({
+    name: `${userInfo.profile.nickname}`,
+    email: `${userInfo.email}`,
+    birthday: `${userInfo.birthday}`,
+  });
+  console.log("User Register Done");
+}
 
-//     return userInfo;
-//   } catch (error) {
-//     console.log(error)
-//     return error;
-//   }
-// }
-
-// module.exports = { sq: sequelize, findUser };
+module.exports = { sq: sequelize, userFind };
 
 // sequelize 없이 진행할 때
 // const { Client } = require("pg");
