@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const controller = require("../controller/user.controller");
 
-router.get("/usercheck", controller.userCheck);
+// router.get
+router.post("/usercheck", controller.userCheck);
 router.get("/signup", controller.signUp);
 router.get("/claim", controller.claim);
 router.get("/share", controller.share);

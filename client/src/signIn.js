@@ -11,13 +11,13 @@ const OAuthLogin = () => {
     const handleLogin = async (data)=>{
       
     try{
+      console.log(data);
       const idToken = data.response.access_token;  // 엑세스 토큰 백엔드로 전달
       axios.post("http://localhost:5001/user/usercheck", {
         token : idToken
       }).then((res) => {
         console.log(res);
       })
-      
         setIsLoggedIn(true);
       } catch (error) {
         console.log(error);

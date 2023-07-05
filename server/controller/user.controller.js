@@ -1,40 +1,41 @@
+const psql = require("../sequelize/psql");
 const { ethers } = require("ethers");
 const express = require("express");
+const axios = require("axios");
+const { use } = require("../routes/user.route");
 const app = express();
-const port = 3000;
-
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-});
-app.post('/', function (req, res) {
-    res.send('Got a POST request');
-});
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
 
 /**
  * 로그인 시 유저가 회원가입을 했는지 DB 체크
  * @returns DB 저장유무에 따른 boolean 반환 
  */
 const userCheck = async (req, res) => {
-    // 카카오 API 로그인시 백엔드로 넘어온 엑세스토큰을 가지고, 유저가 DB에 있는지 확인
-    // 있다면 로그인 완료창을 렌더링, 없다면 회원가입 창으로 렌더링 
-    // 반환값은 true, false로 보내주기 
-}
+  try {
+    const access_token = req.body.token;
+    const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      }
+    });
+    psql.userFind(userInfo.data.kakao_account);
+    return res.status(200).send("already exist in DB");
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+};
 
 /**
  * 회원가입
  */
 const signUp = async (req, res) => {
-    // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
-    // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
-    // 의료계종사자 유무 체크리스트
-    // 지갑주소 만들어주기
-    const tempWallet = ethers.Wallet.createRandom();
-    console.log(tempWallet);
-    // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
-    // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
+  // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
+  // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
+  // 의료계종사자 유무 체크리스트
+  // 지갑주소 만들어주기
+  const tempWallet = ethers.Wallet.createRandom();
+  console.log(tempWallet);
+  // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
+  // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
 }
 
 /**
