@@ -1,5 +1,5 @@
-const psql = require("../sequelize/psql");
-const { ethers } = require("ethers");
+const User = require("../sequelize/user.model");
+// const { ethers } = require("ethers");
 const express = require("express");
 const axios = require("axios");
 const { use } = require("../routes/user.route");
@@ -17,8 +17,10 @@ const userCheck = async (req, res) => {
         Authorization: `Bearer ${access_token}`,
       }
     });
-    psql.userFind(userInfo.data.kakao_account);
-    return res.status(200).send("already exist in DB");
+    return await User.userFind(userInfo.data.kakao_account)
+      ? (res.status(200).send("already exist in DB")) 
+      : (res.status(201).send("just signup in DB"))
+
   } catch (error) {
     return res.status(400).send(error);
   }
@@ -27,16 +29,14 @@ const userCheck = async (req, res) => {
 /**
  * 회원가입
  */
-const signUp = async (req, res) => {
-  // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
-  // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
-  // 의료계종사자 유무 체크리스트
-  // 지갑주소 만들어주기
-  const tempWallet = ethers.Wallet.createRandom();
-  console.log(tempWallet);
-  // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
-  // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
-}
+// const signUp = async (req, res) => {
+//   // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
+//   // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
+//   // 의료계종사자 유무 체크리스트
+//   // 지갑주소 만들어주기
+//   // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
+//   // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
+// }
 
 /**
  * VC 요청
@@ -77,7 +77,7 @@ const display = async (req, res) => {
 
 module.exports = {
     userCheck,
-    signUp,
+    // signUp,
     claim,
     share,
     approve,

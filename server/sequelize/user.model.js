@@ -1,36 +1,89 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./psql");
+const { Sequelize, DataTypes } = require("sequelize");
+const { ethers } = require("ethers");
 
-// const User = sequelize.define("user", {
-//   email: {
-//       type: DataTypes.STRING,
-//       allowNull: false,
-//       primaryKey: true,
-//   },
+require("dotenv").config();
 
-//   fullName: {
-//       type: DataTypes.STRING,
-//   },
+const sequelize = new Sequelize(
+    'medical', 
+    process.env.DB_USER, 
+    process.env.DB_PASS, 
+  {
+  host: 'localhost',
+  dialect: 'postgres'
+});
 
-//   age: {
-//       type: DataTypes.INTEGER,
-//   },
+const Member = sequelize.define(
+  "member", // members가 생성됨.
+  {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+      },
+      email: {
+        type: DataTypes.STRING,
+      },
+      birthday: {
+        type: DataTypes.STRING,
+      },
+      address: {
+        type: DataTypes.STRING,
+      },
+      privateKey: {
+        type: DataTypes.STRING,
+      },
+      update_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize.literal('now()'),
+      }
+  },
+  // options
+  {
+    timestamps: false
+  }
+);
 
-//   employed: {
-//       type: DataTypes.BOOLEAN,
-//       defaultValue: false,
-// },
+Member.sync().then(() => {
+  console.log("Member Model synced");
+});
+
+const userFind = async (userInfo) => {
+  const data = await Member.findOne({where: {email: `${userInfo.email}`}});
+  if(data === null){
+    return userRegister(userInfo);
+  }else{
+    console.log("already exist");
+    return true;
+  }
+}
+
+const userRegister = async (userInfo) => {
+  const userWallet = ethers.Wallet.createRandom();
+  Member.create({
+    name: `${userInfo.profile.nickname}`,
+    email: `${userInfo.email}`,
+    birthday: `${userInfo.birthday}`,
+    address: `${userWallet.address}`,
+    privateKey: `${userWallet.privateKey}`,
+  });
+  return false;
+}
+
+module.exports = { sq: sequelize, userFind };
+
+// sequelize 없이 진행할 때
+// const { Client } = require("pg");
+// const sequelize = new Sequelize('medical', 'viviviviviid', 'wlqwnd')
+// const client = new Client({
+//   user: "viviviviviid",
+//   host: "127.0.0.1",
+//   database: "medical",
+//   password: "wlqwnd",
+//   port: 5432,
 // });
-  
-// User.sync().then(() => {
-//   console.log("User Model synced");
-// });
-
-// const mike = User.create({
-//   email: "mike@example.com",
-//   fullName: "Mike Smith",
-//   age: 30,
-//   employed: true,
-// });
-
-// module.exports = User;
+// client.connect(); // DB 접속

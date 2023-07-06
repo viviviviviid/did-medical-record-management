@@ -3,7 +3,7 @@ const controller = require("../controller/user.controller");
 
 // router.get
 router.post("/usercheck", controller.userCheck);
-router.get("/signup", controller.signUp);
+// router.get("/signup", controller.signUp);
 router.get("/claim", controller.claim);
 router.get("/share", controller.share);
 router.get("/approve", controller.approve);
