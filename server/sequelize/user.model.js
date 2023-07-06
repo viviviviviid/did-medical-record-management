@@ -30,6 +30,9 @@ const Member = sequelize.define(
       birthday: {
         type: DataTypes.STRING,
       },
+      isDoctor: {
+        type: DataTypes.BOOLEAN,
+      },
       address: {
         type: DataTypes.STRING,
       },
@@ -55,7 +58,7 @@ Member.sync().then(() => {
 const userFind = async (userInfo) => {
   const data = await Member.findOne({where: {email: `${userInfo.email}`}});
   if(data === null){
-    return userRegister(userInfo);
+    return !userRegister(userInfo);
   }else{
     console.log("already exist");
     return true;
@@ -68,10 +71,11 @@ const userRegister = async (userInfo) => {
     name: `${userInfo.profile.nickname}`,
     email: `${userInfo.email}`,
     birthday: `${userInfo.birthday}`,
+    isDoctor: false,
     address: `${userWallet.address}`,
     privateKey: `${userWallet.privateKey}`,
   });
-  return false;
+  return true;
 }
 
 module.exports = { sq: sequelize, userFind };
