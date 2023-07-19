@@ -12,18 +12,17 @@ let chainNameOrId = 'goerli';
 
 // Issuer의 DID 필드 생성
 const createDID4issuer = () => {
+   // Issuer의 지갑주소는 메타마스크 5번 지갑
   const rpcUrl = process.env.RPC_URL;
   const provider = new ethers.InfuraProvider(chainNameOrId, rpcUrl);
   const ISSUER_SIGNER = new ethers.Wallet(process.env.ISSUER_PK, provider);
-  console.log(ISSUER_SIGNER)
-  // Issuer의 지갑주소는 메타마스크 5번 지갑
   const ISSUER_DID = new EthrDID({
     identifier: process.env.ISSUER_ADDRESS,
     privateKey: process.env.ISSUER_PK,
     provider: ISSUER_SIGNER.InfuraProvider, chainNameOrId,
+    txSigner: ISSUER_SIGNER,
     alg: "ES256K",
   })
-  console.log(ISSUER_DID)
 }
 
 // 유저를 위한 자체적 키페어 생성 및 did 등록
