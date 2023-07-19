@@ -9,11 +9,19 @@ dotenv.config({
 });
 
 let chainNameOrId = 'goerli';
+const rpcUrl = process.env.RPC_URL;
+
+const didResolve = async (ISSUER_DID) => {
+  const didResolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
+  const didDocument = (await didResolver.resolve(ISSUER_DID.did)).didDocument
+  console.log(didDocument)
+}
+
+
 
 // Issuer의 DID 필드 생성
-const createDID4issuer = () => {
+const createDID4issuer = async () => {
    // Issuer의 지갑주소는 메타마스크 5번 지갑
-  const rpcUrl = process.env.RPC_URL;
   const provider = new ethers.InfuraProvider(chainNameOrId, rpcUrl);
   const ISSUER_SIGNER = new ethers.Wallet(process.env.ISSUER_PK, provider);
   const ISSUER_DID = new EthrDID({
@@ -23,7 +31,18 @@ const createDID4issuer = () => {
     txSigner: ISSUER_SIGNER,
     alg: "ES256K",
   })
+  didResolve(ISSUER_DID)
 }
+
+createDID4issuer()
+
+const test = async (DID) => {
+  const { kp, txHash } = await DID.createSigningDelegate() // Adds a signing delegate valid for 1 day
+  console.log("kp: ", kp);
+  console.log("txHash: ", txHash);
+}
+
+// createDID4issuer()
 
 // 유저를 위한 자체적 키페어 생성 및 did 등록
 const registerDID4user = () => {
