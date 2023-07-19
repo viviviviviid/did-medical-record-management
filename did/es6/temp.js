@@ -1,18 +1,41 @@
 import { EthrDID } from 'ethr-did';
+import { Resolver } from 'did-resolver'
+import { getResolver } from 'ethr-did-resolver'
 import { ethers } from 'ethers';
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: "../.env"
+});
 
 let chainNameOrId = 'goerli';
 
+// Issuer의 DID 필드 생성
+const createDID4issuer = () => {
+  const rpcUrl = process.env.RPC_URL;
+  const provider = new ethers.InfuraProvider(chainNameOrId, rpcUrl);
+  const ISSUER_SIGNER = new ethers.Wallet(process.env.ISSUER_PK, provider);
+  console.log(ISSUER_SIGNER)
+  // Issuer의 지갑주소는 메타마스크 5번 지갑
+  const ISSUER_DID = new EthrDID({
+    identifier: process.env.ISSUER_ADDRESS,
+    privateKey: process.env.ISSUER_PK,
+    provider: ISSUER_SIGNER.InfuraProvider, chainNameOrId,
+    alg: "ES256K",
+  })
+  console.log(ISSUER_DID)
+}
+
 // 유저를 위한 자체적 키페어 생성 및 did 등록
-const registerDid4user = () => {
+const registerDID4user = () => {
   const keypair = EthrDID.createKeyPair();
   console.log("keypair: ", keypair);
   const ethrDidOnGoerliNamed = new EthrDID({...keypair, chainNameOrId});
   console.log("ethrDidOnGoerliNamed: ", ethrDidOnGoerliNamed)
 }
 
-// 외부 메타마스크 모듈 이용하여 did 등록
 // 미완성
+// 외부 메타마스크 모듈 이용하여 did 등록
 // const importMetamask2DID = async () => {
 //   const rpcUrl = process.env.RPC_URL;
 //   const provider = new ethers.InfuraProvider(chainNameOrId, rpcUrl);
