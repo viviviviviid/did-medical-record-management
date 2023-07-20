@@ -26,14 +26,32 @@ const createDID4issuer = async () => {
     alg: "ES256K",
   })
   didResolving(ISSUER_DID)
+
 }
 
-// here
 // DID resolver 사용 및 DID Document 생성
 const didResolving = async (ISSUER_DID) => {
   const didResolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
   const didDocument = (await didResolver.resolve(ISSUER_DID.did)).didDocument
-  console.log(didDocument)
+  // console.log(didDocument)
+
+  // JWT로 인코딩, 디코딩, 유효확인 테스트 -> 사용은 안할 듯
+  // const tempJwt = await ISSUER_DID.signJWT({hello: 'world'});
+  // console.log("TEMP JWT", tempJwt);
+  // const decoded = decodeJWT(tempJwt)
+  // console.log("DECODED",decoded)
+  // try{
+  //   const {payload, issuer} = await ISSUER_DID.verifyJWT(tempJwt, didResolver);
+  //   console.log("PAYLOAD", payload);
+  //   console.log("ISSUER", issuer);
+  // }catch(err){
+  //   console.log("verifying JWT error: ", err);
+  // }
+  
+  // addDelegate로 일시적 서명 위임
+  // web3에다가 provider 주입하고 web3.eth.주소 이런식으로해야 이더리움 네트워크에 트잭 남길 수 있음
+  // await ISSUER_DID.addDelegate("0x093018c5F85DeDeC37AbE7ec189C669B1c117245", {expiresIn: 8640000, delegateType: 'sigAuth'})
+
 }
 
 createDID4issuer()
