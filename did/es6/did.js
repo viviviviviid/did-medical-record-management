@@ -28,6 +28,7 @@ const createDID4issuer = async () => {
   didResolving(ISSUER_DID)
 }
 
+// here
 // DID resolver 사용 및 DID Document 생성
 const didResolving = async (ISSUER_DID) => {
   const didResolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
