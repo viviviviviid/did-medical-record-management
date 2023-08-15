@@ -26,7 +26,6 @@ const createDID4issuer = async () => {
     alg: "ES256K",
   })
   didResolving(ISSUER_DID)
-
 }
 
 // DID resolver 사용 및 DID Document 생성
