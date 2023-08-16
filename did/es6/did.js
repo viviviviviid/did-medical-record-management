@@ -1,4 +1,5 @@
-import { EthrDID } from 'ethr-did';
+import { EthrDID, DelegateTypes } from 'ethr-did';
+import { verifyCredential, createVerifiableCredentialJwt} from 'did-jwt-vc';
 import { Resolver } from 'did-resolver'
 import { getResolver } from 'ethr-did-resolver'
 import { ethers } from 'ethers';
@@ -14,7 +15,7 @@ const rpcUrl = process.env.RPC_URL;
 const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 const ISSUER_SIGNER = new ethers.Wallet(process.env.ISSUER_PRIVATEKEY, provider);
 
-// Issuer의 DID 필드 생성
+// Create Issuer DID
 export const ISSUER_DID = new EthrDID({
   identifier: process.env.ISSUER_ADDRESS,
   privateKey: process.env.ISSUER_PRIVATEKEY,
@@ -24,11 +25,63 @@ export const ISSUER_DID = new EthrDID({
   alg: "ES256K",
 })
 
+// Create Holder/Subject DID
+const SUBJECT_DID = new EthrDID({
+  chainNameOrId,
+  identifier: process.env.SUBJECT_ADDRESS
+})
+
+const vcPayload = {
+  sub: SUBJECT_DID,
+  vc: {
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: ['VerifiableCredential'],
+    credentialSubject: {
+      issuer: {
+        name: 'Medical Record Management Association',
+        address: process.env.ISSUER_ADDRESS,
+      },
+      userInfo: {
+        // 지금은 테스트용, 추후 회원가입 내용을 DB통해서 받아와야함
+        name: "홍길동",
+        email: "hello@world.com",
+        birthDay: "970723",
+        phoneNumber: "010-1234-5678",
+        isDoctor: true,
+        address: "0x093018c5F85DeDeC37AbE7ec189C669B1c117245",
+      }
+    }
+  }
+}
+
+// web3 공급자들은 JWT ES256K나 (등록되지 않은) ES256K-R 알고리즘과 호환되는 방식으로 직접 데이터에 서명하는 능력이 없기에 대리자를 임명 또는 생성시켜 서명해야한다.
+const { kp, txHash } = await ISSUER_DID.createSigningDelegate(
+  DelegateTypes.veriKey, // JWT에 서명하기 위한 기본 옵션
+  3600, // expiresIn : 3600s
+)
+
+// 대리 서명자의 DID 생성
+const DELEGATE_ISSUER_DID = new EthrDID({
+  identifier: kp.address,
+  privateKey: kp.privateKey
+})
+
+const vcJwt = await createVerifiableCredentialJwt(vcPayload, DELEGATE_ISSUER_DID)
+console.log(vcJwt)
+
+
+
+
+
+
+
+
+
 // DID resolver 사용 및 DID Document 생성
 const didResolving = async (ISSUER_DID) => {
   const didResolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
   const didDocument = (await didResolver.resolve(ISSUER_DID.did)).didDocument
-  console.log(didDocument);
+  // console.log(didDocument);
   // console.log(didDocument)
 
   // JWT로 인코딩, 디코딩, 유효확인 테스트 -> 사용은 안할 듯
