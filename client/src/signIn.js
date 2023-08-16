@@ -7,8 +7,7 @@ const OAuthLogin = () => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const kakaoClientId = "7590c1c19d4fb81f54043b4b90a9aedd";
-    // const kakaoClientId = process.env.KAKAO_API_KEY;
+    const kakaoClientId = process.env.KAKAO_API_KEY;
     const handleLogin = async (data)=>{
       
     try{

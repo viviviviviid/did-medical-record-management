@@ -30,13 +30,13 @@ const Member = sequelize.define(
       birthday: {
         type: DataTypes.STRING,
       },
+      phoneNumber : {
+        type: DataTypes.STRING,
+      },
       isDoctor: {
         type: DataTypes.BOOLEAN,
       },
       address: {
-        type: DataTypes.STRING,
-      },
-      privateKey: {
         type: DataTypes.STRING,
       },
       update_at: {
@@ -51,7 +51,7 @@ const Member = sequelize.define(
   }
 );
 
-Member.sync().then(() => {
+Member.sync().then(() => {J
   console.log("Member Model synced");
 });
 
@@ -71,9 +71,9 @@ const userRegister = async (userInfo) => {
     name: `${userInfo.profile.nickname}`,
     email: `${userInfo.email}`,
     birthday: `${userInfo.birthday}`,
+    // phoneNumber:  `${userInfo.birthday}`,
     isDoctor: false,
     address: `${userWallet.address}`,
-    privateKey: `${userWallet.privateKey}`,
   });
   return true;
 }

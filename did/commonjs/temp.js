@@ -1,2 +1,5 @@
-// 어떤 모듈이 존재하는지 주석달기
-// 어떤 기능이 필요한지 주석달기
+// const { ethers } = require('ethers');
+
+// let chainNameOrId = 'goerli';
+// const rpcUrl = "https://goerli.infura.io/v3/08f3fe16613d452fa248327e4d074d32";
+// const provider = new ethers.InfuraProvider(chainNameOrId, rpcUrl);
