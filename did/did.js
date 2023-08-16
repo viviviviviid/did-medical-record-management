@@ -6,7 +6,7 @@ import { ethers } from 'ethers';
 import dotenv from "dotenv";
 
 dotenv.config({
-  path: "../.env"
+  path: "./.env"
 });
 
 const chainNameOrId = 'goerli';
@@ -14,7 +14,6 @@ const rpcUrl = process.env.RPC_URL;
 // JsonRpcProvider은 ethers의 안정화된 5.7.2 버전에서 사용가능 
 const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 const ISSUER_SIGNER = new ethers.Wallet(process.env.ISSUER_PRIVATEKEY, provider);
-
 
 // Create Issuer DID
 export const ISSUER_DID = new EthrDID({
@@ -76,7 +75,7 @@ const vcJwt = await createVerifiableCredentialJwt(vcPayload, DELEGATE_ISSUER_DID
 const resolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
 const verifiedVC = await verifyCredential(vcJwt, resolver)
 
-
+console.log(verifiedVC)
 
 // DID resolver 사용 및 DID Document 생성
 
