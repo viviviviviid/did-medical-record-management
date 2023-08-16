@@ -76,8 +76,6 @@ const vcJwt = await createVerifiableCredentialJwt(vcPayload, DELEGATE_ISSUER_DID
 const resolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
 const verifiedVC = await verifyCredential(vcJwt, resolver)
 
-
-
 // DID resolver 사용 및 DID Document 생성
 
 // const didResolving = async (ISSUER_DID) => {
