@@ -12,29 +12,23 @@ const chainNameOrId = 'goerli';
 const rpcUrl = process.env.RPC_URL;
 // JsonRpcProvider은 ethers의 안정화된 5.7.2 버전에서 사용가능 
 const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-
-
-const ISSUER_ADDRESS = process.env.ISSUER_ADDRESS;
-const ISSUER_PRIVATEKEY = process.env.ISSUER_PRIVATEKEY;
-const ISSUER_SIGNER = new ethers.Wallet(ISSUER_PRIVATEKEY, provider);
+const ISSUER_SIGNER = new ethers.Wallet(process.env.ISSUER_PRIVATEKEY, provider);
 
 // Issuer의 DID 필드 생성
 export const ISSUER_DID = new EthrDID({
-  identifier: ISSUER_ADDRESS,
-  privateKey: ISSUER_PRIVATEKEY,
+  identifier: process.env.ISSUER_ADDRESS,
+  privateKey: process.env.ISSUER_PRIVATEKEY,
   provider: ISSUER_SIGNER.provider, 
   chainNameOrId,
   txSigner: ISSUER_SIGNER,
   alg: "ES256K",
 })
-// didResolving(ISSUER_DID)
-console.log(ISSUER_DID)
-
 
 // DID resolver 사용 및 DID Document 생성
 const didResolving = async (ISSUER_DID) => {
   const didResolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
   const didDocument = (await didResolver.resolve(ISSUER_DID.did)).didDocument
+  console.log(didDocument);
   // console.log(didDocument)
 
   // JWT로 인코딩, 디코딩, 유효확인 테스트 -> 사용은 안할 듯
@@ -55,8 +49,7 @@ const didResolving = async (ISSUER_DID) => {
   // await ISSUER_DID.addDelegate("0x093018c5F85DeDeC37AbE7ec189C669B1c117245", {expiresIn: 8640000, delegateType: 'sigAuth'})
 
 }
-
-// createDID4issuer()
+didResolving(ISSUER_DID)
 
 // 유저를 위한 자체적 키페어 생성 및 did 등록
 // const registerDID4user = () => {

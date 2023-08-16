@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { verifyCredential, createVerifiableCredentialJwt} from 'did-jwt-vc';
 import { EthrDID, DelegateTypes } from 'ethr-did';
 import dotenv from "dotenv";
-// import { ISSUER_DID } from './did.js';
+import { ISSUER_DID } from './did.js';
 
 dotenv.config({
   path: "../.env"
@@ -17,14 +17,14 @@ const SUBJECT_DID = new EthrDID({
 })
 
 const vcPayload = {
-  sub: subjectDID,
+  sub: SUBJECT_DID,
   vc: {
     '@context': ['https://www.w3.org/2018/credentials/v1'],
     type: ['VerifiableCredential'],
     credentialSubject: {
       issuer: {
         name: 'Medical Record Management Association',
-        // id: ISSUER_DID,
+        id: ISSUER_DID,
       },
       userInfo: {
         // 지금은 테스트용, 추후 회원가입 내용을 DB통해서 받아와야함
@@ -39,4 +39,4 @@ const vcPayload = {
   }
 }
 
-// console.log(vcPayload);
+console.log(vcPayload);
