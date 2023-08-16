@@ -15,6 +15,7 @@ const rpcUrl = process.env.RPC_URL;
 const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 const ISSUER_SIGNER = new ethers.Wallet(process.env.ISSUER_PRIVATEKEY, provider);
 
+
 // Create Issuer DID
 export const ISSUER_DID = new EthrDID({
   identifier: process.env.ISSUER_ADDRESS,
@@ -27,8 +28,8 @@ export const ISSUER_DID = new EthrDID({
 
 // Create Holder/Subject DID
 const SUBJECT_DID = new EthrDID({
-  chainNameOrId,
-  identifier: process.env.SUBJECT_ADDRESS
+  identifier: process.env.SUBJECT_ADDRESS,
+  chainNameOrId
 })
 
 const vcPayload = {
@@ -63,48 +64,48 @@ const { kp, txHash } = await ISSUER_DID.createSigningDelegate(
 // 대리 서명자의 DID 생성
 const DELEGATE_ISSUER_DID = new EthrDID({
   identifier: kp.address,
-  privateKey: kp.privateKey
-})
+  privateKey: kp.privateKey,
+  provider: ISSUER_SIGNER.provider, 
+  chainNameOrId
+});
 
-const vcJwt = await createVerifiableCredentialJwt(vcPayload, DELEGATE_ISSUER_DID)
-console.log(vcJwt)
+// VC JWT 생성
+const vcJwt = await createVerifiableCredentialJwt(vcPayload, DELEGATE_ISSUER_DID);
 
-
-
-
-
-
+// VC JWT 검증
+const resolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
+const verifiedVC = await verifyCredential(vcJwt, resolver)
 
 
 
 // DID resolver 사용 및 DID Document 생성
-const didResolving = async (ISSUER_DID) => {
-  const didResolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
-  const didDocument = (await didResolver.resolve(ISSUER_DID.did)).didDocument
-  // console.log(didDocument);
-  // console.log(didDocument)
 
-  // JWT로 인코딩, 디코딩, 유효확인 테스트 -> 사용은 안할 듯
-  // const tempJwt = await ISSUER_DID.signJWT({hello: 'world'});
-  // console.log("TEMP JWT", tempJwt);
-  // const decoded = decodeJWT(tempJwt)
-  // console.log("DECODED",decoded)
-  // try{
-  //   const {payload, issuer} = await ISSUER_DID.verifyJWT(tempJwt, didResolver);
-  //   console.log("PAYLOAD", payload);
-  //   console.log("ISSUER", issuer);
-  // }catch(err){
-  //   console.log("verifying JWT error: ", err);
-  // }
+// const didResolving = async (ISSUER_DID) => {
+//   const didResolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));
+//   const didDocument = (await didResolver.resolve(ISSUER_DID.did)).didDocument
+
+//   // JWT로 인코딩, 디코딩, 유효확인 테스트 -> 사용은 안할 듯
+//   // const tempJwt = await ISSUER_DID.signJWT({hello: 'world'});
+//   // console.log("TEMP JWT", tempJwt);
+//   // const decoded = decodeJWT(tempJwt)
+//   // console.log("DECODED",decoded)
+//   // try{
+//   //   const {payload, issuer} = await ISSUER_DID.verifyJWT(tempJwt, didResolver);
+//   //   console.log("PAYLOAD", payload);
+//   //   console.log("ISSUER", issuer);
+//   // }catch(err){
+//   //   console.log("verifying JWT error: ", err);
+//   // }
   
-  // addDelegate로 일시적 서명 위임
-  // web3에다가 provider 주입하고 web3.eth.주소 이런식으로해야 이더리움 네트워크에 트잭 남길 수 있음
-  // await ISSUER_DID.addDelegate("0x093018c5F85DeDeC37AbE7ec189C669B1c117245", {expiresIn: 8640000, delegateType: 'sigAuth'})
+//   // addDelegate로 일시적 서명 위임
+//   // web3에다가 provider 주입하고 web3.eth.주소 이런식으로해야 이더리움 네트워크에 트잭 남길 수 있음
+//   // await ISSUER_DID.addDelegate("0x093018c5F85DeDeC37AbE7ec189C669B1c117245", {expiresIn: 8640000, delegateType: 'sigAuth'})
 
-}
-didResolving(ISSUER_DID)
+// }
+// // didResolving(ISSUER_DID)
 
 // 유저를 위한 자체적 키페어 생성 및 did 등록
+
 // const registerDID4user = () => {
 //   const keypair = EthrDID.createKeyPair();
 //   console.log("keypair: ", keypair);
@@ -113,6 +114,7 @@ didResolving(ISSUER_DID)
 // }
 
 // 미완성
+
 // 외부 메타마스크 모듈 이용하여 did 등록
 // const importMetamask2DID = async () => {
 //   const accounts = await provider.listAccounts();
