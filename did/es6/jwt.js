@@ -1,7 +1,8 @@
 import { ethers } from 'ethers';
-import { verifyCredential, createVerifiableCredentialJwt} from 'did-jwt-vc'
-import { EthrDID, DelegateTypes } from 'ethr-did'
+import { verifyCredential, createVerifiableCredentialJwt} from 'did-jwt-vc';
+import { EthrDID, DelegateTypes } from 'ethr-did';
 import dotenv from "dotenv";
+// import { ISSUER_DID } from './did.js';
 
 dotenv.config({
   path: "../.env"
@@ -9,14 +10,8 @@ dotenv.config({
 
 const chainNameOrId = 5;
 
-// Create Issuer DID // 나중에는 did.js 에서 가져와야함. 속성이 많음
-const issuerDID = new EthrDID({
-  chainNameOrId,
-  identifier: process.env.ISSUER_ADDRESS
-})
-
 // Create Holder/Subject DID
-const subjectDID = new EthrDID({
+const SUBJECT_DID = new EthrDID({
   chainNameOrId,
   identifier: process.env.SUBJECT_ADDRESS
 })
@@ -29,7 +24,7 @@ const vcPayload = {
     credentialSubject: {
       issuer: {
         name: 'Medical Record Management Association',
-        id: issuerDID,
+        // id: ISSUER_DID,
       },
       userInfo: {
         // 지금은 테스트용, 추후 회원가입 내용을 DB통해서 받아와야함
@@ -43,3 +38,5 @@ const vcPayload = {
     }
   }
 }
+
+// console.log(vcPayload);

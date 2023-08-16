@@ -8,25 +8,28 @@ dotenv.config({
   path: "../.env"
 });
 
-let chainNameOrId = 'goerli';
+const chainNameOrId = 'goerli';
 const rpcUrl = process.env.RPC_URL;
-const provider = new ethers.InfuraProvider(chainNameOrId, rpcUrl);
+// JsonRpcProvider은 ethers의 안정화된 5.7.2 버전에서 사용가능 
+const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
+
 const ISSUER_ADDRESS = process.env.ISSUER_ADDRESS;
-const ISSUER_PK = process.env.ISSUER_PK;
+const ISSUER_PRIVATEKEY = process.env.ISSUER_PRIVATEKEY;
+const ISSUER_SIGNER = new ethers.Wallet(ISSUER_PRIVATEKEY, provider);
 
 // Issuer의 DID 필드 생성
-const createDID4issuer = async () => {
-   // Issuer의 지갑주소는 메타마스크 5번 지갑
-  const ISSUER_SIGNER = new ethers.Wallet(ISSUER_PK, provider);
-  const ISSUER_DID = new EthrDID({
-    identifier: ISSUER_ADDRESS,
-    privateKey: ISSUER_PK,
-    provider: ISSUER_SIGNER.InfuraProvider, chainNameOrId,
-    txSigner: ISSUER_SIGNER,
-    alg: "ES256K",
-  })
-  didResolving(ISSUER_DID)
-}
+export const ISSUER_DID = new EthrDID({
+  identifier: ISSUER_ADDRESS,
+  privateKey: ISSUER_PRIVATEKEY,
+  provider: ISSUER_SIGNER.provider, 
+  chainNameOrId,
+  txSigner: ISSUER_SIGNER,
+  alg: "ES256K",
+})
+// didResolving(ISSUER_DID)
+console.log(ISSUER_DID)
+
 
 // DID resolver 사용 및 DID Document 생성
 const didResolving = async (ISSUER_DID) => {
@@ -53,15 +56,15 @@ const didResolving = async (ISSUER_DID) => {
 
 }
 
-createDID4issuer()
+// createDID4issuer()
 
 // 유저를 위한 자체적 키페어 생성 및 did 등록
-const registerDID4user = () => {
-  const keypair = EthrDID.createKeyPair();
-  console.log("keypair: ", keypair);
-  const ethrDidOnGoerliNamed = new EthrDID({...keypair, chainNameOrId});
-  console.log("ethrDidOnGoerliNamed: ", ethrDidOnGoerliNamed)
-}
+// const registerDID4user = () => {
+//   const keypair = EthrDID.createKeyPair();
+//   console.log("keypair: ", keypair);
+//   const ethrDidOnGoerliNamed = new EthrDID({...keypair, chainNameOrId});
+//   console.log("ethrDidOnGoerliNamed: ", ethrDidOnGoerliNamed)
+// }
 
 // 미완성
 // 외부 메타마스크 모듈 이용하여 did 등록
