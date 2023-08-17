@@ -1,4 +1,4 @@
-const User = require("../sequelize/user.model");
+const User = require("../model/user.model");
 const express = require("express");
 const axios = require("axios");
 const { use } = require("../routes/user.route");
