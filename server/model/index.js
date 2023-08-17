@@ -6,6 +6,7 @@ const db = {};
 
 db.sequelize = sequelize;
 db.User = User;
+
 initModels(db);
 
 module.exports = db;
