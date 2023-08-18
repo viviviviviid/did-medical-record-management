@@ -9,7 +9,7 @@ export default function Header() {
 
     return (
         <div className='header'>
-                <p className='header-title'>DMRS</p>
+                <p className='header-title pointer' onClick={()=>{navigate('/')}}>DMRS</p>
                 <div className='header-menu'>
                     { menu.map((pages) => {
                         return (
