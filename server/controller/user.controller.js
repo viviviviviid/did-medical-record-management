@@ -1,4 +1,4 @@
-const User = require("../sequelize/user.model");
+const User = require("../model/user.model");
 const express = require("express");
 const axios = require("axios");
 const { use } = require("../routes/user.route");
@@ -8,7 +8,7 @@ const app = express();
  * 로그인 시 유저가 회원가입을 했는지 DB 체크
  * @returns DB 저장유무에 따른 boolean 반환 
  */
-const userCheck = async (req, res) => {
+const isUserRegistered = async (req, res) => {
   try {
     const access_token = req.body.token;
     const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
@@ -28,14 +28,14 @@ const userCheck = async (req, res) => {
 /**
  * 회원가입
  */
-// const signUp = async (req, res) => {
-//   // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
-//   // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
-//   // 의료계종사자 유무 체크리스트
-//   // 지갑주소 만들어주기
-//   // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
-//   // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
-// }
+const signUp = async (req, res) => {
+  // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
+  // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
+  // 의료계종사자 유무 체크리스트
+  // 지갑주소 만들어주기
+  // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
+  // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
+}
 
 /**
  * VC 요청
@@ -75,8 +75,8 @@ const display = async (req, res) => {
 }
 
 module.exports = {
-    userCheck,
-    // signUp,
+    isUserRegistered,
+    signUp,
     claim,
     share,
     approve,
