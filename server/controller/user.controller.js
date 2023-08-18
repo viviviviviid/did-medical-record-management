@@ -30,15 +30,24 @@ const isUserRegistered = async (req, res) => {
  */
 const signUp = async (req, res) => {
   try {
-  // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
-  const {name, email, birthday, phoneNumber, isDoctor, address} = req.body.data;
-  // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
-  // 의료계종사자 유무 체크리스트
-  // 지갑주소 만들어주기
-  // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
+    // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
+    const {name, email, birthday, phoneNumber, isDoctor, address} = req.body.data;
+    // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
+    // 의료계종사자 유무 체크리스트
+    // 지갑주소 만들어주기
+    // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
 
-  
-  // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
+    // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
+    // babel로 묶어 쓰거나, 답변대로 동적 호출을 하던가.
+    // signUp_DID({
+    //   name: name, 
+    //   email: email,
+    //   birthday: birthday,
+    //   phoneNumber: phoneNumber,
+    //   isDoctor: isDoctor,
+    //   address: address,
+    // })
+
   }catch(error){
 
   }
