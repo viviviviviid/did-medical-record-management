@@ -78,6 +78,13 @@ const approve = async (req, res) => {
 }
 
 /**
+ * 의사가 요청한 DID 업데이트
+ */
+const update = async (req, res) => {
+  // 의사가 요청한 did 업데이트
+}
+
+/**
  * 보유중인 VC를 이용하여 1056 레지스트리를 조회
  */
 const retrieve = async (req, res) => {
