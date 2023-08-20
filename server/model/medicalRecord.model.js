@@ -68,7 +68,7 @@ const MedicalRecords = sequelize.define(
     },
   },
   {
-    timestamps: true
+    timestamps: false,
   }
 );
 
