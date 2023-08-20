@@ -29,13 +29,15 @@ export const signUp_DID = async (data) => {
           address: process.env.ISSUER_ADDRESS,
         },
         userInfo: {
-          // 지금은 테스트용, 추후 회원가입 내용을 DB통해서 받아와야함
           name: data.name,
           email: data.email,
           birthday: data.birthday,
           phoneNumber: data.phoneNumber,
           isDoctor: data.isDoctor,
           address: data.address,
+        },
+        medicalRecords: {
+
         }
       }
     }
@@ -55,7 +57,7 @@ export const signUp_DID = async (data) => {
     chainNameOrId
   });
   
-    // VC JWT 생성
+  // VC JWT 생성
   const vcJwt = await createVerifiableCredentialJwt(vcPayload, DELEGATE_ISSUER_DID);
 
   const verifiedVC = await verifyCredential(vcJwt, did.resolver)

@@ -1,4 +1,5 @@
 const db = require("../model/index.js");
+const crypto = require('crypto');
 
 const medicalRecordRegister = async (medicalRecord) => {
   const { 
@@ -31,4 +32,13 @@ const medicalRecordRegister = async (medicalRecord) => {
   }
 }
 
-module.exports = { medicalRecordRegister }
+const createHash4DidUpdate = (data) => {
+
+  const target = data; // db에서 찾은 내용을 그대로 가져와서 해시화 할까
+  const hash = crypto.createHash('sha256');
+  hash.update(target);
+  return hash.digest('hex');
+
+}
+
+module.exports = { medicalRecordRegister, createHash4DidUpdate }

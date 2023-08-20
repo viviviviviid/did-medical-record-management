@@ -3,6 +3,7 @@ const express = require("express");
 const axios = require("axios");
 const { use } = require("../routes/user.route");
 const app = express();
+const { medicalRecordRegister, createHash4DidUpdate } = require("./medicalRecord.controller.js");
 
 /**
  * 로그인 시 유저가 회원가입을 했는지 DB 체크
@@ -81,8 +82,19 @@ const approve = async (req, res) => {
  * 의사가 요청한 DID 업데이트
  */
 const update = async (req, res) => {
-  // 의사가 요청한 did 업데이트
-  
+  // 새롭게 추가된 진료내용을 db에 저장 
+  medicalRecordRegister(req.body.medicalRecord);
+
+  // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
+  // const dbData = 함수()
+
+  // 환자가 가지고있던 jwt형태의 did를 조회해서 내용을 가져온 후 
+  // -> 조회하는 내용
+  // const data = 조회함수;
+
+  // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
+  const hash = createHash4DidUpdate()
+  // const updatedVcJwt = data + hash;
 }
 
 /**
