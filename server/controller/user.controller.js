@@ -1,4 +1,4 @@
-const User = require("../model/user.model");
+const db = require("../model/index.js");
 const express = require("express");
 const axios = require("axios");
 const { use } = require("../routes/user.route");
@@ -16,7 +16,7 @@ const isUserRegistered = async (req, res) => {
         Authorization: `Bearer ${access_token}`,
       }
     });
-    return await User.userFind(userInfo.data.kakao_account)
+    return await userFind(userInfo.data.kakao_account)
       ? (res.status(200).send("already exist in DB")) 
       : (res.status(201).send("just signup in DB"))
 
@@ -82,6 +82,7 @@ const approve = async (req, res) => {
  */
 const update = async (req, res) => {
   // 의사가 요청한 did 업데이트
+  
 }
 
 /**
@@ -97,6 +98,29 @@ const retrieve = async (req, res) => {
 const display = async (req, res) => {
     // 조회된 내역 프론트로 보내기
 }
+
+// const userFind = async (userInfo) => {
+//   const data = await Member.findOne({where: {email: `${userInfo.email}`}});
+//   if(data === null){
+//     return !userRegister(userInfo);
+//   }else{
+//     console.log("already exist");
+//     return true;
+//   }
+// }
+
+// const userRegister = async (userInfo) => {
+//   const userWallet = ethers.Wallet.createRandom();
+//   Member.create({
+//     name: `${userInfo.profile.nickname}`,
+//     email: `${userInfo.email}`,
+//     birthday: `${userInfo.birthday}`,
+//     // phoneNumber:  `${userInfo.birthday}`,
+//     isDoctor: false,
+//     address: `${userWallet.address}`,
+//   });
+//   return true;
+// }
 
 module.exports = {
     isUserRegistered,

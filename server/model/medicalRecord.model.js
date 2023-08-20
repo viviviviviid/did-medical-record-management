@@ -10,6 +10,9 @@ const MedicalRecords = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    did: {
+      type: DataTypes.STRING, // 유저 did
+    },
     // Basic Information
     hospital: { 
       type: DataTypes.STRING, // 진료를 받은 병원 이름
