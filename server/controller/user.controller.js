@@ -167,11 +167,4 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll } = require("./medi
 
 
 module.exports = {
-    isUserRegistered,
-    signUp,
-    claim,
-    share,
-    approve,
-    retrieve,
-    display,
 };
