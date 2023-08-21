@@ -3,6 +3,7 @@ import { verifyCredential, createVerifiableCredentialJwt} from 'did-jwt-vc';
 import dotenv from "dotenv";
 import did from "./did.instance.js";
 import jwt from "jsonwebtoken";
+import ethers from "ethers";
 
 dotenv.config({
   path: "./.env"
@@ -13,9 +14,16 @@ const rpcUrl = process.env.RPC_URL;
 
 const signUp_DID = async (data) => {
 
+  const wallet = ethers.Wallet.createRandom()
+
+  const walletInfo = {
+    address: wallet.address,
+    privateKey: wallet.privateKey,
+  }
+
   // Create Holder/Subject DID
   const SUBJECT_DID = new EthrDID({
-    identifier: data.address, // db data로 address가 와야함
+    identifier: walletInfo.address,
     chainNameOrId
   })
 
@@ -35,14 +43,16 @@ const signUp_DID = async (data) => {
           birthday: data.birthday,
           phoneNumber: data.phoneNumber,
           isDoctor: data.isDoctor,
-          address: data.address,
+          address: walletInfo.address,
         },
         medicalRecords: null,
       }
     }
   }
-
-  return createVcJwtWithPayload(vcPayload)
+  
+  const vcJwt = await createVcJwtWithPayload(vcPayload);
+ 
+  return {jwt: vcJwt, wallet: walletInfo, did: SUBJECT_DID};
 }
 
 const update_DID = async (lastVcJwt, hash) => {
