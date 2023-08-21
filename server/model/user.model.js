@@ -42,7 +42,7 @@ const User = sequelize.define(
 module.exports = { User }
 
 
-// module.exports = { sq: sequelize, userFind };
+// module.exports = { sq: sequelize };
 
 // sequelize 없이 진행할 때
 // const { Client } = require("pg");
