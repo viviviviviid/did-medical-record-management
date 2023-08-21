@@ -55,7 +55,7 @@ const createHash4DidUpdate = async (did) => {
 // });
 
 
-module.exports = { medicalRecordRegister, createHash4DidUpdate }
+module.exports = { medicalRecordRegister, createHash4DidUpdate, findAll }
 
 
 // 테스트용
