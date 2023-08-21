@@ -42,9 +42,8 @@ const findAll = async (target) => {
 /**
  * JWT에 삽입할 유저진료기록의 해시값
  */
-const createHash4DidUpdate = async (did) => {
-  const records = await findAll(did);
-  const stringFormData = JSON.stringify(records);
+const createHash4DidUpdate = async (dbData) => {
+  const stringFormData = JSON.stringify(dbData);
   const hash = crypto.createHash('sha256');
   hash.update(stringFormData);
   return hash.digest('hex');
