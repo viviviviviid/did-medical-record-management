@@ -3,7 +3,7 @@ const express = require("express");
 const axios = require("axios");
 const { use } = require("../routes/user.route");
 const app = express();
-const { medicalRecordRegister, createHash4DidUpdate, findAll } = require("./medicalRecord.controller.js");
+const { medicalRecordRegister, createHash4DidUpdate, findAll_DID } = require("./medicalRecord.controller.js");
 
 /**
  * 로그인 시 유저가 회원가입을 했는지 DB 체크
@@ -55,7 +55,8 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll } = require("./medi
 //       birthday: `${userInfo.birthday}`,
 //       phoneNumber:  `${userInfo.phoneNumber}`,
 //       isDoctor: `${userInfo.isDoctor}`,
-//       wallet: `${userWallet.wallet}`,
+//       wallet: `${userInfo.wallet}`,
+//       did: `${userInfo.DID}`,
 //     });
 //   }catch(error){
 //     console.log("userRegister function Error: ",error);
@@ -68,27 +69,28 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll } = require("./medi
 // const signUp = async (req, res) => {
 //   try {
 //     const {name, email, birthday, phoneNumber, isDoctor} = req.body.data;
-//
+
 //     // 회원가입이 완료되면 자동으로 로그인 완료 화면으로 넘기기
 //     // 지갑주소 만들어주고 레지스트리에 등록
 //     // es6 내용이므로 babel로 묶어 쓰거나, 동적 호출을 하던가.
-//     const {jwt, wallet, did} = await signUp_DID({
+//     const {jwt, wallet, DID} = await signUp_DID({
 //       name: name, 
 //       email: email, 
 //       birthday: birthday,
 //       phoneNumber: phoneNumber,
 //       isDoctor: isDoctor,
+//       medicalRecords: hash,
 //     });
-//
-//     const userInfo = {name, email, birthday, phoneNumber, isDoctor, wallet};
-//
+
+//     const userInfo = {name, email, birthday, phoneNumber, isDoctor, wallet, DID};
+
 //     // 회원가입 정보와 지갑 관련 정보(PK 포함)를 DB에 저장
 //     userRegister(userInfo);
-//
+
 //   }catch(error){
 //     console.log("signUp function error: ", error);
 //   }
-//
+
 // }
 
 /**
@@ -98,23 +100,23 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll } = require("./medi
 //   try{
 //     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
 //     // 즉 추가되는 내용말고는 과정 필요없음.
-//
+
 //     const lastVcJwt = req.body.vcJwt;
 //     const did = jwt.decode(lastVcJwt).sub.did;
-//
+
 //     // 새롭게 추가된 진료내용을 db에 저장 
 //     medicalRecordRegister(req.body.medicalRecord);
-//
+
 //     // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
-//     const dbData = findAll(did);
-//
+//     const dbData = findAll_DID(did);
+
 //     // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
 //     const hash = createHash4DidUpdate(dbData);
-//
+
 //     // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
 //     // 새로 만들어진 vcJwt를 프론트에 보내기 위해 받아두기. did 폴더에서 가져와야하므로 babel 과정 거쳐야함
 //     const updatedVcJwt = update_DID(lastVcJwt, hash);
-//
+
 //     return res.status(200).send({dbData, updatedVcJwt});
 //   }catch(error){
 //     return res.status(400).send(error);

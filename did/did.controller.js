@@ -27,6 +27,10 @@ const signUp_DID = async (data) => {
     chainNameOrId
   })
 
+  // 첫 생성이라 medicalRecords 테이블내에 아무것도 없겠지만, findAll_DID을 했을때 null 값이 오는게 아니므로 그걸 해시화해서 삽입
+  const dbData = findAll_DID(SUBJECT_DID);
+  const hash = createHash4DidUpdate(dbData);
+
   const vcPayload = {
     sub: SUBJECT_DID,
     vc: {
@@ -45,7 +49,8 @@ const signUp_DID = async (data) => {
           isDoctor: data.isDoctor,
           address: walletInfo.address,
         },
-        medicalRecords: null,
+        medicalRecords: hash,
+        doctorLicense: null,
       }
     }
   }
@@ -72,6 +77,7 @@ const update_DID = async (lastVcJwt, hash) => {
         },
         userInfo: decodedPayload.vc.credentialSubject.userInfo,
         medicalRecords: hash,
+        doctorLicense: null,
       }
     }
   }

@@ -28,6 +28,9 @@ const User = sequelize.define(
       address: {
         type: DataTypes.STRING,
       },
+      did: {
+        type: DataTypes.JSON,
+      },
       update_at: {
         type: DataTypes.DATE,
         allowNull: false,
