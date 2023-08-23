@@ -6,7 +6,7 @@ export default function InputField(props) {
       <Box
         component="form"
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
+          '& .MuiTextField-root': { m: 1, width: props.width },
         }}
         noValidate
         autoComplete="off"

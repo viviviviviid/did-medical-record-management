@@ -1,9 +1,10 @@
 import './App.css';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
-import Main from './main';
-import Login from './login';
-import Auth from './auth.js';
-import Records from './records/records';
+import Main from './views/main/main';
+import Login from './views/login/login';
+import Auth from './views/auth/auth.js';
+import Records from './views/records/records';
+import SignUp from './views/signup/signup';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/login/auth" element={<Auth />} />
         <Route path="/medical-records" element={<Records />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
   )
