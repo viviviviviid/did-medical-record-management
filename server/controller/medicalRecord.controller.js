@@ -49,11 +49,6 @@ const createHash4DidUpdate = async (dbData) => {
   return hash.digest('hex');
 }
 
-// createHash4DidUpdate("FILL_ME_IN").then(result => {
-//   console.log(result);
-// });
-
-
 module.exports = { medicalRecordRegister, createHash4DidUpdate, findAll_DID }
 
 

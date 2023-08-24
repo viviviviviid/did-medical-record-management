@@ -9,26 +9,31 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll_DID } = require("./
  * 로그인 시 유저가 회원가입을 했는지 DB 체크
  * @returns DB 저장유무에 따른 boolean 반환 
  */
-// const isUserRegistered = async (req, res) => {
-//   try {
-//     const access_token = req.body.token;
-//     const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
-//       headers: {
-//         Authorization: `Bearer ${access_token}`,
-//       }
-//     });
-//     return await userFind(userInfo.data.kakao_account).then(result => {
-//       result
-//       ? (res.status(200).json({
-//         dbData: result, 
-//         msg: "already exist in DB"
-//       })) 
-//       : (res.status(400).send("not exist in DB")) // 이때 프론트는 회원가입 창으로 연결
-//     })
-//   } catch (error) {
-//     return res.status(400).send(error);
-//   }
-// }
+const isUserRegistered = async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const access_token = req.body.token;
+    // const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
+    //   headers: {
+    //     Authorization: `Bearer ${access_token}`,
+    //   }
+    // });
+    // console.log(userInfo);
+    // return await userFind(userInfo.data.kakao_account).then(result => {
+    //   result
+    //   ? (res.status(200).json({
+    //     dbData: result, 
+    //     msg: "already exist in DB"
+    //   })) 
+    //   : (res.status(201).send(false)) // 이때 프론트는 회원가입 창으로 연결
+    // })
+
+    res.status(201).send(false); // 항상 회원가입시키는 테스트용 코드라인
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+}
 
 /**
  * 유저가 회원가입을 진행했는지 DB 탐색
@@ -45,53 +50,51 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll_DID } = require("./
 // }
 
 /**
- * 유저 정보 DB 등록
- */
-// const userRegister = async (userInfo) => {
-//   try{
-//     db.User.create({
-//       name: `${userInfo.name}`,
-//       email: `${userInfo.email}`,
-//       birthday: `${userInfo.birthday}`,
-//       phoneNumber:  `${userInfo.phoneNumber}`,
-//       isDoctor: `${userInfo.isDoctor}`,
-//       wallet: `${userInfo.wallet}`,
-//       did: `${userInfo.DID}`,
-//     });
-//   }catch(error){
-//     console.log("userRegister function Error: ",error);
-//   }
-// }
-
-/**
  * 회원가입
  */
-// const signUp = async (req, res) => {
-//   try {
-//     const {name, email, birthday, phoneNumber, isDoctor} = req.body.data;
+const signUp = async (req, res) => {
+  try {
+    let jwt, wallet, SUBJECT_DID;
+    const { name, email, birthday, phoneNumber, isDoctor } = req.body;
+    const hash = await createHash4DidUpdate(findAll_DID("")); // 회원가입 전이므로 비어있는체로 내용이 올 것 // 그거라도 hash화 해둬야 무결성 검증가능
 
-//     // 회원가입이 완료되면 자동으로 로그인 완료 화면으로 넘기기
-//     // 지갑주소 만들어주고 레지스트리에 등록
-//     // es6 내용이므로 babel로 묶어 쓰거나, 동적 호출을 하던가.
-//     const {jwt, wallet, DID} = await signUp_DID({
-//       name: name, 
-//       email: email, 
-//       birthday: birthday,
-//       phoneNumber: phoneNumber,
-//       isDoctor: isDoctor,
-//       medicalRecords: hash,
-//     });
+    console.log(hash)
 
-//     const userInfo = {name, email, birthday, phoneNumber, isDoctor, wallet, DID};
+    await axios.post('http://localhost:5002/did/signup_did', {userInfo: req.body, hash: hash})
+      .then(res => {
+        ({ jwt, wallet, SUBJECT_DID } = res.data);
+        const userInfo = { name, email, birthday, phoneNumber, isDoctor, wallet, SUBJECT_DID };
+        userRegister(userInfo); // DB에 저장
+      })
+      .catch(err => console.log(err))
 
-//     // 회원가입 정보와 지갑 관련 정보(PK 포함)를 DB에 저장
-//     userRegister(userInfo);
+      console.log(jwt);
 
-//   }catch(error){
-//     console.log("signUp function error: ", error);
-//   }
+      res.status(200).json({jwt:jwt, did:SUBJECT_DID});
+  } catch (error) {
+    console.log("signUp function error: ", error);
+    return res.send(400).send(error);
+  }
+}
 
-// }
+/**
+ * 유저 정보 DB 등록
+ */
+const userRegister = async (userInfo) => {
+  try{
+    db.User.create({
+      name: `${userInfo.name}`,
+      email: `${userInfo.email}`,
+      birthday: `${userInfo.birthday}`,
+      phoneNumber:  `${userInfo.phoneNumber}`,
+      isDoctor: `${userInfo.isDoctor}`,
+      wallet: JSON.stringify(userInfo.wallet), // JSON 타입의 컬럼에 객체를 넣을때는, 문자열화 시켜주고 넣어야함
+      did: JSON.stringify(userInfo.SUBJECT_DID),
+    });
+  }catch(error){
+    console.log("userRegister function Error: ",error);
+  }
+}
 
 /**
  * 의사가 요청한 DID 업데이트
@@ -166,7 +169,7 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll_DID } = require("./
 // }
 
 
-
-
 module.exports = {
+  isUserRegistered,
+  signUp
 };

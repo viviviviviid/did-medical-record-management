@@ -1,63 +1,67 @@
+import dotenv from 'dotenv';
+dotenv.config({path: "./.env"});
+
 import { EthrDID, DelegateTypes } from 'ethr-did';
 import { verifyCredential, createVerifiableCredentialJwt} from 'did-jwt-vc';
-import dotenv from "dotenv";
-import did from "./did.instance.js";
 import jwt from "jsonwebtoken";
 import ethers from "ethers";
-
-dotenv.config({
-  path: "./.env"
-});
+import did from "./did.instance.js";
 
 const chainNameOrId = "goerli"
 const rpcUrl = process.env.RPC_URL;
 
-const signUp_DID = async (data) => {
+const signUp_DID = async (req, res) => {
 
-  const wallet = ethers.Wallet.createRandom()
+  try{
+    console.log("userInfo: ", req.body);
+    const data = req.body.userInfo;
 
-  const walletInfo = {
-    address: wallet.address,
-    privateKey: wallet.privateKey,
-  }
+    const wallet = ethers.Wallet.createRandom()
+    const walletInfo = {
+      address: wallet.address,
+      privateKey: wallet.privateKey,
+    }
 
-  // Create Holder/Subject DID
-  const SUBJECT_DID = new EthrDID({
-    identifier: walletInfo.address,
-    chainNameOrId
-  })
+    // Create Holder/Subject DID
+    const SUBJECT_DID = new EthrDID({
+      identifier: walletInfo.address,
+      chainNameOrId
+    })
 
-  // 첫 생성이라 medicalRecords 테이블내에 아무것도 없겠지만, findAll_DID을 했을때 null 값이 오는게 아니므로 그걸 해시화해서 삽입
-  const dbData = findAll_DID(SUBJECT_DID);
-  const hash = createHash4DidUpdate(dbData);
-
-  const vcPayload = {
-    sub: SUBJECT_DID,
-    vc: {
-      '@context': ['https://www.w3.org/2018/credentials/v1'],
-      type: ['VerifiableCredential'],
-      credentialSubject: {
-        issuer: {
-          name: 'Medical Record Management Association',
-          address: process.env.ISSUER_ADDRESS,
-        },
-        userInfo: {
-          name: data.name,
-          email: data.email,
-          birthday: data.birthday,
-          phoneNumber: data.phoneNumber,
-          isDoctor: data.isDoctor,
-          address: walletInfo.address,
-        },
-        medicalRecords: hash,
-        doctorLicense: null,
+    const vcPayload = {
+      sub: SUBJECT_DID,
+      vc: {
+        '@context': ['https://www.w3.org/2018/credentials/v1'],
+        type: ['VerifiableCredential'],
+        credentialSubject: {
+          issuer: {
+            name: 'Medical Record Management Association',
+            address: process.env.ISSUER_ADDRESS,
+          },
+          userInfo: {
+            name: data.name,
+            email: data.email,
+            birthday: data.birthday,
+            phoneNumber: data.phoneNumber,
+            isDoctor: data.isDoctor,
+            address: walletInfo.address,
+          },
+          medicalRecords: req.body.hash,
+          doctorLicense: null,
+        }
       }
     }
-  }
+    
+    const vcJwt = await createVcJwtWithPayload(vcPayload);
+
+    console.log(vcJwt);
+    console.log(SUBJECT_DID)
   
-  const vcJwt = await createVcJwtWithPayload(vcPayload);
- 
-  return {jwt: vcJwt, wallet: walletInfo, did: SUBJECT_DID};
+    res.status(200).json({jwt: vcJwt, wallet: walletInfo, SUBJECT_DID: SUBJECT_DID});
+  }catch(error){
+    console.log("signUp_DID function error: ", error);
+    res.status(400).send(error);
+  }
 }
 
 const update_DID = async (lastVcJwt, hash) => {
@@ -112,4 +116,4 @@ const createVcJwtWithPayload = async (vcPayload) => {
   return vcJwt;
 }
 
-export { signUp_DID, update_DID };
+export default { signUp_DID, update_DID };
