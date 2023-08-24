@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
-import Header from './header.js';
-import Footer from './footer.js';
+import Header from '../../modules/header.js';
+import Footer from '../../modules/footer.js';
 
 export default function Main() {
     return(

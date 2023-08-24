@@ -25,8 +25,11 @@ const User = sequelize.define(
       isDoctor: {
         type: DataTypes.BOOLEAN,
       },
-      address: {
-        type: DataTypes.STRING,
+      wallet: {
+        type: DataTypes.JSON,
+      },
+      did: {
+        type: DataTypes.JSON,
       },
       update_at: {
         type: DataTypes.DATE,

@@ -32,7 +32,7 @@ const medicalRecordRegister = async (medicalRecord) => {
   }
 }
 
-const findAll = async (target) => {
+const findAll_DID = async (target) => {
   return await db.MedicalRecords.findAll({
     where: {did: `${target}`},
     order: [['dateOfVisit', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
@@ -49,12 +49,7 @@ const createHash4DidUpdate = async (dbData) => {
   return hash.digest('hex');
 }
 
-// createHash4DidUpdate("FILL_ME_IN").then(result => {
-//   console.log(result);
-// });
-
-
-module.exports = { medicalRecordRegister, createHash4DidUpdate, findAll }
+module.exports = { medicalRecordRegister, createHash4DidUpdate, findAll_DID }
 
 
 // 테스트용

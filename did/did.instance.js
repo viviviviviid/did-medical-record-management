@@ -1,12 +1,10 @@
+import dotenv from 'dotenv';
+dotenv.config({path: "./.env"});
+
 import { EthrDID } from 'ethr-did';
 import { Resolver } from 'did-resolver'
 import { getResolver } from 'ethr-did-resolver'
 import { ethers } from 'ethers';
-import dotenv from "dotenv";
-
-dotenv.config({
-  path: "./.env"
-});
 
 const chainNameOrId = 'goerli';
 const rpcUrl = process.env.RPC_URL;

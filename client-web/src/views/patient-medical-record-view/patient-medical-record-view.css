@@ -1,0 +1,63 @@
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.input-container {
+    width: 40vw;
+    min-height: 50vh;
+    background-color: white;
+    border-radius: 2%;
+    padding: 5vw;
+}
+
+.input-container p {
+    margin: 0px;
+    margin-top: 1px;
+}
+
+.input-container hr {
+    margin-top: 5vh;
+}
+
+.input-field {
+    margin-top: 15px;
+}
+
+.input-field input {
+    margin-left: 10px;
+}
+
+.input-title {
+    font-size: 20px;
+    margin-bottom: 1000px;
+}
+
+.desc {
+    font-size: 13px;
+}
+
+.desc-container-1 {
+    width: 80px;
+}
+
+.desc-container-2 {
+    width: 120px;
+}
+
+.input-1 {
+    width: 120px;
+}
+
+.input-2 {
+    width: 300px;
+    resize: vertical;
+    overflow: auto;
+}
+
+.submit-button {
+    margin-top: 80px;
+    width: 100px;
+    height: 30px;
+}
+

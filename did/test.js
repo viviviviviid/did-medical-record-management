@@ -10,9 +10,9 @@ const test = async ()  => {
     phoneNumber: "010-2701-1627",
     isDoctor: false,
   })
-  // console.log("data", data)
+  console.log("data", data)
 
-  console.log(await update_DID(data.jwt, "0x000000"));
+  // console.log(await update_DID(data.jwt, "0x000000"));
 }
 
 test();
