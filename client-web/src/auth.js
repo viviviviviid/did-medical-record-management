@@ -71,6 +71,7 @@ export default function Auth() {
     }, [code, navigate, key, uri]);
 
     const handleSignUp = async (userInfo) => {
+        console.log("here")
         const response = await axios.post('http://localhost:5001/user/signup', userInfo);
         console.log(response)
         if (response.data === true) {

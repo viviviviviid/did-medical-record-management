@@ -11,26 +11,30 @@ const { medicalRecordRegister, createHash4DidUpdate, findAll_DID } = require("./
  */
 const isUserRegistered = async (req, res) => {
   try {
-    console.log(req.body);
 
-    const access_token = req.body.token;
-    // const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
-    //   headers: {
-    //     Authorization: `Bearer ${access_token}`,
-    //   }
-    // });
-    // console.log(userInfo);
-    // return await userFind(userInfo.data.kakao_account).then(result => {
-    //   result
-    //   ? (res.status(200).json({
-    //     dbData: result, 
-    //     msg: "already exist in DB"
-    //   })) 
-    //   : (res.status(201).send(false)) // 이때 프론트는 회원가입 창으로 연결
-    // })
+    const access_token = req.body.token.access_token;
 
-    res.status(201).send(false); // 항상 회원가입시키는 테스트용 코드라인
+    const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      }
+    });
+
+    return await userFind(userInfo.data.kakao_account).then(dbData => {
+      dbData
+      ? (res.status(200).json({
+        dbData: dbData, 
+        msg: "already exist in DB"
+      })) 
+      : (res.status(201).json({
+        dbData: null,
+        userInfo: userInfo.data.kakao_account,
+        msg: "not exist"
+      })) 
+    })
+
   } catch (error) {
+    console.log("isUserRegistered function error: ", error)
     return res.status(400).send(error);
   }
 }
@@ -38,16 +42,9 @@ const isUserRegistered = async (req, res) => {
 /**
  * 유저가 회원가입을 진행했는지 DB 탐색
  */
-// const userFind = async (userInfo) => {
-//   const data = await Member.findOne({where: {email: `${userInfo.email}`}});
-//   if(data !== null){
-//     console.log("already exist");
-//     return true;
-//   }else{
-//     console.log("not exist")
-//     return false;
-//   }
-// }
+const userFind = async (userInfo) => {
+  return await db.User.findOne({where: {email: `${userInfo.email}`}});
+}
 
 /**
  * 회원가입
@@ -57,8 +54,6 @@ const signUp = async (req, res) => {
     let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
     const hash = await createHash4DidUpdate(findAll_DID("")); // 회원가입 전이므로 비어있는체로 내용이 올 것 // 그거라도 hash화 해둬야 무결성 검증가능
-
-    console.log(hash)
 
     await axios.post('http://localhost:5002/did/signup_did', {userInfo: req.body, hash: hash})
       .then(res => {

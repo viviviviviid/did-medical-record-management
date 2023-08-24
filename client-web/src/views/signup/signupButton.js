@@ -20,13 +20,17 @@ export default function SignUpButton(props) {
           props.setNull('isDoctor');
 
         else {
-            // axios.post('http://localhost:5001/user/signup', {
-          //     name: props.name,
-          //     email: props.email,
-          //     birthday: props.birthday,
-          //     phoneNumber: props.phoneNumber,
-          //     isDoctor: props.isDoctor,
-          // }) 
+            const userInfo = {
+              name: props.name,
+              email: props.email,
+              birthday: props.birthday,
+              phoneNumber: props.phoneNumber,
+              isDoctor: props.isDoctor
+            }
+            axios.post('http://localhost:5001/user/signup', userInfo)
+              .then(res => {
+                 console.log(res); // 이게 도착을 할 때까지 페이지 안 벗어나게 하면서 로딩 창 팝업 띄워놔야함. // 블록체인 속도 때문에
+              })
 
           navigate('/');
 
