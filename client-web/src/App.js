@@ -7,6 +7,9 @@ import Records from './views/medical-records/records';
 import SignUp from './views/signup/signup';
 import PatientMedicalRecords from './views/patient-medical-records/patient-medical-records';
 import PatientList from './views/patient-list/patient-list';
+import NewMedicalRecord from './views/new-medical-record/new-medical-record';
+import PatientMedicalRecordView from './views/patient-medical-record-view/patient-medical-record-view';
+import PatientMedicalRecordUpdate from './views/patient-medical-record-update/patient-medical-record-update';
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/patient-medical-records" element={<PatientMedicalRecords />} />
         <Route path="/patient-list" element={<PatientList />} />
+        <Route path="/new-medical-record" element={<NewMedicalRecord />} />
+        <Route path="/patient-medical-record-view" element={<PatientMedicalRecordView />} />
+        <Route path="/patient-medical-record-update" element={<PatientMedicalRecordUpdate />} />
       </Routes>
     </BrowserRouter>
   )
