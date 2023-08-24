@@ -1,4 +1,4 @@
-import kakaoLogin from './images/kakao-login.png';
+import kakaoLogin from '../../assets/images/kakao-login.png';
 
 
 

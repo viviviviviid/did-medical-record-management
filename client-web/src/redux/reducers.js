@@ -1,5 +1,6 @@
 const initialState = {
     login: false,
+    newUser: false,
 
 }
 
@@ -10,6 +11,12 @@ const dataReducer = (state = initialState, action) => {
             return {
                 ...state,
                 groupMember: action.payload,
+            }
+
+        case 'SET_NEW_USER' :
+            return {
+                ...state,
+                newUser: action.payload,
             }
         
         default :

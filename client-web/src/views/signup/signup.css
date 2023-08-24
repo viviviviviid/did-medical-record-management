@@ -1,0 +1,11 @@
+.signup-title {
+    font-size: 3vh;
+}
+
+.signup-input-container p {
+    font-size: 1.5vh;
+    color: gray;
+    position: relative;
+    left: 1vw;
+    z-index: 1;
+}
