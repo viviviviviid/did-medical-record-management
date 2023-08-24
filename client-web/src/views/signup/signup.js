@@ -15,6 +15,12 @@ export default function Main() {
     const [birthday, setBirthday] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [isDoctor, setIsDoctor] = useState(false);
+    const [write, setWrite] = useState(false);
+
+    useEffect(() => {
+        if(domain === 'write')
+            setWrite(true);
+    })
 
     return(
         <div className='root'>
@@ -36,9 +42,18 @@ export default function Main() {
                             width='9vw' 
                             setData={setEmail} />
                         <h3>@</h3>
-                        <EmailSelect 
+                        { write ? 
+                            <InputField 
+                                type='text'
+                                label='이메일'
+                                width='9vw'
+                                setData={setDomain} />  
+                            :
+                            <EmailSelect 
                             setEmail={setDomain} 
-                            email={domain} />
+                            email={domain} />  
+                        }
+                        
                     </div>
                     <InputField 
                         type='text' 

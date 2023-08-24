@@ -1,14 +1,13 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function EmailSelect(props) {
+export default function EmailSelect(props)  {
 
   const handleChange = (event) => {
-    props.setEmail(event.target.value);
+      props.setEmail(event.target.value);
   };
 
   return (
@@ -28,6 +27,7 @@ export default function EmailSelect(props) {
           <MenuItem value={'nate.com'}>nate.com</MenuItem>
           <MenuItem value={'gmail.com'}>gmail.com</MenuItem>
           <MenuItem value={'yahoo.com'}>yahoo.com</MenuItem>
+          <MenuItem value={'write'}>직접 선택</MenuItem>
         </Select>
       </FormControl>
     </Box>

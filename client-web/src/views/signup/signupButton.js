@@ -8,6 +8,7 @@ export default function SignUpButton(props) {
 
     const handleClick = () => {
         console.log("SIGN_UP : ", props.name, props.email, props.birthday, props.phoneNumber, props.isDoctor);
+        
         // axios.post('http://localhost:5001/user/signup', {
         //     name: props.name,
         //     email: props.email,

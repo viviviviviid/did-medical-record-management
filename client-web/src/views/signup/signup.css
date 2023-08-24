@@ -7,4 +7,5 @@
     color: gray;
     position: relative;
     left: 1vw;
+    z-index: 1;
 }
