@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
     const navigate = useNavigate();
-    const menu = [{title:'진료기록', route:'medical-records'}, {title:'메뉴1', route:'menu1'}, {title:'메뉴2', route:'menu2'}];
+    const menu = [{title:'나의 진료기록', route:'medical-records'}, {title:'환자 진료기록', route:'patient-list'}, {title:'메뉴2', route:'menu2'}];
     const login = sessionStorage.getItem('login');
     const name = '승재';    // 이후에 session에서 가져올 것
 
