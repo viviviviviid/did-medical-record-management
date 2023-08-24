@@ -7,17 +7,30 @@ export default function SignUpButton(props) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        console.log("SIGN_UP : ", props.name, props.email, props.birthday, props.phoneNumber, props.isDoctor);
-        
-        // axios.post('http://localhost:5001/user/signup', {
-        //     name: props.name,
-        //     email: props.email,
-        //     birthday: props.birthday,
-        //     phoneNumber: props.phoneNumber,
-        //     isDoctor: props.isDoctor,
-        // }) 
 
-        navigate('/');
+        if(!props.name)
+          props.setNull('name');
+        else if(props.email === '@')
+          props.setNull('email');
+        else if(!props.birthday)
+          props.setNull('birthday');
+        else if(!props.phoneNumber)
+          props.setNull('phoneNumber');
+        else if(!props.isDoctor)
+          props.setNull('isDoctor');
+
+        else {
+            // axios.post('http://localhost:5001/user/signup', {
+          //     name: props.name,
+          //     email: props.email,
+          //     birthday: props.birthday,
+          //     phoneNumber: props.phoneNumber,
+          //     isDoctor: props.isDoctor,
+          // }) 
+
+          navigate('/');
+
+        }
     }
 
   return (

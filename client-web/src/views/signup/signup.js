@@ -16,11 +16,16 @@ export default function Main() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [isDoctor, setIsDoctor] = useState(false);
     const [write, setWrite] = useState(false);
+    const [Null, setNull] = useState("");
 
     useEffect(() => {
         if(domain === 'write')
             setWrite(true);
-    })
+    }, [domain]);
+
+    useEffect(() => {
+        console.log("NULL : ", Null);
+    }, [Null]);
 
     return(
         <div className='root'>
@@ -31,12 +36,14 @@ export default function Main() {
                 </div>
                 <div className='signup-input-container'>
                     <InputField 
-                        type='text' 
+                        id={Null === 'name' ? 'error' : ''}
+                        type='text'
                         label='이름' 
                         width='20vw' 
                         setData={setName} />
                     <div className='row-center'>
                         <InputField 
+                            id={Null === 'email' ? 'error' : ''}
                             type='text' 
                             label='이메일' 
                             width='9vw' 
@@ -56,12 +63,14 @@ export default function Main() {
                         
                     </div>
                     <InputField 
+                        id={Null === 'birthday' ? 'error' : ''}
                         type='text' 
                         label='출생일' 
                         width='20vw' 
                         setData={setBirthday} />
                     <p>YY/MM/DD 형식으로 입력해주세요</p>
                     <InputField 
+                        id={Null === 'phoneNumber' ? 'error' : ''}
                         type='text' 
                         label='전화번호' 
                         width='20vw' 
@@ -79,6 +88,7 @@ export default function Main() {
                             birthday={birthday}
                             phoneNumber={phoneNumber}
                             isDoctor={isDoctor}
+                            setNull={setNull}
                             />
                     </div>
                     
