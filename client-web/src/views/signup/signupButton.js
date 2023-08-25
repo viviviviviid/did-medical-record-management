@@ -2,9 +2,16 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setIsLoading } from '../../redux/actions';
 
 export default function SignUpButton(props) {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    React.useEffect(() => {
+      dispatch(setIsLoading(true));
+    }, []);
 
     const handleClick = () => {
 
@@ -29,10 +36,13 @@ export default function SignUpButton(props) {
             }
             axios.post('http://localhost:5001/user/signup', userInfo)
               .then(res => {
-                 console.log(res); // 이게 도착을 할 때까지 페이지 안 벗어나게 하면서 로딩 창 팝업 띄워놔야함. // 블록체인 속도 때문에
+                 console.log(res); 
+
+                 dispatch(setIsLoading(false));
+                 navigate('/');
               })
 
-          navigate('/');
+          
 
         }
     }

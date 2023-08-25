@@ -9,3 +9,8 @@
     left: 1vw;
     z-index: 1;
 }
+
+.signup-loading {
+    width: 100vw;
+    height: 100vh;
+}

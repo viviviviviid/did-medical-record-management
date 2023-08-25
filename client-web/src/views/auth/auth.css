@@ -1,0 +1,9 @@
+.auth-loading {
+    width:100vw;
+    height: 100vh;
+}
+
+.auth-loaded {
+    width: 100vw;
+    height: 100vh;
+}

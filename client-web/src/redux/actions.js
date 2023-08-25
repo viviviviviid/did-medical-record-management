@@ -11,3 +11,10 @@ export const setNewUser = (item) => {
         payload: item,
     }
 }
+
+export const setIsLoading = (item) => {
+    return {
+        type: 'SET_IS_LOADING',
+        payload: item,
+    }
+}

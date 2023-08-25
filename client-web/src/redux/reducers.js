@@ -1,6 +1,7 @@
 const initialState = {
     login: false,
     newUser: false,
+    isLoading: false,
 
 }
 
@@ -17,6 +18,12 @@ const dataReducer = (state = initialState, action) => {
             return {
                 ...state,
                 newUser: action.payload,
+            }
+
+        case 'SET_IS_LOADING' :
+            return {
+                ...state,
+                isLoading: action.payload,
             }
         
         default :
