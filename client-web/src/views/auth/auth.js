@@ -6,7 +6,7 @@ import { setLogin } from '../../redux/actions.js';
 
 export default function Auth() {
     const navigate = useNavigate();
-    const key = '5e5e83f35a6ed8891b1e4e5f3d407bbf';
+    const key = process.env.REACT_APP_KAKAO_LOGIN;
     const uri = 'http://localhost:3000/login/auth';
     const code = new URL(document.location.toString()).searchParams.get("code");
     const dispatch = useDispatch();
