@@ -2,15 +2,29 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setLogin } from '../../redux/actions.js';
+import { setIsLoading } from '../../redux/actions.js';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
+import './auth.css';
 
 
 export default function Auth() {
     const navigate = useNavigate();
-    const key = '5e5e83f35a6ed8891b1e4e5f3d407bbf';
+    const key = process.env.REACT_APP_KAKAO_LOGIN;
     const uri = 'http://localhost:3000/login/auth';
     const code = new URL(document.location.toString()).searchParams.get("code");
     const dispatch = useDispatch();
+
+
+    const isLoading = useSelector((state) => state.isLoading);
+
+    useEffect(() => {
+        dispatch(setIsLoading(true));
+    }, []);
+
+    useEffect(() => {
+        console.log("isLoading : ", isLoading);       // 1번 로그
+    }, [isLoading]);
 
     useEffect(() => {
         console.log(code);
@@ -29,10 +43,13 @@ export default function Auth() {
                         navigate('/signup');
                     } else {              // 기존회원일때
                         console.log("DB 정보: ", res.data.dbData);
+
+                        dispatch(setIsLoading(false));      // loading 
                         navigate('/');
                     }               
                 })
                 .catch(console.log)
+
                 // 이거 원래 useState로 진행하려 했는데, DB에서 내용 받고 useState에 넣고 적용되는데 시간이 좀 걸리는거같아서
                 // chatGPT한테 물어보니까 useEffect 하나 더 써야한다더라고, 그래서 이렇게 .then 안에 넣어놧어
                 // 바꾸고싶으면 바꿔도 됨
@@ -44,7 +61,19 @@ export default function Auth() {
 
         fetchData();
 
+
     }, [code]);
 
-    return null;
+    return (
+        isLoading ? 
+            <div className='row-center auth-loaded'>
+            </div>
+            :
+            <div className='column-center auth-loading'>
+                    <p>Loading</p>
+                <Box sx={{ width: '60%' }}> 
+                    <LinearProgress />
+                </Box>
+            </div>
+    )
 }
