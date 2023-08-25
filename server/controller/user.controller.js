@@ -1,8 +1,9 @@
-const User = require("../model/user.model");
+const db = require("../model/index.js");
 const express = require("express");
 const axios = require("axios");
 const { use } = require("../routes/user.route");
 const app = express();
+const { medicalRecordRegister, createHash4DidUpdate, findAll_DID } = require("./medicalRecord.controller.js");
 
 /**
  * 로그인 시 유저가 회원가입을 했는지 DB 체크
@@ -10,76 +11,160 @@ const app = express();
  */
 const isUserRegistered = async (req, res) => {
   try {
-    const access_token = req.body.token;
+
+    const access_token = req.body.token.access_token;
+
     const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
       headers: {
         Authorization: `Bearer ${access_token}`,
       }
     });
-    return await User.userFind(userInfo.data.kakao_account)
-      ? (res.status(200).send("already exist in DB")) 
-      : (res.status(201).send("just signup in DB"))
+
+    return await userFind(userInfo.data.kakao_account).then(dbData => {
+      dbData
+      ? (res.status(200).json({
+        dbData: dbData, 
+        msg: "already exist in DB"
+      })) 
+      : (res.status(201).json({
+        dbData: null,
+        userInfo: userInfo.data.kakao_account,
+        msg: "not exist"
+      })) 
+    })
 
   } catch (error) {
+    console.log("isUserRegistered function error: ", error)
     return res.status(400).send(error);
   }
+}
+
+/**
+ * 유저가 회원가입을 진행했는지 DB 탐색
+ */
+const userFind = async (userInfo) => {
+  return await db.User.findOne({where: {email: `${userInfo.email}`}});
 }
 
 /**
  * 회원가입
  */
 const signUp = async (req, res) => {
-  // 회원가입이 완료되면 자동으로 로그인완료 화면으로 넘기면서, 가져온 데이터를 DB에 저장
-  // 카카오톡 api로 이름, 번호, 주소, 생년월일, 성별 가져오기
-  // 의료계종사자 유무 체크리스트
-  // 지갑주소 만들어주기
-  // PostgreSQL에다가 회원가입정보+지갑주소+니모닉을 저장.
-  // 회원가입 후 did 폴더내의 1056 등록 함수를 호출해서 방금 생성된 지갑주소를 레지스트리에 등록해야함
+  try {
+    let jwt, wallet, SUBJECT_DID;
+    const { name, email, birthday, phoneNumber, isDoctor } = req.body;
+    const hash = await createHash4DidUpdate(findAll_DID("")); // 회원가입 전이므로 비어있는체로 내용이 올 것 // 그거라도 hash화 해둬야 무결성 검증가능
+
+    await axios.post('http://localhost:5002/did/signup_did', {userInfo: req.body, hash: hash})
+      .then(res => {
+        ({ jwt, wallet, SUBJECT_DID } = res.data);
+        const userInfo = { name, email, birthday, phoneNumber, isDoctor, wallet, SUBJECT_DID };
+        userRegister(userInfo); // DB에 저장
+      })
+      .catch(err => console.log(err))
+
+      console.log(jwt);
+
+      res.status(200).json({jwt:jwt, did:SUBJECT_DID});
+  } catch (error) {
+    console.log("signUp function error: ", error);
+    return res.send(400).send(error);
+  }
 }
+
+/**
+ * 유저 정보 DB 등록
+ */
+const userRegister = async (userInfo) => {
+  try{
+    db.User.create({
+      name: `${userInfo.name}`,
+      email: `${userInfo.email}`,
+      birthday: `${userInfo.birthday}`,
+      phoneNumber:  `${userInfo.phoneNumber}`,
+      isDoctor: `${userInfo.isDoctor}`,
+      wallet: JSON.stringify(userInfo.wallet), // JSON 타입의 컬럼에 객체를 넣을때는, 문자열화 시켜주고 넣어야함
+      did: JSON.stringify(userInfo.SUBJECT_DID),
+    });
+  }catch(error){
+    console.log("userRegister function Error: ",error);
+  }
+}
+
+/**
+ * 의사가 요청한 DID 업데이트
+ */
+// const update = async (req, res) => {
+//   try{
+//     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
+//     // 즉 추가되는 내용말고는 과정 필요없음.
+
+//     const lastVcJwt = req.body.vcJwt;
+//     const did = jwt.decode(lastVcJwt).sub.did;
+
+//     // 새롭게 추가된 진료내용을 db에 저장 
+//     medicalRecordRegister(req.body.medicalRecord);
+
+//     // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
+//     const dbData = findAll_DID(did);
+
+//     // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
+//     const hash = createHash4DidUpdate(dbData);
+
+//     // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
+//     // 새로 만들어진 vcJwt를 프론트에 보내기 위해 받아두기. did 폴더에서 가져와야하므로 babel 과정 거쳐야함
+//     const updatedVcJwt = update_DID(lastVcJwt, hash);
+
+//     return res.status(200).send({dbData, updatedVcJwt});
+//   }catch(error){
+//     return res.status(400).send(error);
+//   }
+// }
+
+
+
+
+// ========================== 미완 ============================== //
 
 /**
  * VC 요청
  */
-const claim = async (req, res) => {
-    // did 폴더내의 vc 받아오는 함수 호출
-}
+// const claim = async (req, res) => {
+//     // did 폴더내의 vc 받아오는 함수 호출
+// }
 
 /**
  * 보유한 VC를 공유하기 위해 QR코드로 변환 후 화면에 송출
  */
-const share = async (req, res) => {
-    // VC가 유효기간이 지났는지 확인
-    // claim을 통해 vc를 받은사람에 한해서, 의사에게 의료정보 공유할 시, vc 내용을 qr코드로 변환
-    // 변환된 qr코드를 화면에 송출
-}
+// const share = async (req, res) => {
+//     // VC가 유효기간이 지났는지 확인
+//     // claim을 통해 vc를 받은사람에 한해서, 의사에게 의료정보 공유할 시, vc 내용을 qr코드로 변환
+//     // 변환된 qr코드를 화면에 송출
+// }
 
 /**
  * 의사가 요청한 DID 업데이트 승인 여부
  */
-const approve = async (req, res) => {
-    // 의사가 요청한 did 업데이트 승인 버튼
-}
+// const approve = async (req, res) => {
+//     // 의사가 요청한 did 업데이트 승인 버튼
+// }
 
 /**
  * 보유중인 VC를 이용하여 1056 레지스트리를 조회
  */
-const retrieve = async (req, res) => {
-    // vc를 보유중인 상태에서, 환자가 자신의 정보를 확인하기위해 did폴더내의 조회 함수 호출
-}
+// const retrieve = async (req, res) => {
+//     // vc를 보유중인 상태에서, 환자가 자신의 정보를 확인하기위해 did폴더내의 조회 함수 호출
+// }
 
 /**
  * retrieve 함수를 통해 조회한 의료기록을 프론트로 전달
  */
-const display = async (req, res) => {
-    // 조회된 내역 프론트로 보내기
-}
+// const display = async (req, res) => {
+//     // 조회된 내역 프론트로 보내기
+// }
+
 
 module.exports = {
-    isUserRegistered,
-    signUp,
-    claim,
-    share,
-    approve,
-    retrieve,
-    display,
+  isUserRegistered,
+  signUp
 };
