@@ -7,6 +7,9 @@ import './signup.css';
 import InputField from '../../modules/inputField';
 import EmailSelect from './emailSelect';
 import SignUpButton from './signupButton';
+import Box from '@mui/material/Box';
+import { useSelector } from 'react-redux';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export default function Main() {
     const [name, setName] = useState("");
@@ -17,6 +20,7 @@ export default function Main() {
     const [isDoctor, setIsDoctor] = useState(false);
     const [write, setWrite] = useState(false);
     const [Null, setNull] = useState("");
+    const isLoading = useSelector((state) => state.isLoading);
 
     useEffect(() => {
         if(domain === 'write')
@@ -28,7 +32,15 @@ export default function Main() {
     }, [Null]);
 
     return(
-        <div className='root'>
+        isLoading ?
+            <div className='column-center signup-loading'>
+                    <p>Loading</p>
+                <Box sx={{ width: '60%' }}> 
+                    <LinearProgress />
+                </Box>
+            </div>
+            :
+            <div className='root'>
             <Header />
             <div className='body column-center'>
                 <div>
@@ -97,5 +109,6 @@ export default function Main() {
             </div>
             <Footer />
         </div>
+        
     )
 }
