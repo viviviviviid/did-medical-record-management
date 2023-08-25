@@ -7,7 +7,7 @@ import { setLogin } from '../../redux/actions.js';
 
 export default function Auth() {
     const navigate = useNavigate();
-    const key = '5e5e83f35a6ed8891b1e4e5f3d407bbf';
+    const key = '7590c1c19d4fb81f54043b4b90a9aedd';
     const uri = 'http://localhost:3000/login/auth';
     const code = new URL(document.location.toString()).searchParams.get("code");
     const dispatch = useDispatch();
