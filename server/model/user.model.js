@@ -25,8 +25,11 @@ const User = sequelize.define(
       isDoctor: {
         type: DataTypes.BOOLEAN,
       },
-      address: {
-        type: DataTypes.STRING,
+      wallet: {
+        type: DataTypes.JSON,
+      },
+      did: {
+        type: DataTypes.JSON,
       },
       update_at: {
         type: DataTypes.DATE,
@@ -41,33 +44,8 @@ const User = sequelize.define(
 
 module.exports = { User }
 
-// const { Sequelize, DataTypes } = require("sequelize");
-// const { ethers } = require("ethers");
 
-// const userFind = async (userInfo) => {
-//   const data = await Member.findOne({where: {email: `${userInfo.email}`}});
-//   if(data === null){
-//     return !userRegister(userInfo);
-//   }else{
-//     console.log("already exist");
-//     return true;
-//   }
-// }
-
-// const userRegister = async (userInfo) => {
-//   const userWallet = ethers.Wallet.createRandom();
-//   Member.create({
-//     name: `${userInfo.profile.nickname}`,
-//     email: `${userInfo.email}`,
-//     birthday: `${userInfo.birthday}`,
-//     // phoneNumber:  `${userInfo.birthday}`,
-//     isDoctor: false,
-//     address: `${userWallet.address}`,
-//   });
-//   return true;
-// }
-
-// module.exports = { sq: sequelize, userFind };
+// module.exports = { sq: sequelize };
 
 // sequelize 없이 진행할 때
 // const { Client } = require("pg");

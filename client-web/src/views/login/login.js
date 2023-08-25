@@ -1,10 +1,8 @@
 import kakaoLogin from '../../assets/images/kakao-login.png';
 
-
-
 export default function Login() {
 
-    const Rest_api_key = process.env.REACT_APP_KAKAO_LOGIN  //REST API KEY
+    const Rest_api_key = "5e5e83f35a6ed8891b1e4e5f3d407bbf" //REST API KEY
     const redirect_uri = 'http://localhost:3000/login/auth' //Redirect URI
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`
     const handleLogin = ()=>{
