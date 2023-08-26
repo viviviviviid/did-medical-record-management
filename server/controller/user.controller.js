@@ -33,10 +33,11 @@ const isUserRegistered = async (req, res) => {
         msg: "not exist"
       })) 
     })
+    .catch(err => console.log(err))
 
   } catch (error) {
     console.log("isUserRegistered function error: ", error)
-    return res.status(400).send(error);
+    // return res.status(400).send(error);
   }
 }
 
@@ -103,14 +104,17 @@ const newRecord = async (req, res) => {
     const lastVcJwt = req.body.vcJwt;
     const did = jwt.decode(lastVcJwt).sub.did;
 
-    // // 새롭게 추가된 진료내용을 db에 저장 
-    // medicalRecordRegister(req.body.medicalRecord);
+    // 새롭게 추가된 진료내용을 db에 저장 
+    medicalRecordRegister(did, req.body.recordData);
 
-    // // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
-    // const dbData = findAll_DID(did);
+    // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
+    const dbData = await findAll_DID(did);
 
     // // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
-    // const hash = createHash4DidUpdate(dbData);
+    const hash = await createHash4DidUpdate(dbData);
+
+    console.log("db: ", dbData);
+    console.log("hash: ", hash)
 
     // // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
     // // 새로 만들어진 vcJwt를 프론트에 보내기 위해 받아두기. did 폴더에서 가져와야하므로 babel 과정 거쳐야함
