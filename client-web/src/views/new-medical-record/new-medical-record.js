@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import Header from '../../modules/header.js';
 import Footer from '../../modules/footer.js';
+import axios from "axios";
 import {useNavigate} from 'react-router-dom';
 
 export default function NewMedicalRecord() {
@@ -29,7 +30,7 @@ export default function NewMedicalRecord() {
     }, []);
 
     const handleClick = () => {
-        const data = {
+        const recordData = {
             name: name,
             hospital: hospital,
             doctor: doctor,
@@ -49,13 +50,27 @@ export default function NewMedicalRecord() {
             comments: comments,
         }
 
-        //axios
+        // jwt와 did는 유저 회원가입시 또는 진료내용이 업데이트 될 떄마다, 서버에서 프론트로 던져줄예정
+        // 이제 그걸 모바일에서 홀드하고 있어야함 // 그래서 현재는 임시로 지정해줄것임
 
-        console.log("INPUT_DATA : ", data);
+        const vcJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6IuyEnOuvvOyEnSIsImVtYWlsIjoic2VvLW1pbnNlb2tAZGF1bS5uZXQiLCJiaXJ0aGRheSI6Ijk3MDcyMyIsInBob25lTnVtYmVyIjoiMDEwLTI3MDEtMTYyNyIsImlzRG9jdG9yIjp0cnVlLCJhZGRyZXNzIjoiMHg2ZjY0MkIyODU3MTkzOTkyZTgwMkEyZEE2ZkEwZGJkMDJmQ2Y0OTYwIn0sIm1lZGljYWxSZWNvcmRzIjoiNDQxMzZmYTM1NWIzNjc4YTExNDZhZDE2ZjdlODY0OWU5NGZiNGZjMjFmZTc3ZTgzMTBjMDYwZjYxY2FhZmY4YSIsImRvY3RvckxpY2Vuc2UiOm51bGx9fSwic3ViIjp7ImRpZCI6ImRpZDpldGhyOmdvZXJsaToweDZmNjQyQjI4NTcxOTM5OTJlODAyQTJkQTZmQTBkYmQwMmZDZjQ5NjAiLCJhZGRyZXNzIjoiMHg2ZjY0MkIyODU3MTkzOTkyZTgwMkEyZEE2ZkEwZGJkMDJmQ2Y0OTYwIn0sImlzcyI6ImRpZDpldGhyOmdvZXJsaToweDcxMjkwODdmODE1YkZjN0YzMDI3NTAxMmQ0NjM0QjQxNDBBQzUzOUMifQ.u_QfRD8YRNXD9EfKXSWqqL9KpSWs5FXj6tEiBJJf7ixpzjVSc4Y2cnZcRUi7nmFZfuNZ9kmAWWNWhq6UdI-eoQA"; 
+        const SUBJECT_DID = {
+            did: 'did:ethr:goerli:0x6f642B2857193992e802A2dA6fA0dbd02fCf4960',
+            address: '0x6f642B2857193992e802A2dA6fA0dbd02fCf4960',
+            signer: undefined,
+            alg: undefined,
+            owner: undefined,
+            controller: undefined
+          };
+
+        axios.post('http://localhost:5001/user/newrecord', {recordData, vcJwt, SUBJECT_DID})
+            .then(res => {
+                console.log(res); 
+                // 이게 도착할때까지 "블록체인과 연결중입니다" 로딩창 팝업 띄워놓기 // 블록체인 속도 때문
+            })
 
         navigate(`/patient-medical-records?patient=${name}`)
     }
-
 
     return(
         <div className='root'>

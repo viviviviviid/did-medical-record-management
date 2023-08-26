@@ -1,6 +1,7 @@
 const db = require("../model/index.js");
 const express = require("express");
 const axios = require("axios");
+const jwt = require("jsonwebtoken");
 const { use } = require("../routes/user.route");
 const app = express();
 const { medicalRecordRegister, createHash4DidUpdate, findAll_DID } = require("./medicalRecord.controller.js");
@@ -92,34 +93,34 @@ const userRegister = async (userInfo) => {
 }
 
 /**
- * 의사가 요청한 DID 업데이트
+ * 의사가 요청한 진료결과 DID 업데이트 및 DB 등록
  */
-// const update = async (req, res) => {
-//   try{
-//     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
-//     // 즉 추가되는 내용말고는 과정 필요없음.
+const newRecord = async (req, res) => {
+  try{
+    // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
+    // 즉 추가되는 내용말고는 과정 필요없음.
+    
+    const lastVcJwt = req.body.vcJwt;
+    const did = jwt.decode(lastVcJwt).sub.did;
 
-//     const lastVcJwt = req.body.vcJwt;
-//     const did = jwt.decode(lastVcJwt).sub.did;
+    // // 새롭게 추가된 진료내용을 db에 저장 
+    // medicalRecordRegister(req.body.medicalRecord);
 
-//     // 새롭게 추가된 진료내용을 db에 저장 
-//     medicalRecordRegister(req.body.medicalRecord);
+    // // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
+    // const dbData = findAll_DID(did);
 
-//     // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
-//     const dbData = findAll_DID(did);
+    // // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
+    // const hash = createHash4DidUpdate(dbData);
 
-//     // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
-//     const hash = createHash4DidUpdate(dbData);
+    // // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
+    // // 새로 만들어진 vcJwt를 프론트에 보내기 위해 받아두기. did 폴더에서 가져와야하므로 babel 과정 거쳐야함
+    // const updatedVcJwt = update_DID(lastVcJwt, hash);
 
-//     // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
-//     // 새로 만들어진 vcJwt를 프론트에 보내기 위해 받아두기. did 폴더에서 가져와야하므로 babel 과정 거쳐야함
-//     const updatedVcJwt = update_DID(lastVcJwt, hash);
-
-//     return res.status(200).send({dbData, updatedVcJwt});
-//   }catch(error){
-//     return res.status(400).send(error);
-//   }
-// }
+    // return res.status(200).send({dbData, updatedVcJwt});
+  }catch(error){
+    return res.status(400).send(error);
+  }
+}
 
 
 
@@ -166,5 +167,6 @@ const userRegister = async (userInfo) => {
 
 module.exports = {
   isUserRegistered,
-  signUp
+  signUp,
+  newRecord
 };
