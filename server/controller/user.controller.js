@@ -57,7 +57,7 @@ const signUp = async (req, res) => {
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
     const hash = await createHash4DidUpdate(findAll_DID("")); // 회원가입 전이므로 비어있는체로 내용이 올 것 // 그거라도 hash화 해둬야 무결성 검증가능
 
-    await axios.post('http://localhost:5002/did/signup_did', {userInfo: req.body, hash: hash})
+    await axios.post('http://localhost:5002/did/register', {userInfo: req.body, hash: hash})
       .then(res => {
         ({ jwt, wallet, SUBJECT_DID } = res.data);
         const userInfo = { name, email, birthday, phoneNumber, isDoctor, wallet, SUBJECT_DID };
@@ -99,10 +99,9 @@ const userRegister = async (userInfo) => {
 const newRecord = async (req, res) => {
   try{
     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
-    // 즉 추가되는 내용말고는 과정 필요없음.
-    
-    const lastVcJwt = req.body.vcJwt;
-    const did = jwt.decode(lastVcJwt).sub.did;
+    const decodedPayload = await jwt.decode(req.body.vcJwt);
+    const did = decodedPayload.sub.did;
+    const userInfo = decodedPayload.vc.credentialSubject.userInfo;
 
     // 새롭게 추가된 진료내용을 db에 저장 
     medicalRecordRegister(did, req.body.recordData);
@@ -113,21 +112,18 @@ const newRecord = async (req, res) => {
     // // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
     const hash = await createHash4DidUpdate(dbData);
 
-    console.log("db: ", dbData);
-    console.log("hash: ", hash)
-
     // // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
-    // // 새로 만들어진 vcJwt를 프론트에 보내기 위해 받아두기. did 폴더에서 가져와야하므로 babel 과정 거쳐야함
-    // const updatedVcJwt = update_DID(lastVcJwt, hash);
-
-    // return res.status(200).send({dbData, updatedVcJwt});
+    await axios.post('http://localhost:5002/did/new-record', {hash: hash, decodedPayload:decodedPayload})
+      .then(result => {
+        const updatedVcJwt = result.data
+        return res.status(200).send({dbData, updatedVcJwt});
+      })
+      .catch(err => console.log("here", err))
   }catch(error){
+    console.log(error)
     return res.status(400).send(error);
   }
 }
-
-
-
 
 // ========================== 미완 ============================== //
 
