@@ -1,14 +1,33 @@
 const db = require("../model/index.js");
 const crypto = require('crypto');
 
-const medicalRecordRegister = async (medicalRecord) => {
+const medicalRecordRegister = async (did, medicalRecord) => {
+
+  console.log(medicalRecord)
+
   const { 
-    did, hospital, doctor, dateOfVisit, historyOfPresentIllness, pastMedicalHistory, medications, allergies, physicalExamination, laboratoryResults, radiologicalFindings, diagnosis, treatment, medicationPrescribed, followUp, additionalComments
+    name,
+      hospital,
+      doctor,
+      dateOfVisit,
+      historyOfPresentIllness,
+      pastMedicalHistory,
+      medications,
+      allergies,
+      physicalExamination,
+      laboratoryResults,
+      radiologicalFindings,
+      diagnosis,
+      treatment,
+      medicationPrescribed,
+      followUp,
+      additionalComments
   } = medicalRecord;
 
   try {
     await db.MedicalRecords.create({
       did,
+      name,
       hospital,
       doctor,
       dateOfVisit,

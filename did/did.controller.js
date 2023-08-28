@@ -64,13 +64,13 @@ const signUp_DID = async (req, res) => {
   }
 }
 
-const update_DID = async (lastVcJwt, hash) => {
-  
-  // VC JWT 검증없이 내부 payload 가져오기, 이미 진료전에 받은 vcJwt를 검증했기 때문
-  const decodedPayload = jwt.decode(lastVcJwt);
+const addRecord_DID = async (req, res) => {
+  const SUBJECT_DID = req.body.decodedPayload.sub;
+  const recordHash = req.body.hash;
+  const userInfo = req.body.decodedPayload.vc.credentialSubject.userInfo;
 
   const vcPayload = {
-    sub: decodedPayload.sub,
+    sub: SUBJECT_DID,
     vc: {
       '@context': ['https://www.w3.org/2018/credentials/v1'],
       type: ['VerifiableCredential'],
@@ -79,16 +79,16 @@ const update_DID = async (lastVcJwt, hash) => {
           name: 'Medical Record Management Association',
           address: process.env.ISSUER_ADDRESS,
         },
-        userInfo: decodedPayload.vc.credentialSubject.userInfo,
-        medicalRecords: hash,
+        userInfo: userInfo,
+        medicalRecords: recordHash,
         doctorLicense: null,
       }
     }
   }
 
-  return createVcJwtWithPayload(vcPayload);
+  const vcJwt = await createVcJwtWithPayload(vcPayload);
+  res.status(200).send(vcJwt)
 }
-
 
 /**
  * 만들어진 vcPayload를 받아 vcJwt로 만들어 서명
@@ -116,4 +116,4 @@ const createVcJwtWithPayload = async (vcPayload) => {
   return vcJwt;
 }
 
-export default { signUp_DID, update_DID };
+export default { signUp_DID, addRecord_DID };
