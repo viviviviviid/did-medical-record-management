@@ -26,10 +26,11 @@ const User = sequelize.define(
         type: DataTypes.BOOLEAN,
       },
       wallet: {
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
       },
       did: {
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
+        unique: true,
       },
       update_at: {
         type: DataTypes.DATE,

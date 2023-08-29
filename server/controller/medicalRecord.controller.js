@@ -1,61 +1,35 @@
 const db = require("../model/index.js");
 const crypto = require('crypto');
 
-const medicalRecordRegister = async (did, medicalRecord) => {
+/**
+ * 진료기록 DB에 등록
+ */
+const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
 
   console.log(medicalRecord)
 
   const { 
-    name,
-      hospital,
-      doctor,
-      dateOfVisit,
-      historyOfPresentIllness,
-      pastMedicalHistory,
-      medications,
-      allergies,
-      physicalExamination,
-      laboratoryResults,
-      radiologicalFindings,
-      diagnosis,
-      treatment,
-      medicationPrescribed,
-      followUp,
-      additionalComments
+    name, hospital, doctor, dateOfVisit, historyOfPresentIllness, 
+    pastMedicalHistory, medications, allergies, physicalExamination, 
+    laboratoryResults, radiologicalFindings, diagnosis, treatment, 
+    medicationPrescribed, followUp, additionalComments
   } = medicalRecord;
 
   try {
     await db.MedicalRecords.create({
-      did,
-      name,
-      hospital,
-      doctor,
-      dateOfVisit,
-      historyOfPresentIllness,
-      pastMedicalHistory,
-      medications,
-      allergies,
-      physicalExamination,
-      laboratoryResults,
-      radiologicalFindings,
-      diagnosis,
-      treatment,
-      medicationPrescribed,
-      followUp,
-      additionalComments
+      // DID
+      doctorDID, patientDID,
+      // medicalRecord
+      name, hospital, doctor, dateOfVisit, historyOfPresentIllness, 
+      pastMedicalHistory, medications, allergies, physicalExamination, 
+      laboratoryResults, radiologicalFindings, diagnosis, treatment, 
+      medicationPrescribed, followUp, additionalComments
     });
     return true;
   } catch (error) {
     console.error("Error while saving medical record:", error);
     return false;
   }
-}
-
-const findAll_DID = async (target) => {
-  return await db.MedicalRecords.findAll({
-    where: {did: `${target}`},
-    order: [['dateOfVisit', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
-  });
 }
 
 /**
@@ -68,34 +42,53 @@ const createHash4DidUpdate = async (dbData) => {
   return hash.digest('hex');
 }
 
-module.exports = { medicalRecordRegister, createHash4DidUpdate, findAll_DID }
+const getAllMyRecords_DB = async (patientDID) => {
+  return await db.MedicalRecords.findAll({
+    where: {patientDID: `${patientDID}`},
+    order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+  });
+}
 
+const getAllMyPatientsRecords_DB = async (doctorDID) => {
+  return await db.MedicalRecords.findAll({
+    where: {doctorDID: `${doctorDID}`},
+    order: [['dateOfVisit', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+  });
+}
 
-// 테스트용
+const getAllMyPatientList = async (req, res) => {
+  try{
+    // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
+    const decodedPayload = await jwt.decode(req.body.vcJwt);
+    const did = decodedPayload.sub.did;
+    // 환자들 유저 정보 리스트만 필요
+    // 유저정보에서 wallet, did는 필요없음 -> 제거하고 보내야 함
+    res.status(200).send(dbData);
+  }catch(error){
+    console.log("getAllPatientRecords function error: ", error);
+    res.status(400).send(error);
+  }
+}
 
-// const medicalRecordRegister = async (medicalRecord) => {
-//   try {
-//     await db.MedicalRecords.create({
-//       did: "FILL_ME_IN",
-//       hospital: "FILL_ME_IN",
-//       doctor: "FILL_ME_IN",
-//       dateOfVisit: "FILL_ME_IN",
-//       historyOfPresentIllness: "FILL_ME_IN",
-//       pastMedicalHistory: "FILL_ME_IN",
-//       medications: "FILL_ME_IN",
-//       allergies: "FILL_ME_IN",
-//       physicalExamination: "FILL_ME_IN",
-//       laboratoryResults: "FILL_ME_IN",
-//       radiologicalFindings: "FILL_ME_IN",
-//       diagnosis: "FILL_ME_IN",
-//       treatment: "FILL_ME_IN",
-//       medicationPrescribed: "FILL_ME_IN",
-//       followUp: "FILL_ME_IN",
-//       additionalComments: "FILL_ME_IN"
-//     });
-//     return true;
-//   } catch (error) {
-//     console.error("Error while saving medical record:", error);
-//     return false;
-//   }
-// }
+const getAllMyPatientsRecords = async (req, res) => {
+  try{
+    // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
+    const decodedPayload = await jwt.decode(req.body.vcJwt);
+    const doctorDID = decodedPayload.sub.did;
+    const dbData = getAllMyPatientsRecords_DB(doctorDID);
+    res.status(200).send(dbData);
+  }catch(error){
+    console.log("getAllPatientRecords function error: ", error);
+    res.status(400).send(error);
+  }
+}
+
+module.exports = { 
+  medicalRecordRegister, 
+  createHash4DidUpdate, 
+  getAllMyPatientList, 
+  getAllMyPatientsRecords,
+  // DB Modules 
+  getAllMyRecords_DB, 
+  getAllMyPatientsRecords_DB
+}

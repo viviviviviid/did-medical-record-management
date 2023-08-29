@@ -62,7 +62,7 @@ export default function NewMedicalRecord() {
             controller: undefined
           };
 
-        axios.post('http://localhost:5001/user/newrecord', {recordData, vcJwt, SUBJECT_DID})
+        axios.post('http://localhost:5001/user/new-record', {recordData, vcJwt, SUBJECT_DID})
             .then(res => {
                 console.log(res); 
                 // 이게 도착할때까지 "블록체인과 연결중입니다" 로딩창 팝업 띄워놓기 // 블록체인 속도 때문

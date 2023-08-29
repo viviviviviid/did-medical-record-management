@@ -3,7 +3,6 @@ dotenv.config({path: "./.env"});
 
 import { EthrDID, DelegateTypes } from 'ethr-did';
 import { verifyCredential, createVerifiableCredentialJwt} from 'did-jwt-vc';
-import jwt from "jsonwebtoken";
 import ethers from "ethers";
 import did from "./did.instance.js";
 
@@ -13,7 +12,6 @@ const rpcUrl = process.env.RPC_URL;
 const signUp_DID = async (req, res) => {
 
   try{
-    console.log("userInfo: ", req.body);
     const data = req.body.userInfo;
 
     const wallet = ethers.Wallet.createRandom()
@@ -53,9 +51,6 @@ const signUp_DID = async (req, res) => {
     }
     
     const vcJwt = await createVcJwtWithPayload(vcPayload);
-
-    console.log(vcJwt);
-    console.log(SUBJECT_DID)
   
     res.status(200).json({jwt: vcJwt, wallet: walletInfo, SUBJECT_DID: SUBJECT_DID});
   }catch(error){
@@ -116,4 +111,21 @@ const createVcJwtWithPayload = async (vcPayload) => {
   return vcJwt;
 }
 
-export default { signUp_DID, addRecord_DID };
+/**
+ * vcJwt 검증
+ * @returns 검증 유/무 반환
+ */
+const verifyVC_DID = async (req, res) => {
+  try{
+    const vcJwt = req.body.vcJwt;
+    const verifiedVC = await verifyCredential(vcJwt, did.resolver)
+    return res.status(200).send(verifiedVC);
+  }catch(error){
+    console.log(error);
+    return res.status(400).send(error);
+  }
+  
+}
+
+
+export default { signUp_DID, addRecord_DID, verifyVC_DID };

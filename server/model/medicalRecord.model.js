@@ -10,8 +10,20 @@ const MedicalRecords = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    did: {
-      type: DataTypes.STRING, // 유저 did
+    // DID
+    doctorDID: {
+      type: DataTypes.STRING, // 의사 DID
+      references: {
+        model: 'doctors', 
+        key: 'did',
+      },
+    },
+    patientDID: {
+      type: DataTypes.STRING, // 환자 DID
+      references: {
+        model: 'users', 
+        key: 'did',
+      },
     },
     // Basic Information
     hospital: { 
@@ -66,6 +78,11 @@ const MedicalRecords = sequelize.define(
     additionalComments: {
       type: DataTypes.STRING, // 의사나 기타 의료 직원의 추가적인 코멘트
     },
+    update_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.literal('now()'),
+    }
   },
   {
     timestamps: false,
