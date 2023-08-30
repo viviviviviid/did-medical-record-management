@@ -15,6 +15,12 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
     medicationPrescribed, followUp, additionalComments
   } = medicalRecord;
 
+  doctorDID = JSON.stringify(doctorDID)
+  patientDID = JSON.stringify(patientDID)
+
+  console.log("doctorDID: ", doctorDID)
+  console.log("patientDID: ", patientDID)
+
   try {
     await db.MedicalRecords.create({
       // DID
@@ -43,15 +49,18 @@ const createHash4DidUpdate = async (dbData) => {
 }
 
 const getAllMyRecords_DB = async (patientDID) => {
+  patientDID = JSON.stringify(patientDID)
+  console.log(patientDID)
   return await db.MedicalRecords.findAll({
-    where: {patientDID: `${patientDID}`},
+    where: {patientDID: patientDID},
     order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
   });
 }
 
 const getAllMyPatientsRecords_DB = async (doctorDID) => {
+  doctorDID = JSON.stringify(doctorDID)
   return await db.MedicalRecords.findAll({
-    where: {doctorDID: `${doctorDID}`},
+    where: {doctorDID: doctorDID},
     order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
   });
 }
