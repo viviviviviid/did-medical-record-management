@@ -61,8 +61,7 @@ export default function Auth() {
 
         fetchData();
 
-
-    }, [code]);
+    }, []);
 
     return (
         isLoading ? 
