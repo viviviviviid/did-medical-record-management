@@ -9,7 +9,7 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
   console.log(medicalRecord)
 
   const { 
-    name, hospital, doctor, dateOfVisit, historyOfPresentIllness, 
+    name, hospital, doctorName, dateOfVisit, historyOfPresentIllness, 
     pastMedicalHistory, medications, allergies, physicalExamination, 
     laboratoryResults, radiologicalFindings, diagnosis, treatment, 
     medicationPrescribed, followUp, additionalComments
@@ -20,7 +20,7 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
       // DID
       doctorDID, patientDID,
       // medicalRecord
-      name, hospital, doctor, dateOfVisit, historyOfPresentIllness, 
+      name, hospital, doctorName, dateOfVisit, historyOfPresentIllness, 
       pastMedicalHistory, medications, allergies, physicalExamination, 
       laboratoryResults, radiologicalFindings, diagnosis, treatment, 
       medicationPrescribed, followUp, additionalComments
@@ -45,14 +45,14 @@ const createHash4DidUpdate = async (dbData) => {
 const getAllMyRecords_DB = async (patientDID) => {
   return await db.MedicalRecords.findAll({
     where: {patientDID: `${patientDID}`},
-    order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+    order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
   });
 }
 
 const getAllMyPatientsRecords_DB = async (doctorDID) => {
   return await db.MedicalRecords.findAll({
     where: {doctorDID: `${doctorDID}`},
-    order: [['dateOfVisit', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+    order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
   });
 }
 
