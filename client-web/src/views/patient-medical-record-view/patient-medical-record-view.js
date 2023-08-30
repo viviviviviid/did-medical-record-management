@@ -34,12 +34,6 @@ export default function PatientMedicalRecordView() {
         <div className='root'>
             <Header />
             <div className='body column-center'>
-                <div className='toolbar'>   
-                    <Button variant="contained" 
-                            sx={{backgroundColor:'lightgray', color:'black'}}
-                            onClick={() => {navigate(`/patient-medical-record-update?patient=${name}`)}}>수정</Button>
-                    <Button variant="contained" sx={{marginLeft:'1vw', backgroundColor:'lightgray', color:'black'}}>삭제</Button>
-                </div>
 
                 <p style={{fontSize:'30px'}}>진료 기록</p>
                     <div className='input-container'>
