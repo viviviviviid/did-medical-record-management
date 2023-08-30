@@ -15,7 +15,6 @@ export default function Auth() {
     const code = new URL(document.location.toString()).searchParams.get("code");
     const dispatch = useDispatch();
 
-
     const isLoading = useSelector((state) => state.isLoading);
 
     useEffect(() => {
@@ -27,7 +26,7 @@ export default function Auth() {
     }, [isLoading]);
 
     useEffect(() => {
-        console.log(code);
+        console.log("code: ", code);
 
         const fetchData = async() => {
             const tokenRes = await axios.post(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${key}&redirect_ur=${uri}&code=${code}`);
@@ -43,12 +42,11 @@ export default function Auth() {
                         navigate('/signup');
                     } else {              // 기존회원일때
                         console.log("DB 정보: ", res.data.dbData);
-
                         dispatch(setIsLoading(false));      // loading 
                         navigate('/');
-                    }               
+                    }        
                 })
-                .catch(console.log)
+                .catch(err => console.log(err))
 
                 // 이거 원래 useState로 진행하려 했는데, DB에서 내용 받고 useState에 넣고 적용되는데 시간이 좀 걸리는거같아서
                 // chatGPT한테 물어보니까 useEffect 하나 더 써야한다더라고, 그래서 이렇게 .then 안에 넣어놧어
