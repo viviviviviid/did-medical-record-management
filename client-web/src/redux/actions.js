@@ -18,3 +18,10 @@ export const setIsLoading = (item) => {
         payload: item,
     }
 }
+
+export const setEmail = (item) => {
+    return {
+        type: 'SET_EMAIL',
+        payload: item,
+    }
+}

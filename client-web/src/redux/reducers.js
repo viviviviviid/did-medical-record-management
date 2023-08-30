@@ -2,6 +2,7 @@ const initialState = {
     login: false,
     newUser: false,
     isLoading: false,
+    email: "",
 
 }
 
@@ -24,6 +25,12 @@ const dataReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: action.payload,
+            }
+
+        case 'SET_EMAIL' : 
+            return {
+                ...state,
+                email: action.payload,
             }
         
         default :

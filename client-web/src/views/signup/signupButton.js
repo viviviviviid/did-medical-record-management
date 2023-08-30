@@ -3,18 +3,11 @@ import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setIsLoading } from '../../redux/actions';
 
 export default function SignUpButton(props) {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    React.useEffect(() => {
-      dispatch(setIsLoading(true));
-    }, []);
 
     const handleClick = () => {
-
         if(!props.name)
           props.setNull('name');
         else if(props.email === '@')
@@ -25,9 +18,9 @@ export default function SignUpButton(props) {
           props.setNull('phoneNumber');
         else if(!props.isDoctor)
           props.setNull('isDoctor');
-
         else {
-            const userInfo = {
+          props.setIsLoading(true);
+          const userInfo = {
               name: props.name,
               email: props.email,
               birthday: props.birthday,
@@ -36,9 +29,12 @@ export default function SignUpButton(props) {
             }
             axios.post('http://localhost:5001/user/signup', userInfo)
               .then(res => {
-                 console.log(res); 
-
-                 dispatch(setIsLoading(false));
+                 console.log(res);
+                //  localStorage.setItem("did_address", res.data.did.address);
+                //  localStorage.setItem("did", res.data.did.did);
+                 localStorage.setItem("jwt", res.data.jwt);   // jwt 로컬스토리지에 저장
+                 sessionStorage.setItem("login", true);
+                 props.setIsLoading(false);
                  navigate('/');
               })
 

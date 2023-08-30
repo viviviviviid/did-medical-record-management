@@ -6,6 +6,7 @@ import { setIsLoading } from '../../redux/actions.js';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
 import './auth.css';
+import { setEmail } from '../../redux/actions.js';
 
 
 export default function Auth() {
@@ -15,38 +16,37 @@ export default function Auth() {
     const code = new URL(document.location.toString()).searchParams.get("code");
     const dispatch = useDispatch();
 
-    const isLoading = useSelector((state) => state.isLoading);
-
-    useEffect(() => {
-        dispatch(setIsLoading(true));
-    }, []);
-
-    useEffect(() => {
-        console.log("isLoading : ", isLoading);       // 1번 로그
-    }, [isLoading]);
-
     useEffect(() => {
         console.log("code: ", code);
 
         const fetchData = async() => {
             const tokenRes = await axios.post(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${key}&redirect_ur=${uri}&code=${code}`);
 
-            const tokenObject = {"access_token" : tokenRes.data.access_token, "refresh_token" : tokenRes.data.refresh_token};
+            const tokenObject = {
+                    "access_token" : tokenRes.data.access_token, 
+                    "refresh_token" : tokenRes.data.refresh_token};
             
             console.log(tokenObject);
 
-            await axios.post('http://localhost:5001/user/login', {token: tokenObject})
+            await axios
+                .post('http://localhost:5001/user/login',   // token 주고 jwt 받는 부분
+                        {token: tokenObject})
                 .then(res => {
                     if(!res.data.dbData){ // 신규가입일때
                         console.log("카카오 계정 정보: ", res.data.userInfo);
+                        dispatch(setEmail(res.data.userInfo.email));
+                        sessionStorage.setItem("name", res.data.userInfo.profile.nickname);
                         navigate('/signup');
+                        
                     } else {              // 기존회원일때
                         console.log("DB 정보: ", res.data.dbData);
-                        dispatch(setIsLoading(false));      // loading 
+                        dispatch(setEmail(res.data.dbData.email));
+                        sessionStorage.setItem("login", true);
+                        sessionStorage.setItem("name", res.data.dbData.name);
                         navigate('/');
                     }        
                 })
-                .catch(err => console.log(err))
+                .catch(err => console.log("ERROR: ", err))
 
                 // 이거 원래 useState로 진행하려 했는데, DB에서 내용 받고 useState에 넣고 적용되는데 시간이 좀 걸리는거같아서
                 // chatGPT한테 물어보니까 useEffect 하나 더 써야한다더라고, 그래서 이렇게 .then 안에 넣어놧어
@@ -62,10 +62,6 @@ export default function Auth() {
     }, []);
 
     return (
-        isLoading ? 
-            <div className='row-center auth-loaded'>
-            </div>
-            :
             <div className='column-center auth-loading'>
                     <p>Loading</p>
                 <Box sx={{ width: '60%' }}> 

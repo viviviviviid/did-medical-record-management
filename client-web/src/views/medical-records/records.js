@@ -1,9 +1,23 @@
 import React, { useState, useEffect} from 'react';
 import Header from '../../modules/header.js';
 import Footer from '../../modules/footer.js';
+import axios from 'axios';
 
 export default function Records() {
     const [activeIndex, setActiveIndex] = useState(null);
+
+    async function getDb() {
+        console.log(localStorage.getItem("jwt"));
+        
+        const records = await axios.post("http://localhost:5001/user/get-my-record", 
+            { vcJwt: localStorage.getItem("jwt") }
+        )
+        console.log("records : ", records);
+    }
+
+    useEffect(() => {
+        getDb();
+    }, [])
 
     const list = [
         {index:0, date:'2023/08/10', hpt:'국군고양병원', doctor:'홍승재', notes:'척추 제거'}, 
