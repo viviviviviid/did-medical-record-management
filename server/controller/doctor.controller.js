@@ -11,13 +11,38 @@ const testInputDoctor = () => {
     "did":"did:ethr:goerli:0xEC6138620175229050554653Bf36a1f49e767e8A",
     "address":"0xEC6138620175229050554653Bf36a1f49e767e8A"
   });
-  
-  console.log(did)
-  
   db.Doctor.create({
     name,
     did,
   })
 }
 
-testInputDoctor();
+const testInputUser = () => {
+  const name = "홍박사"
+  const did = JSON.stringify({
+    "did":"did:ethr:goerli:0xEC6138620175229050554653Bf36a1f49e767e8A",
+    "address":"0xEC6138620175229050554653Bf36a1f49e767e8A"
+  });
+  const email = "honghong@gmail.com"
+  const birthday = "851225"
+  const isDoctor = true
+  const wallet = ""
+
+  db.User.create({
+    name,
+    did,
+    email,
+    birthday,
+    isDoctor,
+    wallet
+  })
+}
+
+const testStart = () => {
+  testInputUser();
+  testInputDoctor();
+}
+
+testStart()
+
+
