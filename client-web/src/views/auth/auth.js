@@ -48,7 +48,7 @@ export default function Auth() {
                         sessionStorage.setItem("login", true);
                         sessionStorage.setItem("name", res.data.dbData.name);
                         navigate('/');
-                    }        
+                    }
                 })
                 .catch(err => console.log("ERROR: ", err))
 
