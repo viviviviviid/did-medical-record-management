@@ -3,6 +3,8 @@ import Header from '../../modules/header.js';
 import Footer from '../../modules/footer.js';
 import axios from "axios";
 import {useNavigate} from 'react-router-dom';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
 
 export default function NewMedicalRecord() {
     const [hospital, setHospital] = useState("");
@@ -21,6 +23,7 @@ export default function NewMedicalRecord() {
     const [followUp, setFollowUp] = useState("");
     const [additionalComments, setAdditionalComments] = useState("");
     const [name, setName] = useState("")
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,7 +49,7 @@ export default function NewMedicalRecord() {
             followUp: followUp,
             additionalComments: additionalComments,
         }
-
+        setIsLoading(true);
         console.log(recordData)
 
         // jwt와 did는 유저 회원가입시 또는 진료내용이 업데이트 될 떄마다, 서버에서 프론트로 던져줄예정
@@ -54,20 +57,32 @@ export default function NewMedicalRecord() {
 
         const vcJwt=localStorage.getItem("jwt")
 
+        // 의사 jwt -> local에서.
+        // 환자 jwt -> qr 코드에서.
+
         axios.post('http://localhost:5001/user/new-record', {recordData, vcJwt})
             .then(res => {
+                isLoading(false);
                 console.log("vcJwt: ", res.data.updatedVcJwt)
                 localStorage.setItem("jwt", res.data.updatedVcJwt);
+                navigate(`/patient-medical-records?patient=${name}`);
                 // 이게 도착할때까지 "블록체인과 연결중입니다" 로딩창 팝업 띄워놓기 // 블록체인 속도 때문
             })
-
-        navigate(`/patient-medical-records?patient=${name}`)
     }
 
     return (
         <div className='root'>
             <Header />
-            <div className='body column-center'>
+            {
+                isLoading ?
+                <div className='column-center auth-loading'>
+                    <p>진료기록 작성 중</p>
+                    <Box sx={{ width: '60%' }}> 
+                        <LinearProgress />
+                    </Box>
+                </div>
+                :
+                <div className='body column-center'>
                 <p style={{ fontSize: '30px' }}>진료기록 작성</p>
                 <div className='input-container'>
                     <p className='input-title' style={{ marginBottom: '3vh' }}>기본 정보</p>
@@ -206,6 +221,7 @@ export default function NewMedicalRecord() {
                     </div>
                 </div>
             </div>
+            }
             <Footer />
         </div>
     );

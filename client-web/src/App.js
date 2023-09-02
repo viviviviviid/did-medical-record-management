@@ -10,6 +10,7 @@ import PatientList from './views/patient-list/patient-list';
 import NewMedicalRecord from './views/new-medical-record/new-medical-record';
 import PatientMedicalRecordView from './views/patient-medical-record-view/patient-medical-record-view';
 import PatientMedicalRecordUpdate from './views/patient-medical-record-update/patient-medical-record-update';
+import DoctorAuth from './views/doctor-auth/doctor-auth';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/new-medical-record" element={<NewMedicalRecord />} />
         <Route path="/patient-medical-record-view" element={<PatientMedicalRecordView />} />
         <Route path="/patient-medical-record-update" element={<PatientMedicalRecordUpdate />} />
+        <Route path="/doctor-auth" element={<DoctorAuth />} />
       </Routes>
     </BrowserRouter>
   )
