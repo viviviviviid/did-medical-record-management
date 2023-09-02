@@ -7,10 +7,7 @@ const app = express();
 // test 용으로 사용 : 의사의 did가 들어가 있어야, constraint 조건에서 오류가 안남.
 const testInputDoctor = () => {
   const name = "홍박사"
-  const did = JSON.stringify({
-    "did":"did:ethr:goerli:0xEC6138620175229050554653Bf36a1f49e767e8A",
-    "address":"0xEC6138620175229050554653Bf36a1f49e767e8A"
-  });
+  const did = process.env.TEMP_DOCTOR_DID;
   db.Doctor.create({
     name,
     did,
@@ -19,10 +16,7 @@ const testInputDoctor = () => {
 
 const testInputUser = () => {
   const name = "홍박사"
-  const did = JSON.stringify({
-    "did":"did:ethr:goerli:0xEC6138620175229050554653Bf36a1f49e767e8A",
-    "address":"0xEC6138620175229050554653Bf36a1f49e767e8A"
-  });
+  const did = process.env.TEMP_DOCTOR_DID;
   const email = "honghong@gmail.com"
   const birthday = "851225"
   const isDoctor = true
