@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import Header from '../../modules/header.js';
 import Footer from '../../modules/footer.js';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Empty() {
     return (
@@ -15,6 +16,7 @@ export default function Records() {
     const [activeIndex, setActiveIndex] = useState(null);
     const [records, setRecords] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);
+    const navigate = useNavigate();
 
     async function getDb() {
 
@@ -26,6 +28,11 @@ export default function Records() {
         if(records.length === 0)
             setIsEmpty(true);
     }
+
+    useEffect(() => {
+        if(!sessionStorage.getItem("login"))
+            navigate("/login");
+    }, [])
 
     useEffect(() => {
         getDb();

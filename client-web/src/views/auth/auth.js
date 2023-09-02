@@ -35,12 +35,16 @@ export default function Auth() {
                     if(!res.data.dbData){ // 신규가입일때
                         console.log("카카오 계정 정보: ", res.data.userInfo);
                         dispatch(setEmail(res.data.userInfo.email));
+                        sessionStorage.setItem("isDoctor", res.data.userInfo.isDoctor); // 확인필요
+                        sessionStorage.setItem("login", true);
                         sessionStorage.setItem("name", res.data.userInfo.profile.nickname);
                         navigate('/signup');
                         
                     } else {              // 기존회원일때
                         console.log("DB 정보: ", res.data.dbData);
                         dispatch(setEmail(res.data.dbData.email));
+                        sessionStorage.setItem("login", true);
+                        sessionStorage.setItem("isDoctor", res.data.dbData.isDoctor);
                         sessionStorage.setItem("login", true);
                         sessionStorage.setItem("name", res.data.dbData.name);
                         navigate('/');

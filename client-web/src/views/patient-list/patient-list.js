@@ -32,6 +32,11 @@ export default function PatientList() {
         console.log("VIEWLIST: ", viewList);
     }, [viewList]);
 
+    useEffect(() => {
+        if(!sessionStorage.getItem("login"))
+            navigate("/login");
+    }, [])
+
 
     return(
         <div className='root'>
