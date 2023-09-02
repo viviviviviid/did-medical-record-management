@@ -40,7 +40,7 @@ export default function PatientList() {
             navigate("/login");
         console.log(sessionStorage.getItem("jwt"));
 
-        axios.post("http://localhost:5001/doctor/get-patient-list",   // 환자 목록 가져오기
+        axios.post("http://localhost:5001/doctor/get-patients-list",   // 환자 목록 가져오기
             { doctorJwt: jwt }
             )    // 의사 jwt (일단 하드코딩)
             .then((res) => {
