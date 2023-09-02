@@ -13,7 +13,7 @@ export default function PatientList() {
     const [keyword, setKeyword] = useState("");
     const navigate = useNavigate();
 
-    const jwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6Iu2ZjeyKueyerCIsImVtYWlsIjoic2pob25nOThAaWNsb3VkLmNvbSIsImJpcnRoZGF5IjoiOTgwOTAxIiwicGhvbmVOdW1iZXIiOiIwMTAtMjg5Mi02NDA4IiwiaXNEb2N0b3IiOnRydWUsImFkZHJlc3MiOiIweGMwMkM5NDRmNmQzOUM3QjREMzk3M2QyMTc1OWJCYzFBZDQ1RmYzMjcifSwibWVkaWNhbFJlY29yZHMiOiI0ZjUzY2RhMThjMmJhYTBjMDM1NGJiNWY5YTNlY2JlNWVkMTJhYjRkOGUxMWJhODczYzJmMTExNjEyMDJiOTQ1IiwiZG9jdG9yTGljZW5zZSI6bnVsbH19LCJzdWIiOnsiZGlkIjoiZGlkOmV0aHI6Z29lcmxpOjB4YzAyQzk0NGY2ZDM5QzdCNEQzOTczZDIxNzU5YkJjMUFkNDVGZjMyNyIsImFkZHJlc3MiOiIweGMwMkM5NDRmNmQzOUM3QjREMzk3M2QyMTc1OWJCYzFBZDQ1RmYzMjcifSwiaXNzIjoiZGlkOmV0aHI6Z29lcmxpOjB4NWFkYzQ4QUE5NzQ5MzE0NWJBM0ZmQzkwMjQ1RTUzNEM5MzU1YzczMCJ9.o9IBQ_fE2Dj_hyEIibbOYZX8Sp7FsQjLI6XdunLDOFkT6XwaJLwJaOszUcidEMdXpqTRgl80OCibkxh4vbZJ7AE";
+    const jwt = process.env.REACT_APP_JWT;
 
     const list = [
         {index:0, name:'홍승재', age:26, gender:'남' },
@@ -40,7 +40,7 @@ export default function PatientList() {
             navigate("/login");
         console.log(sessionStorage.getItem("jwt"));
 
-        axios.post("http://localhost:5001/doctor/get-patient-list",   // 환자 목록 가져오기
+        axios.post("http://localhost:5001/doctor/get-patients-list",   // 환자 목록 가져오기
             { doctorJwt: jwt }
             )    // 의사 jwt (일단 하드코딩)
             .then((res) => {
