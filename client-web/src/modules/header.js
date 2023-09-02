@@ -3,7 +3,18 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
     const navigate = useNavigate();
-    const menu = [{title:'나의 진료기록', route:'medical-records'}, {title:'환자 진료기록', route:'patient-list'}, {title:'메뉴2', route:'menu2'}];
+    const [menu, setMenu] = useState([]);
+    const isDoctor = sessionStorage.getItem("isDoctor");
+
+    useEffect(() => {
+        if(isDoctor)
+            setMenu([{title:'환자 진료기록', route:'patient-list'}, {title:'의사 인증', route:'doctor-auth'}]);
+        else    
+            setMenu([{title:'나의 진료기록', route:'medical-records'}]);
+        
+    }, [])
+
+    
     const login = sessionStorage.getItem('login');
     const name = sessionStorage.getItem("name");
 

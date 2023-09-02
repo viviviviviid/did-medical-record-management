@@ -32,6 +32,11 @@ export default function PatientList() {
         console.log("VIEWLIST: ", viewList);
     }, [viewList]);
 
+    useEffect(() => {
+        if(!sessionStorage.getItem("login"))
+            navigate("/login");
+    }, [])
+
 
     return(
         <div className='root'>
@@ -43,7 +48,7 @@ export default function PatientList() {
                     <NewRecordButton />
 
                 </div>
-                <p style={{fontSize:'30px'}}>환자 명단</p>
+                <p style={{fontSize:'30px'}}>의사 명단</p>
                 <div className='records-box'>
                     <div className='records-index'>
                         <p className='records-index-date'>이름</p>
