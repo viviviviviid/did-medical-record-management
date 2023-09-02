@@ -2,9 +2,9 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("./sequelize/sq.instance");
 
 const Doctor = sequelize.define(
-  "doctors", // members가 생성됨.
+  "doctors", 
   {
-      id: {
+      doctorNumber: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,

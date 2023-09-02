@@ -4,7 +4,7 @@ const { sequelize } = require("./sequelize/sq.instance");
 const MedicalRecords = sequelize.define(
   "medicalRecords", 
   {
-    id: {
+    recordNumber: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -29,7 +29,7 @@ const MedicalRecords = sequelize.define(
     hospital: { 
       type: DataTypes.STRING, // 진료를 받은 병원 이름
     },
-    doctor: { 
+    doctorName: { 
       type: DataTypes.STRING, // 담당 의사 이름
     },
     dateOfVisit: { 
@@ -37,19 +37,16 @@ const MedicalRecords = sequelize.define(
     },
     // Clinical Information
     historyOfPresentIllness: {
-      type: DataTypes.STRING, // 주요 증상
+      type: DataTypes.STRING, 
     },
     pastMedicalHistory: {
-      type: DataTypes.STRING, // 현재의 질병에 대한 진행 이력
+      type: DataTypes.STRING, 
     },
     medications: {
-      type: DataTypes.STRING, // 과거 의료 이력
+      type: DataTypes.STRING, 
     },
     allergies: {
-      type: DataTypes.STRING, // 현재 복용 중인 약물
-    },
-    allergies: {
-      type: DataTypes.STRING, // 알레르기 정보
+      type: DataTypes.STRING, 
     },
     // Examination Findings
     physicalExamination: {

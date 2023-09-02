@@ -124,7 +124,6 @@ const verifyVC_DID = async (req, res) => {
     console.log(error);
     return res.status(400).send(error);
   }
-  
 }
 
 

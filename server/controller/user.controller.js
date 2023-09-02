@@ -55,7 +55,7 @@ const signUp = async (req, res) => {
   try {
     let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
-    const hash = await createHash4DidUpdate(getAllMyRecords_DB("")); // 회원가입 전이므로 비어있는체로 내용이 올 것 // 그거라도 hash화 해둬야 무결성 검증가능
+    const hash = await createHash4DidUpdate([]); // 회원가입 전이므로 빈객체
 
     await axios.post('http://localhost:5002/did/register', {userInfo: req.body, hash: hash})
       .then(res => {
@@ -98,17 +98,23 @@ const newRecord = async (req, res) => {
   try{
     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
     const decodedPayload = await jwt.decode(req.body.vcJwt);
-    const patientDID = decodedPayload.sub.did;
+    console.log(decodedPayload)
+    const patientDID = decodedPayload.sub;
     const userInfo = decodedPayload.vc.credentialSubject.userInfo;
 
     // 로그인한 의사 본인의 DID // 모바일 개발 완료전까지 
-    const doctorDID = "0x093018c5F85DeDeC37AbE7ec189C669B1c117245";
+    const doctorDID = {
+      "did":"did:ethr:goerli:0xEC6138620175229050554653Bf36a1f49e767e8A",
+      "address":"0xEC6138620175229050554653Bf36a1f49e767e8A"
+    };
 
     // 새롭게 추가된 진료내용을 db에 저장 
     await medicalRecordRegister(doctorDID, patientDID, req.body.recordData);
     
     // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
     const dbData = await getAllMyRecords_DB(patientDID);
+
+    console.log(dbData)
 
     // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
     const hash = await createHash4DidUpdate(dbData);
@@ -132,23 +138,33 @@ const newRecord = async (req, res) => {
 const getRecord = async (req, res) => {
   try{
     const vcJwt = req.body;
-    let did, hashInJwt, integrityCheck가;
+    let did, hashInJwt, integrityCheck;
 
     // vcJwt 검증
     await axios.post("http://localhost:5002/did/verify-vc", vcJwt)
       .then(result => {
-        did = result.data.payload.sub.did;
+        did = result.data.payload.sub;
         hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
         const verifyCheck = result.data.verified;
         if(!verifyCheck)
           return res.send(400).send("vcJwt is not verified");
       })
+      .catch(err => {
+        console.log("getRecord function: ", err)
+        return res.send(404).send(err);
+      })
+
+      console.log("@@@@@@@@@",did)
 
     // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
     const dbData = await getAllMyRecords_DB(did);
+    console.log(dbData)
   
     // vcJwt내의 medicalRecord의 hash와 dbData를 hash화 시켜 같은지 확인함으로써 무결성 검증
     const hashInDB = await createHash4DidUpdate(dbData);
+
+    console.log("hashInDB: ", hashInDB)
+    console.log("hashInJwt: ", hashInJwt)
 
     // 무결성 검증 integrityCheck가 OK라면 dbData를 보내줌
     integrityCheck = hashInDB === hashInJwt;
