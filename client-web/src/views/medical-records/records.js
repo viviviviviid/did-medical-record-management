@@ -19,7 +19,6 @@ export default function Records() {
     const navigate = useNavigate();
 
     async function getDb() {
-
         const _records = await axios.post("http://localhost:5001/user/get-my-record", 
             { vcJwt: localStorage.getItem("jwt") }
         )
@@ -32,9 +31,6 @@ export default function Records() {
     useEffect(() => {
         if(!sessionStorage.getItem("login"))
             navigate("/login");
-    }, [])
-
-    useEffect(() => {
         getDb();
     }, [])
 
