@@ -27,7 +27,10 @@ export default function Header() {
                             <div className='header-menu-buttons pointer row-center'>
                                 <p className='header-menu-font' 
                                     onClick={() => {
-                                        navigate(`/${pages.route}`);
+                                        if(login)
+                                            navigate(`/${pages.route}`);
+                                        else 
+                                            navigate("/login");
                                     }} >{pages.title}</p>
                             </div>
                         );

@@ -11,17 +11,10 @@ import axios from 'axios';
 export default function PatientList() {
     const [activeIndex, setActiveIndex] = useState(null);
     const [keyword, setKeyword] = useState("");
+    const [patientList, setPatientList] = useState([]);
     const navigate = useNavigate();
 
     const jwt = process.env.REACT_APP_JWT;
-
-    const list = [
-        {index:0, name:'홍승재', age:26, gender:'남' },
-        {index:1, name:'서민석', age:27, gender:'남' },
-        {index:2, name:'허재경', age:32, gender:'남' },
-    ];
-
-    const [viewList, setViewList] = useState(list);
 
     const handleMouseOver = (index => {
         setActiveIndex(index);
@@ -32,19 +25,15 @@ export default function PatientList() {
     })
 
     useEffect(() => {
-        console.log("VIEWLIST: ", viewList);
-    }, [viewList]);
-
-    useEffect(() => {
         if(!sessionStorage.getItem("login"))
             navigate("/login");
-        console.log(sessionStorage.getItem("jwt"));
 
         axios.post("http://localhost:5001/doctor/get-patients-list",   // 환자 목록 가져오기
             { doctorJwt: jwt }
             )    // 의사 jwt (일단 하드코딩)
             .then((res) => {
                 console.log(res);
+                setPatientList(res.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -58,18 +47,17 @@ export default function PatientList() {
             <div className='body column-center'>
                 <div className='toolbar'>
                     <InputField type='text' setData={setKeyword} label='검색' width='10vw' />
-                    <SearchButton keyword={keyword} list={list} setViewList={setViewList} />
+                    <SearchButton keyword={keyword} patientList={patientList} setPatientList={setPatientList} />
 
                 </div>
                 <p style={{fontSize:'30px'}}>환자 목록</p>
                 <div className='records-box'>
                     <div className='records-index'>
-                        <p className='records-index-date'>이름</p>
-                        <p className='records-index-hpt'>나이</p>
-                        <p className='records-index-doctor'>성별</p>
-                        {/* <p className='records-index-notes'>진료 내용</p> */}
+                        <p className='records-index-name-pl'>이름</p>
+                        <p className='records-index-email-pl'>이메일</p>
+                        <p className='records-index-date-pl'>생년월일</p>
                     </div>
-                    { viewList.map((item, index) => {
+                    { patientList.map((item, index) => {
                         return (
                             <div className={`records-list pointer ${activeIndex === index ? "records-mouseover" : ""}`} 
                                 key={index}
@@ -78,18 +66,15 @@ export default function PatientList() {
                                 onClick={() => {
                                     navigate(`/patient-medical-records?patient=${item.name}`);
                                 }} >
-                                <div className='records-list-date'>
+                                <div className='records-list-name-pl'>
                                     <p>{item.name}</p>
                                 </div>
-                                <div className='records-list-hpt'>
-                                    <p>{item.age}</p>
+                                <div className='records-list-email-pl'>
+                                    <p>{item.email}</p>
                                 </div>
-                                <div className='records-list-doctor'>
-                                    <p>{item.gender}</p>
+                                <div className='records-list-date-pl'>
+                                    <p>{item.birthday}</p>
                                 </div>
-                                {/* <div className='records-list-notes'>
-                                    <p>{item.notes}</p>
-                                </div> */}
                             </div>
                         )
                     }) }

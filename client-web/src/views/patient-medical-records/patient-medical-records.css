@@ -1,0 +1,47 @@
+.records-index-date {
+    margin-right: 105px;
+  }
+  
+  .records-index-hpt {
+    margin-right: 115px;
+  }
+  
+  .records-index-doctor {
+    margin-right: 90px;
+  }
+  
+  .records-index-notes {
+    margin-right: 80px;
+  }
+  
+  .records-list {
+    height: 80px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    margin-bottom: 0px;
+  }
+  
+  .records-list-date {
+    width: 150px;
+    height: 50px;
+    white-space: pre-wrap;
+  }
+  
+  .records-list-hpt {
+    width: 130px;
+    height: 50px;
+    margin-left: 70px;
+  }
+  
+  .records-list-doctor {
+    height: 50px;
+    margin-left: 60px;
+  }
+  
+  .records-list-notes {
+    width: 330px;
+    height: 50px;
+    margin-left: 60px;
+  }
