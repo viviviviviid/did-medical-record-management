@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("../model/index.js");
 const express = require("express");
 const axios = require("axios");
@@ -40,3 +41,4 @@ const testStart = () => {
 testStart()
 
 
+ß

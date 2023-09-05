@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("../model/index.js");
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
@@ -110,7 +111,6 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
 
 const getAllMyPatientList = async (req, res) => {
   try{
-
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
     // const decodedPayload = await jwt.decode(req.body.doctorJwt)
     // console.log(decodedPayload.vc.credentialSubject.userInfo)
@@ -121,7 +121,8 @@ const getAllMyPatientList = async (req, res) => {
 
     // #### TEST CODE #### //
     // 원래는 jwt에서 did를 추출하지만, 테스트용이므로 의사의 did 직접 제공
-    const tempDoctorDID = process.env.TEMP_DOCTOR_DID;
+    const tempDoctorDID = JSON.parse(process.env.TEMP_DOCTOR_DID);
+    console.log(tempDoctorDID)
 
     // 환자들 유저 정보 리스트만 필요
     const dbData = await getAllMyPatientsList_DB(tempDoctorDID);
@@ -146,8 +147,8 @@ const getAllMyPatientsRecords = async (req, res) => {
     console.log("patientDID 가져옴: ", patientDID);
 
     // 프론트랑 연결될때까지, DID 직접 주입 => patientDID 뽑아오는게 제일 시급.s
-    const tempDoctorDID = process.env.TEMP_DOCTOR_DID;
-    const tempPatientDID = process.env.TEMP_PATIENT_DID;
+    const tempDoctorDID = JSON.parse(process.env.TEMP_DOCTOR_DID);
+    const tempPatientDID = JSON.parse(process.env.TEMP_PATIENT_DID);
 
     const dbData = await getAllMyPatientsRecords_DB(tempDoctorDID, tempPatientDID);
 
