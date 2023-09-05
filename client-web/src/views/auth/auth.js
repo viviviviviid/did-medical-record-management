@@ -38,6 +38,7 @@ export default function Auth() {
                         sessionStorage.setItem("isDoctor", res.data.userInfo.isDoctor); // 확인필요
                         sessionStorage.setItem("login", true);
                         sessionStorage.setItem("name", res.data.userInfo.profile.nickname);
+                        sessionStorage.setItem("birthday", res.data.userInfo.birthday);
                         navigate('/signup');
                         
                     } else {              // 기존회원일때
@@ -47,6 +48,7 @@ export default function Auth() {
                         sessionStorage.setItem("isDoctor", res.data.dbData.isDoctor);
                         sessionStorage.setItem("login", true);
                         sessionStorage.setItem("name", res.data.dbData.name);
+                        sessionStorage.setItem("birthday", res.data.dbData.birthday);
                         navigate('/');
                     }
                 })
