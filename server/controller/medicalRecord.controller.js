@@ -125,7 +125,7 @@ const getAllMyPatientList = async (req, res) => {
 
     // 환자들 유저 정보 리스트만 필요
     const dbData = await getAllMyPatientsList_DB(tempDoctorDID);
-
+    console.log(dbData);
     // 유저정보에서 wallet, did는 필요없음 -> 제거하고 보내야 함
     res.status(200).send(dbData);
   }catch(error){

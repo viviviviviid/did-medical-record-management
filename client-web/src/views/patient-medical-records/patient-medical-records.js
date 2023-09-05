@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import InputField from '../../modules/inputField.js';
 import NewRecordButton from './newRecordButton.js';
 import axios from 'axios';
+import "./patient-medical-records.css";
 
 export default function PatientMedicalRecords() {
     const [activeIndex, setActiveIndex] = useState(null);
@@ -17,9 +18,9 @@ export default function PatientMedicalRecords() {
         // name을 통해 해당 환자의 진료기록 가져오기
 
     const list = [
-        {index:0, date:'2023/08/10', hpt:'국군고양병원', doctor:'홍승재', notes:'척추 제거'}, 
-        {index:1, date:'2022/08/12', hpt:'백병원', doctor:'홍승재', notes:'아픔'},
-        {index:2, date:'2022/08/15', hpt:'국군수도병원', doctor:'서민석', notes:'아파서 옴'}
+        {index:0, updated_at:'2023-08-30T17:17:55.355Z', hospital:'국군고양병원', doctorName:'홍승재', diagnosis:'척추 제거'}, 
+        {index:1, updated_at:'2023-08-30T17:17:55.355Z', hospital:'백병원', doctorName:'홍승재', diagnosis:'나무아미타불관세음보살'},
+        {index:2, updated_at:'2023-08-30T17:17:55.355Z', hospital:'국군수도병원', doctorName:'서민석', diagnosis:'아픔'}
     ];
 
     useEffect(() => {
@@ -50,10 +51,10 @@ export default function PatientMedicalRecords() {
             <p style={{fontSize:'30px'}}>{name}님의 진료 기록</p>
                 <div className='records-box'>
                     <div className='records-index'>
-                        <p className='records-index-date'>날짜</p>
+                        <p className='records-index-date'>진료 내용</p>
                         <p className='records-index-hpt'>병원</p>
-                        <p className='records-index-doctor'>의사</p>
-                        <p className='records-index-notes'>진료 내용</p>
+                        <p className='records-index-doctor'>담당의사</p>
+                        <p className='records-index-notes'>진료일자</p>
                     </div>
                     { list.map((item, index) => {
                         return (
@@ -65,16 +66,16 @@ export default function PatientMedicalRecords() {
                                     navigate(`/patient-medical-record-view?patient=${name}`)
                                 }}>
                                 <div className='records-list-date'>
-                                    <p>{item.date}</p>
+                                    <p>{item.diagnosis}</p>
                                 </div>
                                 <div className='records-list-hpt'>
-                                    <p>{item.hpt}</p>
+                                    <p>{item.hospital}</p>
                                 </div>
                                 <div className='records-list-doctor'>
-                                    <p>{item.doctor}</p>
+                                    <p>{item.doctorName}</p>
                                 </div>
                                 <div className='records-list-notes'>
-                                    <p>{item.notes}</p>
+                                    <p>{item.updated_at}</p>
                                 </div>
                             </div>
                         )

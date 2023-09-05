@@ -181,6 +181,7 @@ code {
   border-width: 0px;
   border-bottom-width: 2px;
   border-color: #444;
+  white-space: nowrap;
   /* background-color: firebrick; */
 }
 
@@ -211,7 +212,7 @@ code {
 }
 
 .records-list-date {
-  width: 130px;
+  width: 125px;
   height: 50px;
 }
 

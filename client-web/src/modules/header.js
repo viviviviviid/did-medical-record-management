@@ -8,9 +8,16 @@ export default function Header() {
 
     useEffect(() => {
         if(isDoctor)
-            setMenu([{title:'환자 진료기록', route:'patient-list'}, {title:'의사 인증', route:'doctor-auth'}]);
+            setMenu([
+                {title:'QR코드 확인', route:'qr-code-scan'}, 
+                {title:'환자 진료기록', route:'patient-list'}, 
+                {title:'의사 인증', route:'doctor-auth'}
+            ]);
         else    
-            setMenu([{title:'나의 진료기록', route:'medical-records'}]);
+            setMenu([
+                {title:'QR코드', route:'qr-code'},
+                {title:'나의 진료기록', route:'medical-records'}
+            ]);
         
     }, [])
 
@@ -27,7 +34,10 @@ export default function Header() {
                             <div className='header-menu-buttons pointer row-center'>
                                 <p className='header-menu-font' 
                                     onClick={() => {
-                                        navigate(`/${pages.route}`);
+                                        if(login)
+                                            navigate(`/${pages.route}`);
+                                        else 
+                                            navigate("/login");
                                     }} >{pages.title}</p>
                             </div>
                         );

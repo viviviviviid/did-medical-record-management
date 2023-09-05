@@ -1,0 +1,37 @@
+.records-index-name-pl {
+    margin-right: 100px;
+  }
+  
+  .records-index-email-pl {
+    margin-right: 105px;
+  }
+  
+  .records-index-date-pl {
+    margin-left: 100px;
+  }
+  
+  .records-list-pl {
+    /* background-color: forestgreen; */
+    height: 80px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    margin-bottom: 0px;
+  }
+  
+  .records-list-name-pl {
+    width: 125px;
+    height: 50px;
+  }
+  
+  .records-list-email-pl {
+    width: 130px;
+    height: 50px;
+  }
+  
+  .records-list-date-pl {
+    margin-left : 120px;
+    width: 150px;
+    height: 50px;
+  }
