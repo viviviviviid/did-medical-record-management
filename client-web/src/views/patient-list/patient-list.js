@@ -5,14 +5,16 @@ import Footer from '../../modules/footer.js';
 import './list.css';
 import InputField from '../../modules/inputField.js';
 import SearchButton from './searchButton.js';
-import NewRecordButton from './newRecordButton.js'
+import { useDispatch } from 'react-redux';
 import axios from 'axios';
+import { setPatientDid, setPatientName } from '../../redux/actions';
 
 export default function PatientList() {
     const [activeIndex, setActiveIndex] = useState(null);
     const [keyword, setKeyword] = useState("");
     const [patientList, setPatientList] = useState([]);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const jwt = process.env.REACT_APP_JWT;
 
@@ -64,7 +66,9 @@ export default function PatientList() {
                                 onMouseOver={ () => {handleMouseOver(index)} }
                                 onMouseOut={handleMouseOut} 
                                 onClick={() => {
-                                    navigate(`/patient-medical-records?patient=${item.name}`);
+                                    navigate(`/patient-medical-records`);
+                                    dispatch(setPatientDid(item.did));
+                                    dispatch(setPatientName(item.name));
                                 }} >
                                 <div className='records-list-name-pl'>
                                     <p>{item.name}</p>

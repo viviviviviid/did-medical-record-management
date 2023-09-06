@@ -3,6 +3,9 @@ const initialState = {
     newUser: false,
     isLoading: false,
     email: "",
+    patientDid: "",
+    patientName: "",
+    patientRecord: {},
 
 }
 
@@ -31,6 +34,24 @@ const dataReducer = (state = initialState, action) => {
             return {
                 ...state,
                 email: action.payload,
+            }
+
+        case 'SET_PATIENT_DID' :
+            return {
+                ...state,
+                patientDid: action.payload,
+            }
+
+        case 'SET_PATIENT_NAME' :
+            return {
+                ...state,
+                patientName: action.payload,
+            }
+        
+        case 'SET_PATIENT_RECORD' :
+            return {
+                ...state,
+                patientRecord: action.payload,
             }
         
         default :
