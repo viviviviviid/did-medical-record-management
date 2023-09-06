@@ -49,9 +49,10 @@ export default function DoctorAuth() {
                                         type="checkbox"
                                         className='auth-checkbox' 
                                         onClick={() => {
-                                            // 인증 axios 요청
-                                            console.log("item: ", item)
-                                            console.log("index: ", index)
+                                            // axios.post('http://localhost:5001/doctor/new-doctor', {item})
+                                            // .then(res => {
+                                            //     console.log(res.data) // 의사의 새로운 jwt 
+                                            // })
                                         }}/>
                                 </div>
                             )
