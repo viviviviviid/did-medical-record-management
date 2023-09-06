@@ -40,5 +40,3 @@ const testStart = () => {
 
 testStart()
 
-
-ß

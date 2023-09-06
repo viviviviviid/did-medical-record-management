@@ -76,7 +76,6 @@ const getAllMyRecords_DB = async (patientDID) => {
     console.log("getAllMyRecords_DB function error :", error)
     return error
   }
-
 }
 
 const getAllMyPatientsList_DB = async (doctorDID) => {

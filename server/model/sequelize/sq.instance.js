@@ -10,8 +10,6 @@ const sequelize = new Sequelize(
     dialect: 'postgres'
 });
 
-console.log(sequelize)
-
 sequelize.sync();
 
 module.exports = {sequelize}

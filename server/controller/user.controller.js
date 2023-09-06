@@ -3,6 +3,7 @@ const express = require("express");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const { use } = require("../routes/user.route");
+const { Op } = require('sequelize');
 const app = express();
 const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB } = require("./medicalRecord.controller.js");
 
@@ -180,6 +181,41 @@ const getRecord = async (req, res) => {
   }
 }
 
+const getDoctorWaitingList_DB = async (req, res) => { 
+  try{
+    // 나중에 쿼리문 하나로 해결하기
+
+    // 1. isDoctor가 true인 모든 User 가져오기
+    const users = await db.User.findAll({
+      where: { isDoctor: true },
+      attributes: ["name", "birthday", "did"]
+    });
+
+    // 2. 각 did에 대해 Doctor 테이블에 존재하는지 확인하고, 존재한다면 User 목록에서 제거
+    const waitingList = [];
+
+    for (const user of users) {
+      const doctorExists = await db.Doctor.findOne({
+        where: { did: user.did }
+      });
+
+      // Doctor 테이블에 해당 did가 존재하지 않는 경우에만 목록에 추가
+      if (!doctorExists) {
+        waitingList.push(user);
+      }
+    }
+
+    console.log(waitingList);  // 최종적으로 Doctor 테이블에 존재하지 않는 isDoctor가 true인 User 목록이 출력됩니다.
+
+    res.status(200).send(waitingList)
+  }catch(error){
+    console.log("getDoctorWaitingList_DB function error: ",error)
+    res.status(400).send(error)
+  }
+}
+
+
+
 // ========================== 미완 ============================== //
 
 /**
@@ -196,4 +232,5 @@ module.exports = {
   signUp,
   newRecord,
   getRecord,
+  getDoctorWaitingList_DB
 };
