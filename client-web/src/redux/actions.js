@@ -25,3 +25,24 @@ export const setEmail = (item) => {
         payload: item,
     }
 }
+
+export const setPatientDid = (item) => {
+    return {
+        type: 'SET_PATIENT_DID',
+        payload: item,
+    }
+}
+
+export const setPatientName = (item) => {
+    return {
+        type: 'SET_PATIENT_NAME',
+        payload: item,
+    }
+}
+
+export const setPatientRecord = (item) => {
+    return {
+        type: 'SET_PATIENT_RECORD',
+        payload: item,
+    }
+}
