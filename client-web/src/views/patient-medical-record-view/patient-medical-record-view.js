@@ -4,42 +4,19 @@ import Footer from '../../modules/footer.js';
 import './patient-medical-record-view.css';
 import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function PatientMedicalRecordView() {
     const navigate = useNavigate();
-    const name = new URL(document.location.toString()).searchParams.get("patient"); // 이후에 진료기록 num으로 변경
+    const name = useSelector(state => state.patientName);
+    console.log(name);
 
-    const data = {      // axios로 받아올 것
-        name: "홍승재",
-        hospital: "세브란스",
-        doctor: "서민석",
-        dataOfVisit: "2022/07/10",
-        chiefComplaint: "배아픔",
-        historyOfPresentIllness: "없음",
-        pastMedicalHistory: "없음",
-        medications: "없음",
-        allergies: "없음",
-        physicalExamination: "배가 참",
-        laboratoryResults: "이상없음",
-        radiologicalFindings: "이상없음",
-        diagnosis: "배를 따뜻하게 할 것",
-        treatment: "따뜻한 약 처방",
-        medicationPrescribed: "따땃한 우유",
-        followUp: "계획없음",
-        comments: "",
-    }
-
+    const data = useSelector(state => state.patientRecord);
 
     return(
         <div className='root'>
             <Header />
             <div className='body column-center'>
-                <div className='toolbar'>   
-                    <Button variant="contained" 
-                            sx={{backgroundColor:'lightgray', color:'black'}}
-                            onClick={() => {navigate(`/patient-medical-record-update?patient=${name}`)}}>수정</Button>
-                    <Button variant="contained" sx={{marginLeft:'1vw', backgroundColor:'lightgray', color:'black'}}>삭제</Button>
-                </div>
 
                 <p style={{fontSize:'30px'}}>진료 기록</p>
                     <div className='input-container'>
@@ -49,7 +26,7 @@ export default function PatientMedicalRecordView() {
                             <div className='desc-container-1'>
                                 <p className='desc'>환자명</p>
                             </div>
-                            <p>{data.name}</p>
+                            <p>{name}</p>
                         </div>
 
                         <div className='input-field row'>
@@ -63,14 +40,14 @@ export default function PatientMedicalRecordView() {
                             <div className='desc-container-1'>
                                 <p className='desc'>담당 의사명</p>
                             </div>
-                            <p>{data.doctor}</p>
+                            <p>{data.doctorName}</p>
                         </div>
 
                         <div className='input-field row'>
                             <div className='desc-container-1'>
                                 <p className='desc'>진료일자</p>
                             </div>
-                            <p>{data.dataOfVisit}</p>
+                            <p>{data.dateOfVisit}</p>
                         </div>
 
                         <hr />
@@ -79,23 +56,9 @@ export default function PatientMedicalRecordView() {
 
                         <div className='input-field row'>
                             <div className='desc-container-2'>
-                                <p className='desc'>주요 증상</p>
-                            </div>
-                            <p>{data.chiefCompaint}</p>
-                        </div>
-
-                        <div className='input-field row'>
-                            <div className='desc-container-2'>
                                 <p className='desc'>진행 이력</p>
                             </div>
                             <p>{data.historyOfPresentIllness}</p>
-                        </div>
-
-                        <div className='input-field row'>
-                            <div className='desc-container-2'>
-                                <p className='desc'>과거 진료 이력</p>
-                            </div>
-                            <p>{data.pastMedicalHistory}</p>
                         </div>
 
                         <div className='input-field row'>
@@ -177,7 +140,7 @@ export default function PatientMedicalRecordView() {
                             <div className='desc-container-2'>
                                 <p className='desc'>코멘트</p>
                             </div>
-                            <p>{data.comments}</p>
+                            <p>{data.additionalComments}</p>
                         </div>
 
                         

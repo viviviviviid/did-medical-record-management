@@ -7,10 +7,17 @@
     color: gray;
     position: relative;
     left: 1vw;
+    margin: 0px;
     z-index: 1;
 }
 
 .signup-loading {
     width: 100vw;
     height: 100vh;
+    font: 5vh;
+}
+
+.signup-email {
+    color: black;
+    font-size: 15vh;
 }

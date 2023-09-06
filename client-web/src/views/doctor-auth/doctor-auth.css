@@ -1,0 +1,9 @@
+.auth-box {
+    /* margin-top: 15vh; */
+    padding-top: 15vh;
+}
+
+.auth-checkbox {
+    height: 5vh;
+    margin-left: 3vw;
+}

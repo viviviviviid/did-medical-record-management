@@ -10,6 +10,9 @@ import PatientList from './views/patient-list/patient-list';
 import NewMedicalRecord from './views/new-medical-record/new-medical-record';
 import PatientMedicalRecordView from './views/patient-medical-record-view/patient-medical-record-view';
 import PatientMedicalRecordUpdate from './views/patient-medical-record-update/patient-medical-record-update';
+import DoctorAuth from './views/doctor-auth/doctor-auth';
+import QrCode from './views/qr-code/qr-code';
+import QrCodeScan from './views/qr-code-scan/qr-code-scan';
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
         <Route path="/new-medical-record" element={<NewMedicalRecord />} />
         <Route path="/patient-medical-record-view" element={<PatientMedicalRecordView />} />
         <Route path="/patient-medical-record-update" element={<PatientMedicalRecordUpdate />} />
+        <Route path="/doctor-auth" element={<DoctorAuth />} />
+        <Route path="/qr-code" element={<QrCode />} />
+        <Route path="/qr-code-scan" element={<QrCodeScan />} />
       </Routes>
     </BrowserRouter>
   )

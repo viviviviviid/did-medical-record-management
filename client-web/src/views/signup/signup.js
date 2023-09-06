@@ -5,36 +5,32 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import './signup.css';
 import InputField from '../../modules/inputField';
-import EmailSelect from './emailSelect';
 import SignUpButton from './signupButton';
-import Box from '@mui/material/Box';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
 
 export default function Main() {
     const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
     const [domain, setDomain] = useState("");
     const [birthday, setBirthday] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [isDoctor, setIsDoctor] = useState(false);
     const [write, setWrite] = useState(false);
     const [Null, setNull] = useState("");
-    const isLoading = useSelector((state) => state.isLoading);
+    const [isLoading, setIsLoading] = useState(false);
+    const email = useSelector(state => state.email);
+    
 
     useEffect(() => {
         if(domain === 'write')
             setWrite(true);
     }, [domain]);
 
-    useEffect(() => {
-        console.log("NULL : ", Null);
-    }, [Null]);
-
     return(
         isLoading ?
             <div className='column-center signup-loading'>
-                    <p>Loading</p>
+                    <p>JWT 생성 중</p>
                 <Box sx={{ width: '60%' }}> 
                     <LinearProgress />
                 </Box>
@@ -54,25 +50,11 @@ export default function Main() {
                         width='20vw' 
                         setData={setName} />
                     <div className='row-center'>
-                        <InputField 
-                            id={Null === 'email' ? 'error' : ''}
-                            type='text' 
-                            label='이메일' 
-                            width='9vw' 
-                            setData={setEmail} />
-                        <h3>@</h3>
-                        { write ? 
-                            <InputField 
-                                type='text'
-                                label='이메일'
-                                width='9vw'
-                                setData={setDomain} />  
-                            :
-                            <EmailSelect 
-                            setEmail={setDomain} 
-                            email={domain} />  
-                        }
-                        
+                        <p className='signup-email'
+                            style={{
+                                color: '#666',
+                                fontSize: '2vh'
+                            }}>{email}</p>
                     </div>
                     <InputField 
                         id={Null === 'birthday' ? 'error' : ''}
@@ -90,17 +72,22 @@ export default function Main() {
                     <p>010-XXXX-XXXX 형식으로 입력해주세요</p>
                     <div className='row-center'>
                         <FormControlLabel 
-                            control={<Checkbox onClick={() => {setIsDoctor(!isDoctor)}}/>} 
-                            label="의사이신가요?" />
+                            control={
+                                <Checkbox onClick={() => {
+                                    setIsDoctor(!isDoctor)
+                                }}/>} 
+                            label="의사이신가요?" 
+                        />
                     </div>
                     <div className='row-center'>
                         <SignUpButton
                             name={name}
-                            email={email + "@" + domain} 
                             birthday={birthday}
+                            email={email}
                             phoneNumber={phoneNumber}
                             isDoctor={isDoctor}
                             setNull={setNull}
+                            setIsLoading={setIsLoading}
                             />
                     </div>
                     

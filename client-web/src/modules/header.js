@@ -3,9 +3,27 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
     const navigate = useNavigate();
-    const menu = [{title:'나의 진료기록', route:'medical-records'}, {title:'환자 진료기록', route:'patient-list'}, {title:'메뉴2', route:'menu2'}];
+    const [menu, setMenu] = useState([]);
+    const isDoctor = sessionStorage.getItem("isDoctor");
+
+    useEffect(() => {
+        if(isDoctor)
+            setMenu([
+                {title:'QR코드 확인', route:'qr-code-scan'}, 
+                {title:'환자 진료기록', route:'patient-list'}, 
+                {title:'의사 인증', route:'doctor-auth'}
+            ]);
+        else    
+            setMenu([
+                {title:'QR코드', route:'qr-code'},
+                {title:'나의 진료기록', route:'medical-records'}
+            ]);
+        
+    }, [])
+
+    
     const login = sessionStorage.getItem('login');
-    const name = '승재';    // 이후에 session에서 가져올 것
+    const name = sessionStorage.getItem("name");
 
     return (
         <div className='header'>
@@ -16,7 +34,10 @@ export default function Header() {
                             <div className='header-menu-buttons pointer row-center'>
                                 <p className='header-menu-font' 
                                     onClick={() => {
-                                        navigate(`/${pages.route}`);
+                                        if(login)
+                                            navigate(`/${pages.route}`);
+                                        else 
+                                            navigate("/login");
                                     }} >{pages.title}</p>
                             </div>
                         );

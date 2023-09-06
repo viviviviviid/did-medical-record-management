@@ -1,0 +1,40 @@
+.qr-card {
+    background-color: white;
+    border-radius: 3%;
+    width: 300px;
+    height: 500px;
+    box-shadow: 0px 0px 10px 5px rgba(1, 1, 1, 0.1);
+}
+
+.upper-card {
+    width: 100%;
+    height: 350px;
+    background-color: blue;
+    border-top-right-radius: 3%;
+    border-top-left-radius: 3%;
+
+}
+
+.upper-card p {
+    margin: 0px;
+    padding: 30px;
+    padding-top: 280px;
+    font-size: 30px;
+    color: white;
+}
+
+.qr-card-content {
+    padding-left: 20px;
+}
+
+.qr-card-title {
+    font-size: 12px;
+    margin: 0px;
+    margin-top: 15px;
+    color: grey;
+}
+
+.qr-card-text {
+    font-size: 13px;
+    margin: 0px;
+}

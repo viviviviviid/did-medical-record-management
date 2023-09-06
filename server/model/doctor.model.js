@@ -1,31 +1,16 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("./sequelize/sq.instance");
 
-const User = sequelize.define(
-  "users", // members가 생성됨.
+const Doctor = sequelize.define(
+  "doctors", 
   {
-      userNumber: {
+      doctorNumber: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
       },
       name: {
-        type: DataTypes.STRING,
-      },
-      email: {
-        type: DataTypes.STRING,
-      },
-      birthday: {
-        type: DataTypes.STRING,
-      },
-      phoneNumber : {
-        type: DataTypes.STRING,
-      },
-      isDoctor: {
-        type: DataTypes.BOOLEAN,
-      },
-      wallet: {
         type: DataTypes.STRING,
       },
       did: {
@@ -37,10 +22,10 @@ const User = sequelize.define(
         allowNull: false,
         defaultValue: sequelize.literal('now()'),
       }
-  },
-  {
-    timestamps: false
-  }
-);
+    },
+    {
+      timestamps: false,
+    }
+)
 
-module.exports = { User }
+module.exports = { Doctor }
