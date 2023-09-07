@@ -155,8 +155,6 @@ const getRecord = async (req, res) => {
         return res.send(404).send(err);
       })
 
-      console.log("@@@@@@@@@",did)
-
     // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
     const dbData = await getAllMyRecords_DB(did);
     console.log(dbData)
@@ -205,14 +203,12 @@ const getDoctorWaitingList_DB = async (req, res) => {
       }
     }
 
-    console.log(waitingList);  // 최종적으로 Doctor 테이블에 존재하지 않는 isDoctor가 true인 User 목록이 출력됩니다.
-
     res.status(200).send(waitingList)
   }catch(error){
     console.log("getDoctorWaitingList_DB function error: ",error)
     res.status(400).send(error)
   }
-}
+} 
 
 // ========================== 미완 ============================== //
 

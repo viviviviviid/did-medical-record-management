@@ -45,7 +45,7 @@ const signUp_DID = async (req, res) => {
             address: walletInfo.address,
           },
           medicalRecords: req.body.hash,
-          doctorLicense: null,
+          doctorLicense: false,
         }
       }
     }

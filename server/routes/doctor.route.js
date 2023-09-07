@@ -4,6 +4,6 @@ const controller_doctor = require("../controller/doctor.controller.js")
 
 router.post("/get-patients-list", controller_record.getAllMyPatientList);
 router.post("/get-all-patient-records", controller_record.getAllMyPatientsRecords);
-// router.post("/new-doctor", controller_doctor.FILL_ME_IN)
+router.post("/new-doctor", controller_doctor.doctorRegister)
 
 module.exports = router;

@@ -8,8 +8,10 @@ import { useNavigate } from 'react-router-dom';
 export default function QrCode() {
     const navigate = useNavigate(); 
     const [sec, setSec] = useState(15);
+    const [vcJwt, setVcJwt] = useState("");
     
     useEffect(() => {
+        setVcJwt(localStorage.getItem("jwt"))
         setTimeout(() => {
             navigate("/");
         }, 15000);
@@ -19,7 +21,6 @@ export default function QrCode() {
         }, 1000);
     }, [])
 
-
     return(
         <div className='root'>
             <Header />
@@ -27,7 +28,7 @@ export default function QrCode() {
                 <div className='qr-code-container column-center'>
                     <p className='qr-code-timer'>{sec}초 남았습니다</p>
                     <QRCode 
-                        value="hello"
+                        value={`${vcJwt}`}
                         bgColor="#EEE" 
                     />
                 </div>
