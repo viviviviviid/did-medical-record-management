@@ -1,10 +1,10 @@
-const { Sequelize } = require("sequelize");
 require("dotenv").config();
+const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize(
   'medical', 
-  process.env.DB_ID, 
-  process.env.DB_PW, 
+  process.env.DB_USER, 
+  process.env.DB_PASS, 
   {
     host: 'localhost',
     dialect: 'postgres'
