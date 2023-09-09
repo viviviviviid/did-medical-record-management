@@ -33,7 +33,7 @@ const testInputUser = () => {
   const email = "honghong@gmail.com"
   const birthday = "851225"
   const isDoctor = true
-  const wallet = "홍박사님을 아세요?"
+  const wallet = "홍박사 지갑"
 
   db.User.create({
     name,
