@@ -81,7 +81,8 @@ export const styles = StyleSheet.create({
     },
 
     viewInfoContainer: {
-        flex: 3,
+        flex: 2,
+        marginLeft: 30
     },
 
     viewInfo: {
