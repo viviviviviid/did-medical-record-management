@@ -19,7 +19,7 @@ export default function Records() {
     const navigate = useNavigate();
 
     async function getDb() {
-        const _records = await axios.post("http://localhost:5001/user/get-my-record", 
+        const _records = await axios.post("http://52.79.247.134:5001/user/get-my-record", 
             { vcJwt: localStorage.getItem("jwt") }
         )
         setRecords(_records.data);

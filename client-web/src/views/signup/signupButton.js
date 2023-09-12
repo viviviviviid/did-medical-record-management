@@ -27,7 +27,7 @@ export default function SignUpButton(props) {
               phoneNumber: props.phoneNumber,
               isDoctor: props.isDoctor
             }
-            axios.post('http://localhost:5001/user/signup', userInfo)
+            axios.post('http://52.79.247.134:5001/user/signup', userInfo)
               .then(res => {
                  console.log(res);
                 //  localStorage.setItem("did_address", res.data.did.address);
