@@ -210,6 +210,15 @@ const getDoctorWaitingList_DB = async (req, res) => {
   }
 } 
 
+const test = async (req, res) => { 
+  try{
+    console.log("test success")
+    res.status(200).send("test success")
+  }catch(error){
+    console.log("test fail")
+    res.status(400).send("test fail")
+  }
+}
 // ========================== 미완 ============================== //
 
 /**
@@ -226,5 +235,6 @@ module.exports = {
   signUp,
   newRecord,
   getRecord,
-  getDoctorWaitingList_DB
+  getDoctorWaitingList_DB,
+  test
 };
