@@ -17,7 +17,7 @@ export default function PatientList() {
     const dispatch = useDispatch();
 
     const jwt = process.env.REACT_APP_JWT;
-    const serverIP = process.env.SERVER_IP_ADDRESS;
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
 
     const handleMouseOver = (index => {
         setActiveIndex(index);

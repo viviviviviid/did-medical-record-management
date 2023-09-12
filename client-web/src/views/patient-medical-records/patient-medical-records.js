@@ -16,7 +16,7 @@ export default function PatientMedicalRecords() {
     const patientDid = useSelector(state => state.patientDid);
     const dispatch = useDispatch();
     const name = useSelector(state => state.patientName);
-    const serverIP = process.env.SERVER_IP_ADDRESS;
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
 
 
     useEffect(() => {

@@ -60,7 +60,7 @@ export default function NewMedicalRecord() {
         // 의사 jwt -> local에서.
         // 환자 jwt -> qr 코드에서.
 
-        const serverIP = process.env.SERVER_IP_ADDRESS;
+        const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
 
         axios.post(`http://${serverIP}:5001/user/new-record`, {recordData, vcJwt})
             .then(res => {
