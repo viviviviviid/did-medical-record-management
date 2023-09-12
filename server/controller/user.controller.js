@@ -13,14 +13,14 @@ const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB } = requ
  */
 const isUserRegistered = async (req, res) => {
   try {
-
+	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     const access_token = req.body.token.access_token;
-
+	console.log(access_token);
     const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
       headers: {
         Authorization: `Bearer ${access_token}`,
       }
-    });
+    })
 
     return await userFind(userInfo.data.kakao_account).then(dbData => {
       dbData
@@ -38,7 +38,7 @@ const isUserRegistered = async (req, res) => {
 
   } catch (error) {
     console.log("isUserRegistered function error: ", error)
-    // return res.status(400).send(error);
+    res.status(400).send(error);
   }
 }
 
