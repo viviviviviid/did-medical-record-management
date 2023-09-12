@@ -7,7 +7,8 @@ export default function Login() {
     console.log("here", Rest_api_key);
     const navigate = useNavigate();
     const serverIP = process.env.SERVER_IP_ADDRESS;
-    const redirect_uri = `http://${serverIP}:3000/login/auth` //Redirect URI
+	console.log(serverIP);    
+const redirect_uri = `http://${serverIP}:3000/login/auth` //Redirect URI
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`
     const handleLogin = ()=>{
         window.location.href = kakaoURL
