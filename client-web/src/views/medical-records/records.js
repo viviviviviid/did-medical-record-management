@@ -16,10 +16,12 @@ export default function Records() {
     const [activeIndex, setActiveIndex] = useState(null);
     const [records, setRecords] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);
+    
     const navigate = useNavigate();
+    const serverIP = process.env.SERVER_IP_ADDRESS;
 
     async function getDb() {
-        const _records = await axios.post("http://52.79.247.134:5001/user/get-my-record", 
+        const _records = await axios.post(`http://${serverIP}:5001/user/get-my-record`, 
             { vcJwt: localStorage.getItem("jwt") }
         )
         setRecords(_records.data);

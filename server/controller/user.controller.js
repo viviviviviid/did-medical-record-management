@@ -7,6 +7,8 @@ const { Op } = require('sequelize');
 const app = express();
 const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB } = require("./medicalRecord.controller.js");
 
+const serverIP = process.env.SERVER_IP_ADDRESS;
+
 /**
  * 로그인 시 유저가 회원가입을 했는지 DB 체크
  * @returns DB 저장유무에 따른 boolean 반환 
@@ -58,7 +60,7 @@ const signUp = async (req, res) => {
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
     const hash = await createHash4DidUpdate([]); // 회원가입 전이므로 빈객체
 
-    await axios.post('http://52.79.247.134:5002/did/register', {userInfo: req.body, hash: hash})
+    await axios.post(`http://${serverIP}:5002/did/register`, {userInfo: req.body, hash: hash})
       .then(res => {
         ({ jwt, wallet, SUBJECT_DID } = res.data);
         const userInfo = { name, email, birthday, phoneNumber, isDoctor, wallet, SUBJECT_DID };
@@ -121,7 +123,7 @@ const newRecord = async (req, res) => {
     const hash = await createHash4DidUpdate(dbData);
 
     // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
-    await axios.post('http://52.79.247.134:5002/did/new-record', {hash: hash, decodedPayload:decodedPayload})
+    await axios.post(`http://${serverIP}:5002/did/new-record`, {hash: hash, decodedPayload:decodedPayload})
       .then(result => {
         const updatedVcJwt = result.data
         return res.status(200).send({dbData, updatedVcJwt});
@@ -142,7 +144,7 @@ const getRecord = async (req, res) => {
     let did, hashInJwt, integrityCheck;
 
     // vcJwt 검증
-    await axios.post("http://52.79.247.134:5002/did/verify-vc", vcJwt)
+    await axios.post(`http://${serverIP}:5002/did/verify-vc`, vcJwt)
       .then(result => {
         did = result.data.payload.sub;
         hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
