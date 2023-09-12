@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("../model/index.js");
 const express = require("express");
 const axios = require("axios");
@@ -214,8 +215,8 @@ const getDoctorWaitingList_DB = async (req, res) => {
 
 const test = async (req, res) => { 
   try{
-    console.log("test success")
-    res.status(200).send("test success")
+    console.log(serverIP)
+    res.status(200).send(serverIP)
   }catch(error){
     console.log("test fail")
     res.status(400).send("test fail")

@@ -18,7 +18,7 @@ export default function Records() {
     const [isEmpty, setIsEmpty] = useState(true);
     
     const navigate = useNavigate();
-    const serverIP = process.env.SERVER_IP_ADDRESS;
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
 
     async function getDb() {
         const _records = await axios.post(`http://${serverIP}:5001/user/get-my-record`, 
