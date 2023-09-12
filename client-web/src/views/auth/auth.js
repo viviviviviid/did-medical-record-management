@@ -12,7 +12,7 @@ import { setEmail } from '../../redux/actions.js';
 export default function Auth() {
     const navigate = useNavigate();
     const key = process.env.REACT_APP_KAKAO_LOGIN;
-    const uri = 'http://localhost:3000/login/auth';
+    const uri = 'http://52.79.247.134:3000/login/auth';
     const code = new URL(document.location.toString()).searchParams.get("code");
     const dispatch = useDispatch();
 
