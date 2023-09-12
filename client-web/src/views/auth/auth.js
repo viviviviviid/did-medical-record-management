@@ -29,7 +29,7 @@ export default function Auth() {
             console.log(tokenObject);
 
             await axios
-                .post('http://localhost:5001/user/login',   // token 주고 jwt 받는 부분
+                .post('http://52.79.247.134:5001/user/login',   // token 주고 jwt 받는 부분
                         {token: tokenObject})
                 .then(res => {
                     if(!res.data.dbData){ // 신규가입일때

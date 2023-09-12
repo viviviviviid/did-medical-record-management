@@ -15,7 +15,7 @@ export default function DoctorAuth() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get('http://localhost:5001/user/get-doctor-waiting-list');
+                const response = await axios.get('http://52.79.247.134:5001/user/get-doctor-waiting-list');
                 setWaitingList(response.data);
                 console.log(waitingList)
             } catch (error) {
@@ -51,7 +51,7 @@ export default function DoctorAuth() {
                                         className='auth-checkbox' 
                                         onClick={() => {
                                             console.log(item)   
-                                            axios.post('http://localhost:5001/doctor/new-doctor', item)
+                                            axios.post('http://52.79.247.134:5001/doctor/new-doctor', item)
                                             .then(res => {
                                                 console.log(res.data) // 의사의 새로운 jwt 
                                             }).catch(console.log)

@@ -13,7 +13,7 @@ const OAuthLogin = () => {
     try{
       console.log(data);
       const idToken = data.response.access_token;  // 엑세스 토큰 백엔드로 전달
-      axios.post("http://localhost:5001/user/usercheck", {
+      axios.post("http://52.79.247.134:5001/user/usercheck", {
         token : idToken
       }).then((res) => {
         console.log(res);

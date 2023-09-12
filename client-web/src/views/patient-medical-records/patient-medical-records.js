@@ -19,7 +19,7 @@ export default function PatientMedicalRecords() {
     const name = useSelector(state => state.patientName);
 
     useEffect(() => {
-        axios.post("http://localhost:5001/doctor/get-all-patient-records", 
+        axios.post("http://52.79.247.134:5001/doctor/get-all-patient-records", 
             {doctorJwt: sessionStorage.getItem("jwt"), patientDid: patientDid}
             )
             .then((res) => {
