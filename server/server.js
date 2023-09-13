@@ -8,6 +8,7 @@ app.use(
   express.json(),
 );
 
+
 app.listen(port, () => {
   console.log("서버가 정상적으로 실행되었습니다.");
 });

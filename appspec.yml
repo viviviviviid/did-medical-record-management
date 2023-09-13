@@ -1,0 +1,11 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/project/did-medical-record-management
+hooks:
+  AfterInstall:
+    - location: scripts/deploy.sh
+      timeout: 300
+      runas: ec2-user
