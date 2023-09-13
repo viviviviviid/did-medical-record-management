@@ -1,0 +1,16 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    # 여기에 AWS CodeDeploy 등의 배포 관련 스텝들을 추가합니다.
