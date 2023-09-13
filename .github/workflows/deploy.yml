@@ -25,7 +25,7 @@ jobs:
 
       - name: Install Dependencies and Package Projects
         run: |
-          for dir in _client client client-web client_app did server; do
+          for dir in client client-web client_app did server; do
             cd $dir
             npm install
             zip -qq -r ../$dir-$GITHUB_SHA.zip .
@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload ZIPs to S3
         run: |
-          for dir in _client client client-web client_app did server; do
+          for dir in client client-web client_app did server; do
             aws s3 cp --region ap-northeast-2 ./$dir-$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$dir-$GITHUB_SHA.zip
           done
 
