@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 
 export default function SignUpButton(props) {
     const navigate = useNavigate();
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
 
     const handleClick = () => {
         if(!props.name)
@@ -27,7 +28,7 @@ export default function SignUpButton(props) {
               phoneNumber: props.phoneNumber,
               isDoctor: props.isDoctor
             }
-            axios.post('http://localhost:5001/user/signup', userInfo)
+            axios.post(`http://${serverIP}:5001/user/signup`, userInfo)
               .then(res => {
                  console.log(res);
                 //  localStorage.setItem("did_address", res.data.did.address);

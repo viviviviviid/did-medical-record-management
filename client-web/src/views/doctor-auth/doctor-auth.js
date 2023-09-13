@@ -12,10 +12,12 @@ export default function DoctorAuth() {
     // jwt 업데이트하고 해당 의사의 핸드폰으로 강제 업데이트 해준다는 컨셉 // 근데 이렇게 딥하게 할필요는 없음 // 테스트할때 편하라고 
     const [waitingList, setWaitingList] = useState([]);
 
+    const serverIP = process.env.SERVER_IP_ADDRESS;
+
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get('http://localhost:5001/user/get-doctor-waiting-list');
+                const response = await axios.get(`http://${serverIP}:5001/user/get-doctor-waiting-list`);
                 setWaitingList(response.data);
                 console.log(waitingList)
             } catch (error) {
@@ -51,7 +53,7 @@ export default function DoctorAuth() {
                                         className='auth-checkbox' 
                                         onClick={() => {
                                             console.log(item)   
-                                            axios.post('http://localhost:5001/doctor/new-doctor', item)
+                                            axios.post(`http://${serverIP}:5001/doctor/new-doctor`, item)
                                             .then(res => {
                                                 console.log(res.data) // 의사의 새로운 jwt 
                                             }).catch(console.log)
