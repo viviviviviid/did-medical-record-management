@@ -1,16 +1,50 @@
-name: Deploy to AWS EC2
+name: Build and Deploy Node.js Projects to AWS EC2
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+env:
+  PROJECT_NAME: cicd_project
+  BUCKET_NAME: did-project-bucket
+  CODE_DEPLOY_APP_NAME: did-medical-records-project-code-deploy
+  DEPLOYMENT_GROUP_NAME: did-medical-records-project-code-deploy-group
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    
-    # 여기에 AWS CodeDeploy 등의 배포 관련 스텝들을 추가합니다.
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.17.1' # 원하는 Node.js 버전으로 변경
+
+      - name: Install Dependencies and Package Projects
+        run: |
+          for dir in _client client client-web client_app did server; do
+            cd $dir
+            npm install
+            zip -qq -r ../$dir-$GITHUB_SHA.zip .
+            cd ..
+          done
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload ZIPs to S3
+        run: |
+          for dir in _client client client-web client_app did server; do
+            aws s3 cp --region ap-northeast-2 ./$dir-$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$dir-$GITHUB_SHA.zip
+          done
+
+      # 아래 Code Deploy 부분은 각 애플리케이션에 맞게 수정하거나 복제하여 사용하세요.
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/server-$GITHUB_SHA.zip
