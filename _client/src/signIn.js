@@ -7,13 +7,15 @@ const OAuthLogin = () => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const serverIP = process.env.SERVER_IP_ADDRESS;
+    console.log("@@@@@@@@@@@@@@@",serverIP)
     const kakaoClientId = "5e5e83f35a6ed8891b1e4e5f3d407bbf"
     const handleLogin = async (data)=>{
       
     try{
       console.log(data);
       const idToken = data.response.access_token;  // 엑세스 토큰 백엔드로 전달
-      axios.post("http://52.79.247.134:5001/user/usercheck", {
+      axios.post(`http://${serverIP}:5001/user/usercheck`, {
         token : idToken
       }).then((res) => {
         console.log(res);

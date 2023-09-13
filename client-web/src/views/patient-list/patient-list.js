@@ -17,6 +17,7 @@ export default function PatientList() {
     const dispatch = useDispatch();
 
     const jwt = process.env.REACT_APP_JWT;
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
 
     const handleMouseOver = (index => {
         setActiveIndex(index);
@@ -30,7 +31,7 @@ export default function PatientList() {
         if(!sessionStorage.getItem("login"))
             navigate("/login");
 
-        axios.post("http://52.79.247.134:5001/doctor/get-patients-list",   // 환자 목록 가져오기
+        axios.post(`http://${serverIP}:5001/doctor/get-patients-list`,   // 환자 목록 가져오기
             { doctorJwt: jwt }
             )    // 의사 jwt (일단 하드코딩)
             .then((res) => {

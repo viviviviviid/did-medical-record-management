@@ -12,7 +12,8 @@ import { setEmail } from '../../redux/actions.js';
 export default function Auth() {
     const navigate = useNavigate();
     const key = process.env.REACT_APP_KAKAO_LOGIN;
-    const uri = 'http://52.79.247.134:3000/login/auth';
+    const serverIP = process.env.SERVER_IP_ADDRESS;
+    const uri = `http://${serverIP}:3000/login/auth`;
     const code = new URL(document.location.toString()).searchParams.get("code");
     const dispatch = useDispatch();
 
@@ -29,7 +30,7 @@ export default function Auth() {
             console.log(tokenObject);
 
             await axios
-                .post('http://52.79.247.134:5001/user/login',   // token 주고 jwt 받는 부분
+                .post(`http://${serverIP}:5001/user/login`,   // token 주고 jwt 받는 부분
                         {token: tokenObject})
                 .then(res => {
                     if(!res.data.dbData){ // 신규가입일때

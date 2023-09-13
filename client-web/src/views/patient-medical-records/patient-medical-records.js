@@ -15,11 +15,12 @@ export default function PatientMedicalRecords() {
     const navigate = useNavigate();
     const patientDid = useSelector(state => state.patientDid);
     const dispatch = useDispatch();
-
     const name = useSelector(state => state.patientName);
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
+
 
     useEffect(() => {
-        axios.post("http://52.79.247.134:5001/doctor/get-all-patient-records", 
+        axios.post(`http://${serverIP}:5001/doctor/get-all-patient-records`, 
             {doctorJwt: sessionStorage.getItem("jwt"), patientDid: patientDid}
             )
             .then((res) => {
