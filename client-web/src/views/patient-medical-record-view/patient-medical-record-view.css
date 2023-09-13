@@ -46,7 +46,9 @@
 }
 
 .input-1 {
-    width: 120px;
+    width:300px;
+    position: relative;
+    left: 30px;
 }
 
 .input-2 {
@@ -61,3 +63,8 @@
     height: 30px;
 }
 
+.date-picker {
+    width:300px;
+    position: relative;
+    left: 30px;
+}

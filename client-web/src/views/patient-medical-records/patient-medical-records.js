@@ -43,8 +43,12 @@ export default function PatientMedicalRecords() {
     return(
         <div className='root'>
             <Header />
+            
             <div className='body column-center'>
-            <p style={{fontSize:'30px'}}>{name}님의 진료 기록</p>
+                <div className='toolbar'>
+                    <NewRecordButton />
+                </div>
+                <p style={{fontSize:'30px'}}>{name}님의 진료 기록</p>
                 <div className='records-box'>
                     <div className='records-index'>
                         <p className='records-index-date'>진료 내용</p>
