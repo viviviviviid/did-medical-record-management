@@ -215,7 +215,7 @@ const getDoctorWaitingList_DB = async (req, res) => {
 
 const test = async (req, res) => { 
   try{
-    console.log("instance check plz")
+    console.log("instance check")
     res.status(200).send(serverIP)
   }catch(error){
     console.log("test fail")
