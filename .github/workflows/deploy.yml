@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  PROJECT_NAME: cicd_project
+  PROJECT_NAME: did-medical-record-management
   BUCKET_NAME: did-project-bucket
   CODE_DEPLOY_APP_NAME: did-medical-records-project-code-deploy
   DEPLOYMENT_GROUP_NAME: did-medical-records-project-code-deploy-group
