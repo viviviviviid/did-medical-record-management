@@ -5,9 +5,13 @@ export default function Login() {
 
     const Rest_api_key = process.env.REACT_APP_KAKAO_LOGIN; //REST API KEY
     const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
+    const redirect_uri = `http://${serverIP}:3000/login/auth` //Redirect URI
+
+    console.log("here", Rest_api_key);
+    console.log(serverIP)
 
     const navigate = useNavigate();
-    const redirect_uri = `http://${serverIP}:3000/login/auth` //Redirect URI
+
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`
     const handleLogin = ()=>{
         window.location.href = kakaoURL

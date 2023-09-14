@@ -11,8 +11,8 @@ export default function DoctorAuth() {
     // Doctor 테이블에 넣기
     // jwt 업데이트하고 해당 의사의 핸드폰으로 강제 업데이트 해준다는 컨셉 // 근데 이렇게 딥하게 할필요는 없음 // 테스트할때 편하라고 
     const [waitingList, setWaitingList] = useState([]);
-
     const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
+
 
     useEffect(() => {
         async function fetchData() {
