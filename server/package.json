@@ -17,8 +17,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "node ./controller/doctor.controller.js",
-    "start": "./node_modules/.bin/nodemon ./server"
+    "test": "node ./controller/doctor.controller.js"
   },
   "author": "",
   "license": "ISC",
