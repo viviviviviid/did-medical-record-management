@@ -16,7 +16,7 @@ else
 fi
 
 # 각 디렉터리별로 의존성 설치
-for dir in client client-web client_app did server; do
+for dir in did server; do
   echo "> $dir 의존성 설치"
   cd $REPOSITORY/$dir
   npm install
