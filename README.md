@@ -1,1 +1,0 @@
-# did-medical-record-management
