@@ -13,9 +13,10 @@ else
   sleep 5
 fi
 
-# 필요한 패키지 설치 (예: 아래의 경우에는 curl을 설치)
+# GitHub CLI의 저장소 공개 키 추가
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+
+# 필요한 패키지 설치
 sudo apt-get update
 sudo apt-get install -y curl
-
-# 여기에 추가적인 작업을 추가할 수 있습니다.
-
