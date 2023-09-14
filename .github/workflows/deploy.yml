@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -32,6 +32,12 @@ jobs:
             cd ..
           done
 
+      # Package root directory (Excluding the directories we already packaged)
+      - name: Package root directory and upload
+        run: |
+          zip -qq -r ./root-$GITHUB_SHA.zip . -x client\* client-web\* client_app\* did\* server\* '*.git*'
+          aws s3 cp --region ap-northeast-2 ./root-$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/root-$GITHUB_SHA.zip
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -45,6 +51,6 @@ jobs:
             aws s3 cp --region ap-northeast-2 ./$dir-$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$dir-$GITHUB_SHA.zip
           done
 
-      # 아래 Code Deploy 부분은 각 애플리케이션에 맞게 수정하거나 복제하여 사용하세요.
+      # Use the root archive for CodeDeploy since it contains appspec.yml
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/server-$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/root-$GITHUB_SHA.zip
