@@ -9,7 +9,7 @@ hooks:
   BeforeInstall:
     - location: scripts/clean_before_deploy.sh
       timeout: 300
-      runas: ubun
+      runas: ubuntu
 
 
   AfterInstall:
