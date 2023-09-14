@@ -25,7 +25,7 @@ jobs:
 
       - name: Install Dependencies and Package Entire Repository
         run: |
-          for dir in client client-web client_app did server; do
+          for dir in did server; do
             cd $dir
             npm install
             cd ..
