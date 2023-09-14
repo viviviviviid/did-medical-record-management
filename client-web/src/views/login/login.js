@@ -4,9 +4,7 @@ import kakaoLogin from '../../assets/images/kakao-login.png';
 export default function Login() {
 
     const Rest_api_key = process.env.REACT_APP_KAKAO_LOGIN; //REST API KEY
-    const serverIP = process.env.SERVER_IP_ADDRESS;
-    console.log("here", Rest_api_key);
-    console.log(serverIP)
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
 
     const navigate = useNavigate();
     const redirect_uri = `http://${serverIP}:3000/login/auth` //Redirect URI

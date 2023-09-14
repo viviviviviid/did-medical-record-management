@@ -7,8 +7,7 @@ const OAuthLogin = () => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const serverIP = process.env.SERVER_IP_ADDRESS;
-    console.log("@@@@@@@@@@@@@@@",serverIP)
+    const serverIP = process.env.REACT_APP_SERVER_IP_ADDRESS;
     const kakaoClientId = "5e5e83f35a6ed8891b1e4e5f3d407bbf"
     const handleLogin = async (data)=>{
       
