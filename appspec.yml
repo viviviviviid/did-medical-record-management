@@ -6,6 +6,11 @@ files:
     destination: /home/ubuntu/project/did-medical-record-management
 
 hooks:
+  BeforeInstall:
+    - location: scripts/clean_before_deploy.sh
+      timeout: 300
+      runas: ubun
+
 
   AfterInstall:
     - location: scripts/deploy.sh
