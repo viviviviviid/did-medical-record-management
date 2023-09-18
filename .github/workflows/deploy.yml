@@ -9,7 +9,7 @@ env:
   BUCKET_NAME: did-project-bucket
   CODE_DEPLOY_APP_NAME: did-medical-records-project-code-deploy
   DEPLOYMENT_GROUP_NAME: did-medical-records-project-code-deploy-group
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest
