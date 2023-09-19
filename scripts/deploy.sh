@@ -44,6 +44,6 @@ for dir in "${!APPS[@]}"; do
 
   # 애플리케이션 시작
   echo "> [$APP_NAME] 애플리케이션 시작"
-  nohup npm start > $REPOSITORY/$dir/nohupLogs.out 2>&1 &
+  nohup npm start >> $REPOSITORY/$dir/nohupLogs.out 2>&1 &
 done
 
