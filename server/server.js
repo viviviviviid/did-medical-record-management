@@ -1,16 +1,17 @@
+const https = require('https');
+const fs = require('fs');
 const express = require("express");
 const app = express();
-const cors = require("cors");
-const port = 5001;
 
-app.use(
-  cors({ origin: true, credentials: true }),
-  express.json(),
-);
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/api.dmrs.space/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/api.dmrs.space/fullchain.pem')
+};
 
-
-app.listen(port, () => {
-  console.log("서버가 정상적으로 실행되었습니다.");
+app.get('/', (req, res) => {
+  res.send('Hello HTTPS!');
 });
 
-require("./routes/index.js")(app);
+https.createServer(options, app).listen(443, () => {
+  console.log('HTTPS Server Running at 443');
+});
