@@ -1,6 +1,8 @@
 const https = require('https');
 const fs = require('fs');
 const express = require("express");
+const cors = require("cors");
+
 const app = express();
 
 const options = {
@@ -8,10 +10,14 @@ const options = {
   cert: fs.readFileSync('/etc/letsencrypt/live/api.dmrs.space/fullchain.pem')
 };
 
-app.get('/', (req, res) => {
-  res.send('Hello HTTPS!');
-});
+app.use(
+  cors({ origin: true, credentials: true }),
+  express.json(),
+);
 
-https.createServer(options, app).listen(443, () => {
-  console.log('HTTPS Server Running at 443');
+// 기존 라우트 추가
+require("./routes/index.js")(app);
+
+https.createServer(options, app).listen(5001, () => {
+  console.log('HTTPS Server Running at 5001');
 });
