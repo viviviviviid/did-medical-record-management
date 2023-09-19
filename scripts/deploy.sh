@@ -7,7 +7,9 @@ declare -A PORTS=( ["did"]=5002 ["server"]=5001 )
 
 for dir in "${!APPS[@]}"; do
   APP_NAME=${APPS[$dir]}
-  CURRENT_PID=$(pgrep -f $APP_NAME)
+  APP_PATH="$REPOSITORY/$dir/server.js"  # 서버 경로 추가
+
+  CURRENT_PID=$(pgrep -f $APP_PATH)  # 애플리케이션 이름 대신 서버 경로로 찾기
 
   # 기존에 실행 중인 프로세스 종료
   if [ -z $CURRENT_PID ]
@@ -17,6 +19,13 @@ for dir in "${!APPS[@]}"; do
     echo "> kill -9 $CURRENT_PID"
     kill -15 $CURRENT_PID
     sleep 5
+
+    # 확인 후 강제 종료
+    NEW_PID=$(pgrep -f $APP_PATH)
+    if [ ! -z $NEW_PID ]; then
+      echo "> [$dir] 강제 종료 중 PID: $NEW_PID"
+      kill -9 $NEW_PID
+    fi
   fi
 
   # 포트 충돌 해결
@@ -35,5 +44,6 @@ for dir in "${!APPS[@]}"; do
 
   # 애플리케이션 시작
   echo "> [$APP_NAME] 애플리케이션 시작"
-  nohup npm start > /dev/null 2>&1 &
+  nohup npm start > $REPOSITORY/$dir/nohupLogs.out 2>&1 &
 done
+
