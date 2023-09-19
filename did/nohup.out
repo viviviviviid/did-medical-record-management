@@ -1,0 +1,10 @@
+
+> did@1.0.0 start
+> node server.js here.out
+
+서버가 정상적으로 실행되었습니다.
+
+> did@1.0.0 start
+> node server.js nohup.out
+
+서버가 정상적으로 실행되었습니다.
