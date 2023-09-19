@@ -44,5 +44,5 @@ for dir in "${!APPS[@]}"; do
 
   # 애플리케이션 시작
   echo "> [$APP_NAME] 애플리케이션 시작"
-  nohup npm start >> /home/ubuntu/project/${dir}_nohupLogs.out 2>&1 &  # 로그 파일 경로 수정
+  nohup npm start >> $REPOSITORY/$dir/${dir}_nohupLogs.out 2>&1 &  # 로그 파일 경로 수정
 done

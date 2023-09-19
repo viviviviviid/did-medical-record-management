@@ -1,0 +1,28 @@
+nohup: ignoring input
+
+> did@1.0.0 start
+> node server.js
+
+node:events:492
+      throw er; // Unhandled 'errKilled
+nt
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5002
+    at Server.setupListenHandle [as _listen2] (node:net:1751:16)
+    at listenInCluster (node:net:1799:12)
+    at Server.listen (node:net:1887:7)
+    at Function.listen (/home/ubuntu/project/did-medical-record-management/did/node_modules/express/lib/application.js:635:24)
+    at file:///home/ubuntu/project/did-medical-record-management/did/server.js:17:5
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1778:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 5002
+}
+
+Node.js v18.17.1
