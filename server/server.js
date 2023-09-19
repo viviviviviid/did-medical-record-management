@@ -5,10 +5,9 @@ const cors = require("cors");
 const app = express();
 const port = 5001;
 
-// HTTPS 설정
 const httpsOptions = {
-    key: fs.readFileSync('./api.dmrs.space-key.pem'),
-    cert: fs.readFileSync('./api.dmrs.space.pem')
+    key: fs.readFileSync('/usr/local/etc/certs/api.dmrs.space-key.pem'),
+    cert: fs.readFileSync('/usr/local/etc/certs/api.dmrs.space.pem')
 };
 
 app.use(cors());
