@@ -6,9 +6,6 @@ files:
     destination: /home/ubuntu/project/did-medical-record-management
     overwrite: yes
 
-
-
-
 hooks:
   BeforeInstall:
     - location: scripts/clean_before_deploy.sh
