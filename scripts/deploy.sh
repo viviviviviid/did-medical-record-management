@@ -5,6 +5,9 @@ REPOSITORY=/home/ubuntu/project/did-medical-record-management
 declare -A APPS=( ["did"]="did-medical-records-did" ["server"]="did-medical-records-server" )
 declare -A PORTS=( ["did"]=5002 ["server"]=5001 )
 
+# nvm 설정
+source ~/.nvm/nvm.sh
+
 for dir in "${!APPS[@]}"; do
   APP_NAME=${APPS[$dir]}
   APP_PATH="$REPOSITORY/$dir/server.js"  # 서버 경로 추가
@@ -40,9 +43,13 @@ for dir in "${!APPS[@]}"; do
   # 각 디렉터리별로 의존성 설치
   echo "> [$APP_NAME] 의존성 설치"
   cd $REPOSITORY/$dir
+  
+  # Node.js 버전 설정
+  nvm use 18.17.1
+  
   npm install
 
   # 애플리케이션 시작
   echo "> [$APP_NAME] 애플리케이션 시작"
-  nohup npm start >> $REPOSITORY/$dir/${dir}_nohupLogs.out 2>&1 &  # 로그 파일 경로 수정
+  nohup npm start >> /home/ubuntu/project/${dir}_nohupLogs.out 2>&1 &  # 로그 파일 경로 수정
 done

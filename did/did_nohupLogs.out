@@ -1,0 +1,10 @@
+
+> did@1.0.0 start
+> node server.js
+
+file:///home/ubuntu/project/did-medical-record-management/did/node_modules/did-jwt-vc/lib/index.module.js:83
+    ...input.vc?.credentialSubject
+                ^
+
+SyntaxError: Unexpected token '.'
+    at Loader.moduleStrategy (internal/modules/esm/translators.js:133:18)
