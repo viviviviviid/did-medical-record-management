@@ -1,0 +1,10 @@
+
+> did@1.0.0 start
+> node server.js
+
+file:///home/ubuntu/project/did-medical-record-management/did/node_modules/ethr-did/lib/index.module.js:36
+      this.controller = new EthrDidController(conf.identifier, undefined, txSigner, chainNameOrId, conf.provider || conf.web3?.currentProvider, conf.rpcUrl, conf.registry || REGISTRY);
+                                                                                                                              ^
+
+SyntaxError: Unexpected token '.'
+    at Loader.moduleStrategy (internal/modules/esm/translators.js:133:18)
