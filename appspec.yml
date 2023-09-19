@@ -4,6 +4,10 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/project/did-medical-record-management
+    overwrite: yes
+
+
+
 
 hooks:
   BeforeInstall:
