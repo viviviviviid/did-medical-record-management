@@ -6,8 +6,8 @@ const app = express();
 const port = 5001;
 
 const httpsOptions = {
-    key: fs.readFileSync('/usr/local/etc/certs/api.dmrs.space-key.pem'),
-    cert: fs.readFileSync('/usr/local/etc/certs/api.dmrs.space.pem')
+    key: fs.readFileSync('/etc/letsencrypt/live/api.dmrs.space/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/api.dmrs.space/fullchain.pem')
 };
 
 app.use(cors());

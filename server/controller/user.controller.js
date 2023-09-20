@@ -16,7 +16,7 @@ const serverIP = process.env.SERVER_IP_ADDRESS;
  */
 const isUserRegistered = async (req, res) => {
   try {
-	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+	console.log(req.body);
     const access_token = req.body.token.access_token;
 	console.log(access_token);
     const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
