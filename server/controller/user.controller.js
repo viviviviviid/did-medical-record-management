@@ -57,7 +57,8 @@ const userFind = async (userInfo) => {
  */
 const signUp = async (req, res) => {
   try {
-    let jwt, wallet, SUBJECT_DID;
+    console.log(req.body);
+	let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
     const hash = await createHash4DidUpdate([]); // 회원가입 전이므로 빈객체
 
@@ -100,18 +101,19 @@ const userRegister = async (userInfo) => {
  */
 const newRecord = async (req, res) => {
   try{
+    console.log("body: ",req.body);
     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
-    const decodedPayload = await jwt.decode(req.body.vcJwt);
+    // const patientVcJwt = req.body.patientDid 
+    
+    // 모바일 완료전까지만 환자는 하드코딩
+    const patientVcJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6Iu2ZmOyekCIsImVtYWlsIjoic2VvLW1pbnNlb2tAZGF1bS5uZXQiLCJiaXJ0aGRheSI6IjAwMDEwMSIsInBob25lTnVtYmVyIjoiMDEwLTM4MjktMTAyMiIsImlzRG9jdG9yIjp0cnVlLCJhZGRyZXNzIjoiMHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIn0sIm1lZGljYWxSZWNvcmRzIjoiNGY1M2NkYTE4YzJiYWEwYzAzNTRiYjVmOWEzZWNiZTVlZDEyYWI0ZDhlMTFiYTg3M2MyZjExMTYxMjAyYjk0NSIsImRvY3RvckxpY2Vuc2UiOmZhbHNlfX0sInN1YiI6eyJkaWQiOiJkaWQ6ZXRocjpnb2VybGk6MHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIiwiYWRkcmVzcyI6IjB4MkNCMTc1QTk3MjAzMDY0M0I4ZDJmMTY5RTM1MWUzOTM3MDJhODg2YSJ9LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgzZTcwMzkyOWM2YzQxYjAwZmJhM0FCMzU1RmM1OUUzNEE3MTQ3MTFGIn0.sZrMa1rOzbDJDmqCxEp15lJoF40mDQdfV83PcS_nWhkSis-GWCZo1ZhjV-KcD9lo1MtjutRpvtKPiMBf0bJJNwA"
+    const decodedPayload = await jwt.decode(patientVcJwt);
     console.log(decodedPayload)
-    const patientDID = decodedPayload.sub;
+    const patientDID = decodedPayload.sub
     const userInfo = decodedPayload.vc.credentialSubject.userInfo;
+    const doctorDID = req.body.doctorDid;
 
-    // 로그인한 의사 본인의 DID // 모바일 개발 완료전까지 
-    const doctorDID = {
-      "did":"did:ethr:goerli:0xEC6138620175229050554653Bf36a1f49e767e8A",
-      "address":"0xEC6138620175229050554653Bf36a1f49e767e8A"
-    };
-
+    console.log(patientDID);
     // 새롭게 추가된 진료내용을 db에 저장 
     await medicalRecordRegister(doctorDID, patientDID, req.body.recordData);
     

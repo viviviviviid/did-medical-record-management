@@ -12,6 +12,7 @@ const rpcUrl = process.env.RPC_URL;
 const signUp_DID = async (req, res) => {
 
   try{
+console.log(req.body.userInfo);
     const data = req.body.userInfo;
 
     const wallet = ethers.Wallet.createRandom()
