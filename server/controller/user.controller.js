@@ -101,7 +101,7 @@ const userRegister = async (userInfo) => {
 const newRecord = async (req, res) => {
   try{
     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
-    const decodedPayload = await jwt.decode(req.body.vcJwt);
+    const decodedPayload = await jwt.decode(req.body.patientDid);
     console.log(decodedPayload)
     const patientDID = decodedPayload.sub;
     const userInfo = decodedPayload.vc.credentialSubject.userInfo;
