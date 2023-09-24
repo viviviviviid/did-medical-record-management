@@ -101,39 +101,42 @@ const userRegister = async (userInfo) => {
  */
 const newRecord = async (req, res) => {
   try{
-    console.log("body: ",req.body);
     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
     // const patientVcJwt = req.body.patientDid 
     
     // 모바일 완료전까지만 환자는 하드코딩
     const patientVcJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6Iu2ZmOyekCIsImVtYWlsIjoic2VvLW1pbnNlb2tAZGF1bS5uZXQiLCJiaXJ0aGRheSI6IjAwMDEwMSIsInBob25lTnVtYmVyIjoiMDEwLTM4MjktMTAyMiIsImlzRG9jdG9yIjp0cnVlLCJhZGRyZXNzIjoiMHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIn0sIm1lZGljYWxSZWNvcmRzIjoiNGY1M2NkYTE4YzJiYWEwYzAzNTRiYjVmOWEzZWNiZTVlZDEyYWI0ZDhlMTFiYTg3M2MyZjExMTYxMjAyYjk0NSIsImRvY3RvckxpY2Vuc2UiOmZhbHNlfX0sInN1YiI6eyJkaWQiOiJkaWQ6ZXRocjpnb2VybGk6MHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIiwiYWRkcmVzcyI6IjB4MkNCMTc1QTk3MjAzMDY0M0I4ZDJmMTY5RTM1MWUzOTM3MDJhODg2YSJ9LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgzZTcwMzkyOWM2YzQxYjAwZmJhM0FCMzU1RmM1OUUzNEE3MTQ3MTFGIn0.sZrMa1rOzbDJDmqCxEp15lJoF40mDQdfV83PcS_nWhkSis-GWCZo1ZhjV-KcD9lo1MtjutRpvtKPiMBf0bJJNwA"
     const decodedPayload = await jwt.decode(patientVcJwt);
-    console.log(decodedPayload)
     const patientDID = decodedPayload.sub
     const userInfo = decodedPayload.vc.credentialSubject.userInfo;
     const doctorDID = req.body.doctorDid;
 
-    console.log(patientDID);
     // 새롭게 추가된 진료내용을 db에 저장 
     await medicalRecordRegister(doctorDID, patientDID, req.body.recordData);
     
     // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
     const dbData = await getAllMyRecords_DB(patientDID);
 
-    console.log(dbData)
-
     // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
     const hash = await createHash4DidUpdate(dbData);
+
+console.log("hash@@@@@@@@@2", hash);
 
     // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
     await axios.post(`http://${serverIP}:5002/did/new-record`, {hash: hash, decodedPayload:decodedPayload})
       .then(result => {
         const updatedVcJwt = result.data
-        return res.status(200).send({dbData, updatedVcJwt});
+	console.log("updatedJWT@@@@@@@@@@@@@@@", updatedVcJwt);
+        const data = {
+          dbData: dbData,
+          updatedVcJwt: updatedVcJwt,
+        }
+        console.log(data)
+	return res.status(200).send(data);
       })
       .catch(err => console.log("here", err))
   }catch(error){
-    console.log(error)
+    console.log("error@@@@@@@@@@@@@@@@@@@",error)
     return res.status(400).send(error);
   }
 }
@@ -145,7 +148,7 @@ const getRecord = async (req, res) => {
   try{
     const vcJwt = req.body;
     let did, hashInJwt, integrityCheck;
-
+console.log("vcJwt@@@@@@@@@@@@@@@@@", vcJwt);
     // vcJwt 검증
     await axios.post(`http://${serverIP}:5002/did/verify-vc`, vcJwt)
       .then(result => {
