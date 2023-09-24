@@ -10,7 +10,10 @@ const httpsOptions = {
     cert: fs.readFileSync('/etc/letsencrypt/live/api.dmrs.space/fullchain.pem')
 };
 
-app.use(cors());
+app.use(
+  cors({ origin: true, credentials: true }),
+  express.json(),
+);
 
 app.get('/', (req, res) => {
     res.send('SERVER API, "/"');

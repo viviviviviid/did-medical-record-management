@@ -17,7 +17,6 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
     medicationPrescribed, followUp, additionalComments
   } = medicalRecord;
 
-  doctorDID = JSON.stringify(doctorDID)
   patientDID = JSON.stringify(patientDID)
 
   console.log("doctorDID: ", doctorDID)
@@ -112,22 +111,15 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
 
 const getAllMyPatientList = async (req, res) => {
   try{
+	await console.log("req.body", req.body)
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
-    // const decodedPayload = await jwt.decode(req.body.doctorJwt)
-    // console.log(decodedPayload.vc.credentialSubject.userInfo)
-    // const doctorDID = decodedPayload.sub.did;
-    // console.log("doctorDID를 가져옴: ", doctorDID);
+    const decodedPayload = await jwt.decode(req.body.doctorJwt)
+	await console.log("decodedPayload", decodedPayload);
+    const doctorDID = await decodedPayload.sub;
+    await console.log("doctorDID",JSON.stringify(doctorDID));
     // 환자들 유저 정보 리스트만 필요
-    // const dbData = await getAllMyPatientsList_DB(JSON.stringify(doctorDID));
-
-    // #### TEST CODE #### //
-    // 원래는 jwt에서 did를 추출하지만, 테스트용이므로 의사의 did 직접 제공
-    const tempDoctorDID = JSON.parse(process.env.TEMP_DOCTOR_DID);
-    console.log(tempDoctorDID)
-
-    // 환자들 유저 정보 리스트만 필요
-    const dbData = await getAllMyPatientsList_DB(tempDoctorDID);
-    console.log(dbData);
+    const dbData = await getAllMyPatientsList_DB(JSON.stringify(doctorDID));
+    console.log("dbData",dbData);
     // 유저정보에서 wallet, did는 필요없음 -> 제거하고 보내야 함
     res.status(200).send(dbData);
   }catch(error){

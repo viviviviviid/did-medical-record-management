@@ -11,7 +11,8 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-    res.send('DID API, "/"');
+    	console.log("default api");
+	res.send('DID API, "/"');
 });
 
 app.listen(port, () => {
