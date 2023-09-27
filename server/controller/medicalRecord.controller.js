@@ -133,19 +133,10 @@ const getAllMyPatientsRecords = async (req, res) => {
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
     console.log("meidcalRecord.controllet.js 134: ",req.body)
     const decodedPayload = await jwt.decode(req.body.doctorJwt);
-    const doctorDID = decodedPayload.sub.did;
+    const doctorDID = decodedPayload.sub;
     const patientDID = req.body.patientDid;
-    
-    console.log("doctorDID를 가져옴: ", doctorDID);
-    console.log("patientDID 가져옴: ", patientDID);
-
-    // // 프론트랑 연결될때까지, DID 직접 주입 => patientDID 뽑아오는게 제일 시급.s
-    // const tempDoctorDID = JSON.parse(process.env.TEMP_DOCTOR_DID);
-    // const tempPatientDID = JSON.parse(process.env.TEMP_PATIENT_DID);
-
-    // const dbData = await getAllMyPatientsRecords_DB(tempDoctorDID, tempPatientDID);
-
-    // res.status(200).send(dbData);
+    const dbData = await getAllMyPatientsRecords_DB(doctorDID, patientDID);
+    res.status(200).send(dbData);
   }catch(error){
     console.log("getAllPatientRecords function error: ", error);
     res.status(400).send(error);
