@@ -113,20 +113,14 @@ const newRecord = async (req, res) => {
 
     // 새롭게 추가된 진료내용을 db에 저장 
     await medicalRecordRegister(doctorDID, patientDID, req.body.recordData);
-    
     // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
     const dbData = await getAllMyRecords_DB(patientDID);
-
     // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
     const hash = await createHash4DidUpdate(dbData);
-
-console.log("hash@@@@@@@@@2", hash);
-
     // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
     await axios.post(`http://${serverIP}:5002/did/new-record`, {hash: hash, decodedPayload:decodedPayload})
       .then(result => {
         const updatedVcJwt = result.data
-	console.log("updatedJWT@@@@@@@@@@@@@@@", updatedVcJwt);
         const data = {
           dbData: dbData,
           updatedVcJwt: updatedVcJwt,
@@ -134,9 +128,9 @@ console.log("hash@@@@@@@@@2", hash);
         console.log(data)
 	return res.status(200).send(data);
       })
-      .catch(err => console.log("here", err))
+      .catch(err => console.log(err))
   }catch(error){
-    console.log("error@@@@@@@@@@@@@@@@@@@",error)
+    console.log(error);
     return res.status(400).send(error);
   }
 }
@@ -218,6 +212,31 @@ const getDoctorWaitingList_DB = async (req, res) => {
   }
 } 
 
+// /**
+//  * 모바일 기기에서 환자의 jwt 받아오는 함수
+//  */
+// const jwtFromApp = async (req, res) => {
+//   try{
+//     const vcJwt = req.body.patientVcJwt
+//     await jwtToWeb(vcJwt)
+//   }catch(error){
+//     return res.status(400).status(error)
+//   }
+// }
+
+// /**
+//  * 받아온 환자의 jwt를 의사의 웹으로 보내주는 함수
+//  */
+// const jwtToWeb = (vcJwt) => {
+//   try{
+
+//   }catch(error){
+
+//   }
+// }
+
+
+
 const test = async (req, res) => { 
   try{
     console.log("test success")
@@ -244,6 +263,7 @@ module.exports = {
   newRecord,
   getRecord,
   getDoctorWaitingList_DB,
+  // jwtFromApp,
   test
 };
 
