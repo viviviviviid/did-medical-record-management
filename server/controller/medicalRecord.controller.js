@@ -116,9 +116,9 @@ const getAllMyPatientList = async (req, res) => {
     const decodedPayload = await jwt.decode(req.body.doctorJwt)
 	await console.log("decodedPayload", decodedPayload);
     const doctorDID = await decodedPayload.sub;
-    await console.log("doctorDID",JSON.stringify(doctorDID));
+    await console.log("doctorDID",doctorDID);
     // 환자들 유저 정보 리스트만 필요
-    const dbData = await getAllMyPatientsList_DB(JSON.stringify(doctorDID));
+    const dbData = await getAllMyPatientsList_DB(doctorDID);
     console.log("dbData",dbData);
     // 유저정보에서 wallet, did는 필요없음 -> 제거하고 보내야 함
     res.status(200).send(dbData);
