@@ -136,7 +136,7 @@ const getAllMyPatientsRecords = async (req, res) => {
     const patientDID = req.body.patientDid;
     console.log("doctorDID: ", doctorDID);
     console.log("patientDID: ", patientDID);
-    const dbData = await getAllMyPatientsRecords_DB(JSON.stringify(doctorDID), JSON.stringify(patientDID));
+    const dbData = await getAllMyPatientsRecords_DB(JSON.stringify(doctorDID), patientDID);
     console.log("dbData: ", dbData);
     res.status(200).send(dbData);
   }catch(error){
