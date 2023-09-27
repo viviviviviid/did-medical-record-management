@@ -131,11 +131,13 @@ const getAllMyPatientList = async (req, res) => {
 const getAllMyPatientsRecords = async (req, res) => {
   try{
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
-    console.log("meidcalRecord.controllet.js 134: ",req.body)
     const decodedPayload = await jwt.decode(req.body.doctorJwt);
     const doctorDID = decodedPayload.sub;
     const patientDID = req.body.patientDid;
-    const dbData = await getAllMyPatientsRecords_DB(doctorDID, patientDID);
+    console.log("doctorDID: ", doctorDID);
+    console.log("patientDID: ", patientDID);
+    const dbData = await getAllMyPatientsRecords_DB(JSON.stringify(doctorDID), JSON.stringify(patientDID));
+    console.log("dbData: ", dbData);
     res.status(200).send(dbData);
   }catch(error){
     console.log("getAllPatientRecords function error: ", error);
