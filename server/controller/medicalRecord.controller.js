@@ -96,10 +96,6 @@ const getAllMyPatientsList_DB = async (doctorDID) => {
 }
 
 const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
-  doctorDID = JSON.stringify(doctorDID);
-  patientDID = JSON.stringify(patientDID);
-  console.log("doctorDID: ",doctorDID)
-  console.log("patientDID: " ,patientDID)
   return await db.MedicalRecords.findAll({
     where: {
       doctorDID: doctorDID,
