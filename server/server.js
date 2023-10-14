@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
     res.send('SERVER API, "/"');
 });
 
-// HTTPS 서버 시작
 const server = https.createServer(httpsOptions, app).listen(port, () => {
     console.log(`HTTPS 서버가 ${port} 포트에서 정상적으로 실행되었습니다.`);
 });
