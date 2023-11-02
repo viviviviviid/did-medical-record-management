@@ -5,7 +5,6 @@ const { Doctor } = require("./doctor.model.js")
 const { initModels } = require("./init.model")
 
 const db = {};
-
 db.sequelize = sequelize;
 db.User = User;
 db.Doctor = Doctor;
