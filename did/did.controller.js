@@ -10,8 +10,8 @@ const chainNameOrId = "goerli"
 const rpcUrl = process.env.RPC_URL;
 
 const signUp_DID = async (req, res) => {
-
   try{
+    console.log("/register")
 console.log(req.body.userInfo);
     const data = req.body.userInfo;
 
@@ -61,6 +61,7 @@ console.log(req.body.userInfo);
 }
 
 const addRecord_DID = async (req, res) => {
+  console.log("/new-record")
   const SUBJECT_DID = req.body.decodedPayload.sub;
   const recordHash = req.body.hash;
   const userInfo = req.body.decodedPayload.vc.credentialSubject.userInfo;
@@ -118,6 +119,7 @@ const createVcJwtWithPayload = async (vcPayload) => {
  */
 const verifyVC_DID = async (req, res) => {
   try{
+    console.log("/verify-vc")
     const vcJwt = req.body.vcJwt;
     const verifiedVC = await verifyCredential(vcJwt, did.resolver)
     return res.status(200).send(verifiedVC);
