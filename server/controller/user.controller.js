@@ -12,6 +12,7 @@ const serverIP = process.env.SERVER_IP_ADDRESS;
  */
 const isUserRegistered = async (req, res) => {
   try {
+  console.log("/login")
 	console.log(req.body);
     const access_token = req.body.token.access_token;
 	console.log(access_token);
@@ -53,6 +54,7 @@ const userFind = async (userInfo) => {
  */
 const signUp = async (req, res) => {
   try {
+    console.log("/signup")
     console.log(req.body);
 	let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
@@ -97,6 +99,7 @@ const userRegister = async (userInfo) => {
  */
 const newRecord = async (req, res) => {
   try{
+    console.log("/new-record")
     // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
     // const patientVcJwt = req.body.patientDid 
     
@@ -136,6 +139,7 @@ const newRecord = async (req, res) => {
  */
 const getRecord = async (req, res) => {
   try{
+    console.log("/get-my-record")
     const vcJwt = req.body;
     let did, hashInJwt, integrityCheck;
 console.log("vcJwt@@@@@@@@@@@@@@@@@", vcJwt);
@@ -179,6 +183,7 @@ console.log("vcJwt@@@@@@@@@@@@@@@@@", vcJwt);
 
 const getDoctorWaitingList_DB = async (req, res) => { 
   try{
+    console.log("/get-doctor-waiting-list")
     // 나중에 쿼리문 하나로 해결하기
 
     // 1. isDoctor가 true인 모든 User 가져오기
@@ -235,6 +240,7 @@ const getDoctorWaitingList_DB = async (req, res) => {
 
 const test = async (req, res) => { 
   try{
+    console.log("/test")
     console.log("test success")
     res.status(200).send("test success")
   }catch(error){
