@@ -1,11 +1,7 @@
 require("dotenv").config();
 const db = require("../model/index.js");
-const express = require("express");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const { use } = require("../routes/user.route");
-const { Op } = require('sequelize');
-const app = express();
 const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB } = require("./medicalRecord.controller.js");
 
 const serverIP = process.env.SERVER_IP_ADDRESS;

@@ -11,7 +11,6 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-    	console.log("default api");
 	res.send('DID API, "/"');
 });
 
