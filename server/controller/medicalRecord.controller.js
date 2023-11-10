@@ -70,7 +70,7 @@ const getAllMyRecords_DB = async (patientDID) => {
     console.log(patientDID);
     return await db.MedicalRecords.findAll({
       where: {patientDID: patientDID},
-      order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+      order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
     });
   }catch(error){
     console.log("getAllMyRecords_DB function error :", error)
@@ -84,7 +84,7 @@ const getAllMyPatientsList_DB = async (doctorDID) => {
     const dbData = await db.MedicalRecords.findAll({
       where: {doctorDID: doctorDID},
       attributes: ["patientDID"],
-      order: [['recordNumber', 'DESC']], // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+      order: [['id', 'DESC']], // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
     });
     const patientDidList = dbData.map(el => {
       return el.dataValues.patientDID
@@ -102,7 +102,7 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
       doctorDID: doctorDID,
       patientDID: patientDID
     },
-    order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+    order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
   });
 }
 
@@ -149,7 +149,7 @@ const getHospitalRecords_DB = async (patientDID, hospital) => {
       patientDID: patientDID,
       hospital: hospital
     },
-    order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+    order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
   });
 }
 

@@ -4,7 +4,7 @@ const { sequelize } = require("./sequelize/sq.instance");
 const MedicalRecords = sequelize.define(
   "medicalRecords", 
   {
-    recordNumber: {
+    id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -26,53 +26,49 @@ const MedicalRecords = sequelize.define(
       },
     },
     // Basic Information
-    hospital: { 
+    hospital: {  // hospital
       type: DataTypes.STRING, // 진료를 받은 병원 이름
     },
-    doctorName: { 
+    dn: {  // doctorName
       type: DataTypes.STRING, // 담당 의사 이름
     },
-    dateOfVisit: { 
+    dv: { // dateOfVisit
       type: DataTypes.STRING, // 진료받은 날짜 및 시간
     },
-    // Clinical Information
-    historyOfPresentIllness: {
+    hi: { // historyOfPresentIllness
       type: DataTypes.STRING, 
     },
-    pastMedicalHistory: {
+    ph: { // pastMedicalHistory
       type: DataTypes.STRING, 
     },
-    medications: {
+    me: { // medications
       type: DataTypes.STRING, 
     },
-    allergies: {
+    al: { // allergies
       type: DataTypes.STRING, 
     },
-    // Examination Findings
-    physicalExamination: {
+    pe: { // physicalExamination
       type: DataTypes.STRING, // 신체 검사 결과
     },
-    laboratoryResults: {
+    lr: { // laboratoryResults
       type: DataTypes.STRING, // 실험실 검사 결과 (예: 혈액 검사) 
     },
-    radiologicalFindings: {
+    rf: { // radiologicalFindings
       type: DataTypes.STRING, // 영상 검사 결과 (예: X-ray, MRI 등)
     },
-    // Diagnosis and Treatment
-    diagnosis: {
+    di: { // diagnosis
       type: DataTypes.STRING, // 진단 결과
     },
-    treatment: {
+    tr: { // treatment
       type: DataTypes.STRING, // 치료 방법 및 계획
     },
-    medicationPrescribed: {
+    mp: { // medicationPrescribed
       type: DataTypes.STRING, // 처방된 약물
     },
-    // Additional Notes
-    followUp: {
+    fu: { // followUp
       type: DataTypes.STRING, // 후속 진료 정보
     },
-    additionalComments: {
+    ac: { // additionalComments
       type: DataTypes.STRING, // 의사나 기타 의료 직원의 추가적인 코멘트
     },
     update_at: {
