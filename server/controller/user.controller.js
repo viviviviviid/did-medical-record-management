@@ -2,7 +2,7 @@ require("dotenv").config();
 const db = require("../model/index.js");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB } = require("./medicalRecord.controller.js");
+const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB, getHospitalRecords_DB } = require("./medicalRecord.controller.js");
 
 const serverIP = process.env.SERVER_IP_ADDRESS;
 
@@ -95,7 +95,7 @@ const userRegister = async (userInfo) => {
 }
 
 /**
- * 의사가 요청한 진료결과 DID 업데이트 및 DB 등록
+ * 신원 Vc에 진료결과의 Hash를 담아 Vc 재발급 및 협회 DB 등록
  */
 const newRecord = async (req, res) => {
   try{
@@ -130,6 +130,36 @@ const newRecord = async (req, res) => {
       .catch(err => console.log(err))
   }catch(error){
     console.log(error);
+    return res.status(400).send(error);
+  }
+}
+
+/**
+ * 환자가 진료 본 병원에 대한 Vc 발급 또는 재발급
+ */
+const reissueHospitalVc = async (req, res) => {
+  try{
+    // const hospital = req.body.hospital;
+    // const patientDID = req.body.did
+    // 테스트용 하드코딩
+    var hospital = "서울병원";
+    var patientDID = {
+      "did":"did:ethr:goerli:0x2CB175A972030643B8d2f169E351e393702a886a",
+      "address":"0x2CB175A972030643B8d2f169E351e393702a886a"
+    }
+    var dbData = await getHospitalRecords_DB(patientDID, hospital);
+    dbData = dbData.map(record => record.dataValues); // 필터링
+    console.log("reissueHospitalVc dbData: ", dbData)
+
+    await axios.post(`http://${serverIP}:5002/did/issue-vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
+      .then(result => {
+        const hospitalVcJwt = result.data;
+        console.log(hospitalVcJwt);
+	      return res.status(200).send(hospitalVcJwt);
+      })
+      .catch(err => console.log(err))
+  }catch(error){
+    console.log("reissueHospitalVc function error: ",error);
     return res.status(400).send(error);
   }
 }
@@ -240,6 +270,7 @@ const getDoctorWaitingList_DB = async (req, res) => {
 
 const test = async (req, res) => { 
   try{
+    reissueHospitalVc()
     console.log("/test")
     console.log("test success")
     res.status(200).send("test success")
@@ -265,6 +296,7 @@ module.exports = {
   newRecord,
   getRecord,
   getDoctorWaitingList_DB,
+  reissueHospitalVc,
   // jwtFromApp,
   test
 };

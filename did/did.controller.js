@@ -60,7 +60,9 @@ console.log(req.body.userInfo);
   }
 }
 
-const addRecord_DID = async (req, res) => {
+
+
+const addRecordHash_DID = async (req, res) => {
   console.log("/new-record")
   const SUBJECT_DID = req.body.decodedPayload.sub;
   const recordHash = req.body.hash;
@@ -84,6 +86,32 @@ const addRecord_DID = async (req, res) => {
   }
 
   const vcJwt = await createVcJwtWithPayload(vcPayload);
+  res.status(200).send(vcJwt)
+}
+
+const issueVc_DID = async (req, res) => {
+  const SUBJECT_DID = req.body.patientDID;
+  const hospital = req.body.hospital;
+  const medicalRecords = req.body.dbData;
+
+  const vcPayload = {
+    sub: SUBJECT_DID,
+    vc: {
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiableCredential'],
+      credentialSubject: {
+        issuer: {
+          name: 'Medical Record Management Association',
+          address: process.env.ISSUER_ADDRESS,
+        },
+        hospital: hospital,
+        medicalRecords: medicalRecords
+      }
+    }
+  }
+  console.log("issueVc_DID function vcPayload: ", vcPayload);
+  const vcJwt = await createVcJwtWithPayload(vcPayload);
+  console.log("issueVc_DID function vcJwt: ", vcJwt);
   res.status(200).send(vcJwt)
 }
 
@@ -130,4 +158,4 @@ const verifyVC_DID = async (req, res) => {
 }
 
 
-export default { signUp_DID, addRecord_DID, verifyVC_DID };
+export default { signUp_DID, addRecordHash_DID, issueVc_DID, verifyVC_DID };

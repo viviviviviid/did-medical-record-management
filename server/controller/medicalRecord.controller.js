@@ -48,6 +48,7 @@ const createHash4DidUpdate = async (dbData) => {
   hash.update(stringFormData);
   return hash.digest('hex');
 }
+
 const filter4nonDuplicate = async (targetArray) => {
   try{
     const nonDuplicated_Set = new Set(targetArray);
@@ -141,12 +142,24 @@ const getAllMyPatientsRecords = async (req, res) => {
   }
 }
 
+const getHospitalRecords_DB = async (patientDID, hospital) => {
+  patientDID = JSON.stringify(patientDID);
+  return await db.MedicalRecords.findAll({
+    where: {
+      patientDID: patientDID,
+      hospital: hospital
+    },
+    order: [['recordNumber', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+  });
+}
+
+
 module.exports = { 
   medicalRecordRegister, 
   createHash4DidUpdate, 
   getAllMyPatientList, 
   getAllMyPatientsRecords,
-  // DB Modules 
+  getHospitalRecords_DB,
   getAllMyRecords_DB, 
   getAllMyPatientsRecords_DB
 }
