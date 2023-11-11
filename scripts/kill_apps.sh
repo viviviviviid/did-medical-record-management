@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPOSITORY=/home/ubuntu/project/did-medical-record-management
-declare -A APPS=( ["did"]="did-medical-records-did" ["server"]="did-medical-records-server" )
+declare -A APPS=( ["did"]="did-medical-records-did" ["server"]="did-medical-records-server" ["qr"]="did-medical-records-qr")
 
 for dir in "${!APPS[@]}"; do
   APP_PATH="$REPOSITORY/$dir/server.js"
