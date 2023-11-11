@@ -2,8 +2,8 @@
 
 REPOSITORY=/home/ubuntu/project/did-medical-record-management
 
-declare -A APPS=( ["did"]="did-medical-records-did" ["server"]="did-medical-records-server" )
-declare -A PORTS=( ["did"]=5002 ["server"]=5001 )
+declare -A APPS=( ["did"]="did-medical-records-did" ["server"]="did-medical-records-server" ["qr"]="did-medical-records-qr")
+declare -A PORTS=( ["did"]=5002 ["server"]=5001 ["qr"]=5003)
 
 # nvm 설정
 source ~/.nvm/nvm.sh

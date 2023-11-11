@@ -11,10 +11,8 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
   console.log(medicalRecord)
 
   const { 
-    name, hospital, doctorName, dateOfVisit, historyOfPresentIllness, 
-    pastMedicalHistory, medications, allergies, physicalExamination, 
-    laboratoryResults, radiologicalFindings, diagnosis, treatment, 
-    medicationPrescribed, followUp, additionalComments
+    hospital, dn, hi, 
+    ph, me, al, di, tr, ac
   } = medicalRecord;
 
   patientDID = JSON.stringify(patientDID)
@@ -27,10 +25,8 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
       // DID
       doctorDID, patientDID,
       // medicalRecord
-      name, hospital, doctorName, dateOfVisit, historyOfPresentIllness, 
-      pastMedicalHistory, medications, allergies, physicalExamination, 
-      laboratoryResults, radiologicalFindings, diagnosis, treatment, 
-      medicationPrescribed, followUp, additionalComments
+      hospital, dn, hi, 
+      ph, me, al, di, tr, ac
     });
     return true;
   } catch (error) {
