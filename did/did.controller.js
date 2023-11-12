@@ -90,6 +90,8 @@ const addRecordHash_DID = async (req, res) => {
 }
 
 const issueVc_DID = async (req, res) => {
+  console.log("/issue-vc")
+  console.log(req.body)
   const SUBJECT_DID = req.body.patientDID;
   const hospital = req.body.hospital;
   const medicalRecords = req.body.dbData;
