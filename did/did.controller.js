@@ -148,14 +148,15 @@ const createVcJwtWithPayload = async (vcPayload) => {
 const verifyVC_DID = async (req, res) => {
   try{
     console.log("/verify-vc")
+    console.log(req.body)
     const vcJwt = req.body.vcJwt;
     const verifiedVC = await verifyCredential(vcJwt, did.resolver)
-    return res.status(200).send(verifiedVC);
+    console.log(verifiedVC)
+    res.status(200).send(verifiedVC);
   }catch(error){
     console.log(error);
-    return res.status(400).send(error);
+    res.status(400).send(error);
   }
 }
-
 
 export default { signUp_DID, addRecordHash_DID, issueVc_DID, verifyVC_DID };
