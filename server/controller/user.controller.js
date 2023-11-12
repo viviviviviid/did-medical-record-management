@@ -139,14 +139,14 @@ const newRecord = async (req, res) => {
  */
 const reissueHospitalVc = async (req, res) => {
   try{
-    // const hospital = req.body.hospital;
-    // const patientDID = req.body.did
+    const hospital = req.body.hospital;
+    const patientDID = req.body.did
     // 테스트용 하드코딩
-    var hospital = "서울병원";
-    var patientDID = {
-      "did":"did:ethr:goerli:0x2CB175A972030643B8d2f169E351e393702a886a",
-      "address":"0x2CB175A972030643B8d2f169E351e393702a886a"
-    }
+    // var hospital = "서울병원";
+    // var patientDID = {
+    //   "did":"did:ethr:goerli:0x2CB175A972030643B8d2f169E351e393702a886a",
+    //   "address":"0x2CB175A972030643B8d2f169E351e393702a886a"
+    // }
     var dbData = await getHospitalRecords_DB(patientDID, hospital);
     dbData = dbData.map(record => record.dataValues); // 필터링
     console.log("reissueHospitalVc dbData: ", dbData)
@@ -170,40 +170,46 @@ const reissueHospitalVc = async (req, res) => {
 const getRecord = async (req, res) => {
   try{
     console.log("/get-my-record")
-    const vcJwt = req.body;
-    let did, hashInJwt, integrityCheck;
-console.log("vcJwt@@@@@@@@@@@@@@@@@", vcJwt);
+    const vcJwt = req.body.vcJwt;
+
+    // 해쉬 관련된 검증 필요할때 해제하기
+    // let did, hashInJwt, integrityCheck; 
+
     // vcJwt 검증
-    await axios.post(`http://${serverIP}:5002/did/verify-vc`, vcJwt)
-      .then(result => {
-        did = result.data.payload.sub;
-        hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
-        const verifyCheck = result.data.verified;
-        if(!verifyCheck)
-          return res.send(400).send("vcJwt is not verified");
-      })
-      .catch(err => {
-        console.log("getRecord function: ", err)
-        return res.send(404).send(err);
-      })
+    await axios.post(`http://${serverIP}:5002/did/verify-vc`, {vcJwt: vcJwt})
+    .then(result => {
+      // did = result.data.payload.sub;
+      // hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
+      const verifyCheck = result.data.verified;
+      if(!verifyCheck){
+        res.status(400).send("vcJwt is not verified");
+        return 
+      }
+      res.status(200).send(result.data.verifiableCredential.credentialSubject);
+    })
+    .catch(err => {
+      console.log("getRecord function: ", err)
+      return res.send(404).send(err);
+    })
 
-    // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
-    const dbData = await getAllMyRecords_DB(did);
-    console.log(dbData)
+    // DB 무결성 해쉬 관련된 검증 필요할때 해제하기
+    // // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
+    // const dbData = await getAllMyRecords_DB(did);
+    // console.log(dbData)
   
-    // vcJwt내의 medicalRecord의 hash와 dbData를 hash화 시켜 같은지 확인함으로써 무결성 검증
-    const hashInDB = await createHash4DidUpdate(dbData);
+    // // vcJwt내의 medicalRecord의 hash와 dbData를 hash화 시켜 같은지 확인함으로써 무결성 검증
+    // const hashInDB = await createHash4DidUpdate(dbData);
 
-    console.log("hashInDB: ", hashInDB)
-    console.log("hashInJwt: ", hashInJwt)
+    // console.log("hashInDB: ", hashInDB)
+    // console.log("hashInJwt: ", hashInJwt)
 
-    // 무결성 검증 integrityCheck가 OK라면 dbData를 보내줌
-    integrityCheck = hashInDB === hashInJwt;
+    // // 무결성 검증 integrityCheck가 OK라면 dbData를 보내줌
+    // integrityCheck = hashInDB === hashInJwt;
 
-    // integrityCheck가 OK라면 dbData를 보내줌
-    return integrityCheck 
-    ? res.status(200).send(dbData)
-    : res.status(404).send("Integrity check failed. Engineer will fix it")
+    // // integrityCheck가 OK라면 dbData를 보내줌
+    // return integrityCheck 
+    // ? res.status(200).send(dbData)
+    // : res.status(404).send("Integrity check failed. Engineer will fix it")
   
   }catch(error){
     console.log(error);

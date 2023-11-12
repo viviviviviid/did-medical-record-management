@@ -104,10 +104,10 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
 
 const getAllMyPatientList = async (req, res) => {
   try{
-	await console.log("req.body", req.body)
+	  await console.log("req.body", req.body)
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
     const decodedPayload = await jwt.decode(req.body.doctorJwt)
-	await console.log("decodedPayload", decodedPayload);
+	  await console.log("decodedPayload", decodedPayload);
     const doctorDID = await decodedPayload.sub;
     await console.log("doctorDID",doctorDID);
     // 환자들 유저 정보 리스트만 필요
