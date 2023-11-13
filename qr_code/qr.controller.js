@@ -1,4 +1,4 @@
-
+require("dotenv").config();
 const express = require("express");
 
 const serverIP = process.env.SERVER_IP_ADDRESS;
