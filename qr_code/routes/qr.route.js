@@ -4,4 +4,5 @@ const router = express.Router();
 
 router.post("/link", controller.requestLink_QR);
 
+
 module.exports = router;
