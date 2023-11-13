@@ -1,6 +1,8 @@
 
 const express = require("express");
 
+const serverIP = process.env.SERVER_IP_ADDRESS;
+
 // 임시 API 관리를 위한 맵
 const tempAPIs = new Map();
 
@@ -25,7 +27,7 @@ const requestLink_QR = async (req, res) => {
       }
     });
 
-    return res.json({ link: `http://localhost:5003/temp/${tempPath}` });
+    return res.json({ link: `http://${serverIP}:5003/temp/${tempPath}` });
   }catch(error){
     console.log("requestLink_QR function error: ", error)
     return res.status(400).send(error);
