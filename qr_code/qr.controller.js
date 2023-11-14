@@ -27,7 +27,7 @@ const requestLink_QR = async (req, res) => {
       }
     });
 
-    return res.json({ link: `http://${serverIP}:5003/temp/${tempPath}` });
+    return res.json({ link: `https://${serverIP}:5003/temp/${tempPath}` });
   }catch(error){
     console.log("requestLink_QR function error: ", error)
     return res.status(400).send(error);
