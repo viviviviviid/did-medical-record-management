@@ -14,6 +14,8 @@ const generateLink = async (req, res) => {
         tempPath = Math.random().toString(36).substring(2, 15);
       case 'did':
         tempPath = req.body.did.address
+      default:
+        tempPath = Math.random().toString(36).substring(2, 15);
     }
 
     const payload = req.body.payload;

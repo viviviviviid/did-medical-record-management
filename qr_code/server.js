@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 //     console.log("서버가 정상적으로 실행되었습니다.");
 //   });
 
-const server = https.createServer(httpsOptions, app).listen(port, () => {
+https.createServer(httpsOptions, app).listen(port, () => {
   console.log(`HTTPS 서버가 ${port} 포트에서 정상적으로 실행되었습니다.`);
 });
 
