@@ -25,7 +25,7 @@ jobs:
 
       - name: Install Dependencies and Package Entire Repository
         run: |
-          for dir in did server qr_code; do
+          for dir in did server link; do
             cd $dir
             npm install
             cd ..
