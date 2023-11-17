@@ -151,7 +151,7 @@ const issueHospitalVc = async (req, res) => {
     dbData = dbData.map(record => record.dataValues); // 필터링
     console.log("issueHospitalVc dbData: ", dbData)
 
-    await axios.post(`http://${serverIP}:5002/did/issue-vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
+    await axios.post(`http://${serverIP}:5002/did/issue/vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
       .then(result => {
         const hospitalVcJwt = result.data;
         console.log(hospitalVcJwt);
@@ -172,7 +172,7 @@ const issueVp = async (req, res) => {
     const vcJwts = req.body.vcJwts;
     var vpJwt;
 
-    await axios.post(`http://${serverIP}:5002/did/issue-vp`, {vcJwts: vcJwts})
+    await axios.post(`http://${serverIP}:5002/did/issue/vp`, {vcJwts: vcJwts})
       .then(result => {
         vpJwt = result.data;
         console.log(vpJwt);
@@ -182,7 +182,7 @@ const issueVp = async (req, res) => {
     await axios.post(`https://${serverIP}:5003/link/generate`, {payload: vpJwt})
       .then(result => {
         tempLink = result.data;
-        return res.status(200).send({link: tempLink});
+        return res.status(200).send(tempLink);
       })
       .catch(err => console.log(err))
 
@@ -195,7 +195,7 @@ const issueVp = async (req, res) => {
 /**
  * 모바일 기기에서 보유중인 VC를 이용하여 1056 레지스트리를 조회
  */
-const getRecord = async (req, res) => {
+const recordVc = async (req, res) => {
   try{
     console.log("/get-my-record")
     const vcJwt = req.body.vcJwt;
@@ -204,7 +204,7 @@ const getRecord = async (req, res) => {
     // let did, hashInJwt, integrityCheck; 
 
     // vcJwt 검증
-    await axios.post(`http://${serverIP}:5002/did/verify-vc`, {vcJwt: vcJwt})
+    await axios.post(`http://${serverIP}:5002/did/verify/vc`, {vcJwt: vcJwt})
     .then(result => {
       // did = result.data.payload.sub;
       // hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
@@ -219,6 +219,70 @@ const getRecord = async (req, res) => {
       console.log("getRecord function: ", err)
       return res.send(404).send(err);
     })
+
+    // DB 무결성 해쉬 관련된 검증 필요할때 해제하기
+    // // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
+    // const dbData = await getAllMyRecords_DB(did);
+    // console.log(dbData)
+  
+    // // vcJwt내의 medicalRecord의 hash와 dbData를 hash화 시켜 같은지 확인함으로써 무결성 검증
+    // const hashInDB = await createHash4DidUpdate(dbData);
+
+    // console.log("hashInDB: ", hashInDB)
+    // console.log("hashInJwt: ", hashInJwt)
+
+    // // 무결성 검증 integrityCheck가 OK라면 dbData를 보내줌
+    // integrityCheck = hashInDB === hashInJwt;
+
+    // // integrityCheck가 OK라면 dbData를 보내줌
+    // return integrityCheck 
+    // ? res.status(200).send(dbData)
+    // : res.status(404).send("Integrity check failed. Engineer will fix it")
+  
+  }catch(error){
+    console.log(error);
+    res.status(400).send(error);
+  }
+}
+
+/**
+ * 모바일 기기에서 보유중인 VP를 이용하여 1056 레지스트리를 조회 및 GET url로 재구성
+ */
+const recordVp = async (req, res) => {
+  try{
+    console.log("/record/vp")
+    const vpJwt = req.body.vpJwt;
+    const did = req.body.did;
+    var decodedVpContents;
+
+    // 해쉬 관련된 검증 필요할때 해제하기
+    // let did, hashInJwt, integrityCheck; 
+
+    // vcJwt 검증
+    await axios.post(`http://${serverIP}:5002/did/verify/vp`, {vpJwt: vpJwt})
+    .then(result => {
+      // did = result.data.payload.sub;
+      // hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
+      const verifyCheck = result.data.verified;
+      if(!verifyCheck){
+        res.status(400).send("vpJwt is not verified");
+        return 
+      }
+      decodedVpContents = result.data.verifiablePresentation.verifiableCredential.map(el => {
+        return el.credentialSubject
+      })
+    })
+    .catch(err => {
+      console.log("getRecord function: ", err)
+      return res.send(404).send(err);
+    })
+
+    await axios.post(`https://${serverIP}:5003/link/generate`, {payload: decodedVpContents, did: did})
+    .then(result => {
+      tempLink = result.data;
+      return res.status(200).send(tempLink);
+    })
+    .catch(err => console.log(err))
 
     // DB 무결성 해쉬 관련된 검증 필요할때 해제하기
     // // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
@@ -328,7 +392,8 @@ module.exports = {
   isUserRegistered,
   signUp,
   newRecord,
-  getRecord,
+  recordVc,
+  recordVp,
   getDoctorWaitingList_DB,
   issueHospitalVc,
   issueVp,
