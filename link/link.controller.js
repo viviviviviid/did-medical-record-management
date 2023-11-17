@@ -5,19 +5,15 @@ const tempAPIs = new Map(); // 임시 API 관리를 위한 맵
 
 const generateLink = async (req, res) => {
   try{
-    console.log("/link")
+    console.log("/generate")
 
     var tempPath;
-
-    switch(req.body.type){
-      case 'random':
-        tempPath = Math.random().toString(36).substring(2, 15);
-      case 'did':
-        tempPath = req.body.did.address
-      default:
-        tempPath = Math.random().toString(36).substring(2, 15);
+    if(!req.body.did){
+      tempPath = Math.random().toString(36).substring(2, 15);
+    } else {  
+      tempPath = req.body.did.address
     }
-
+  
     const payload = req.body.payload;
     tempAPIs.set(tempPath, { payload });
 
