@@ -6,7 +6,8 @@ router.post("/login", controller.isUserRegistered);
 router.post("/signup", controller.signUp);
 router.post("/new-record", controller.newRecord);
 router.post("/get-my-record", controller.getRecord);
-router.post("/issue-vc", controller.reissueHospitalVc)
+router.post("/issue/vc", controller.issueHospitalVc)
+router.post("/issue/vp", controller.issueVp)
 // router.post("/jwt-from-app", controller.jwtFromApp)
 // router.post("/share", controller.share);
 

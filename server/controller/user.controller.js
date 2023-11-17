@@ -137,7 +137,7 @@ const newRecord = async (req, res) => {
 /**
  * 환자가 진료 본 병원에 대한 Vc 발급 또는 재발급
  */
-const reissueHospitalVc = async (req, res) => {
+const issueHospitalVc = async (req, res) => {
   try{
     const hospital = req.body.hospital;
     const patientDID = req.body.did
@@ -149,7 +149,7 @@ const reissueHospitalVc = async (req, res) => {
     // }
     var dbData = await getHospitalRecords_DB(patientDID, hospital);
     dbData = dbData.map(record => record.dataValues); // 필터링
-    console.log("reissueHospitalVc dbData: ", dbData)
+    console.log("issueHospitalVc dbData: ", dbData)
 
     await axios.post(`http://${serverIP}:5002/did/issue-vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
       .then(result => {
@@ -159,7 +159,35 @@ const reissueHospitalVc = async (req, res) => {
       })
       .catch(err => console.log(err))
   }catch(error){
-    console.log("reissueHospitalVc function error: ",error);
+    console.log("issueHospitalVc function error: ",error);
+    return res.status(400).send(error);
+  }
+}
+
+/**
+ * 원하는 VC들을 선택해 VP로 변환 및 발급
+ */
+const issueVp = async (req, res) => {
+  try{
+    const vcJwts = req.body.vcJwts;
+    var vpJwt;
+
+    await axios.post(`http://${serverIP}:5002/did/issue-vp`, {vcJwts: vcJwts})
+      .then(result => {
+        vpJwt = result.data;
+        console.log(vpJwt);
+      })
+      .catch(err => console.log(err))
+
+    await axios.post(`https://${serverIP}:5003/link/generate`, {payload: vpJwt})
+      .then(result => {
+        tempLink = result.data;
+        return res.status(200).send({link: tempLink});
+      })
+      .catch(err => console.log(err))
+
+  }catch(error){
+    console.log("issueVp function error: ",error);
     return res.status(400).send(error);
   }
 }
@@ -276,7 +304,7 @@ const getDoctorWaitingList_DB = async (req, res) => {
 
 const test = async (req, res) => { 
   try{
-    reissueHospitalVc()
+    issueHospitalVc()
     console.log("/test")
     console.log("test success")
     res.status(200).send("test success")
@@ -302,7 +330,8 @@ module.exports = {
   newRecord,
   getRecord,
   getDoctorWaitingList_DB,
-  reissueHospitalVc,
+  issueHospitalVc,
+  issueVp,
   // jwtFromApp,
   test
 };
