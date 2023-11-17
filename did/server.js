@@ -14,7 +14,6 @@ app.get('/', (req, res) => {
 	res.send('DID API, "/"');
 });
 
-
 app.listen(port, () => {
   console.log("서버가 정상적으로 실행되었습니다.");
 });
