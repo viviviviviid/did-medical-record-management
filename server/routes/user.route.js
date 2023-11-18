@@ -5,7 +5,7 @@ const controller = require("../controller/user.controller");
 router.post("/login", controller.isUserRegistered);
 router.post("/signup", controller.signUp);
 router.post("/new-record", controller.newRecord);
-router.post("/get-my-record", controller.recordVc);
+router.post("/record/vc", controller.recordVc);
 router.post("/record/vp", controller.recordVp)
 router.post("/issue/vc", controller.issueHospitalVc);
 router.post("/issue/vp", controller.issueVp);
