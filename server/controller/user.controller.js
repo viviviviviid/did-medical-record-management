@@ -56,7 +56,7 @@ const signUp = async (req, res) => {
   try {
     console.log("/signup")
     console.log(req.body);
-	let jwt, wallet, SUBJECT_DID;
+	  let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
     const hash = await createHash4DidUpdate([]); // 회원가입 전이므로 빈객체
 
