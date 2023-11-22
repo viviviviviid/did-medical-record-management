@@ -217,7 +217,7 @@ const recordVc = async (req, res) => {
     })
     .catch(err => {
       console.log("getRecord function: ", err)
-      return res.send(404).send(err);
+      res.status(404).send(err);
     })
 
     // DB 무결성 해쉬 관련된 검증 필요할때 해제하기
@@ -251,6 +251,7 @@ const recordVc = async (req, res) => {
 const recordVp = async (req, res) => {
   try{
     console.log("/record/vp")
+    console.log("body: ",req.body)
     const vpJwt = req.body.vpJwt;
     const did = req.body.did;
     var decodedVpContents;
@@ -274,7 +275,7 @@ const recordVp = async (req, res) => {
     })
     .catch(err => {
       console.log("getRecord function: ", err)
-      return res.send(404).send(err);
+      res.status(400).send(err);
     })
 
     await axios.post(`https://${serverIP}:5003/link/generate`, {payload: decodedVpContents, did: did})
