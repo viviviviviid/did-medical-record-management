@@ -145,7 +145,8 @@ const checkUpdate = async (req, res) => {
       return res.status(204).send("Already up-to-date");
 
     for(let i=0; i<notUpdatedList.length; i++){
-      jwtVcList.push(await issueHospitalVc(patientDID, notUpdatedList[i]));
+      console.log(i)
+      await jwtVcList.push(await issueHospitalVc(patientDID, notUpdatedList[i]));
     }
 
     update2UpToDate(patientDID)
