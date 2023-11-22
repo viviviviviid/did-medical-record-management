@@ -66,7 +66,8 @@ const getAllMyRecords_DB = async (patientDID) => {
     console.log(patientDID);
     return await db.MedicalRecords.findAll({
       where: {patientDID: patientDID},
-      order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+      order: [['id', 'DESC']], // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+      attributes: { exclude: ['isIssued'] }
     });
   }catch(error){
     console.log("getAllMyRecords_DB function error :", error)

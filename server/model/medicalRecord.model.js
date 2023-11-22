@@ -53,7 +53,7 @@ const MedicalRecords = sequelize.define(
     ac: { // additionalComments
       type: DataTypes.STRING, // 의사나 기타 의료 직원의 추가적인 코멘트
     },
-    update_at: {
+    created_at: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: sequelize.literal('now()'),
