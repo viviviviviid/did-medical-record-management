@@ -149,6 +149,24 @@ const getHospitalRecords_DB = async (patientDID, hospital) => {
   });
 }
 
+const getNeedUpdateList_DB = (medicalRecord) => {
+  console.log(medicalRecord);
+  var hospitals = medicalRecord
+    .filter(el => !el.dataValues.isIssued) // 발급된 이력이 있는지 확인
+    .map(el => el.dataValues.hospital); 
+  if (!(hospitals.length))
+    return null 
+  hospitals = Array.from(new Set(hospitals))
+  console.log("Need Update Hospital List: ", hospitals)
+  return hospitals;
+}
+
+const update2UpToDate = async (patientDID) => { // 환자의 모든 진료내역이 발급된적이 있다고 DB상에서 bool로 마킹
+  patientDID = JSON.stringify(patientDID)
+  await db.MedicalRecords.update({ isIssued: true }, { where: { patientDID: patientDID } });
+  console.log("All updated to true in isIssued column!")
+}
+
 
 module.exports = { 
   medicalRecordRegister, 
@@ -157,5 +175,7 @@ module.exports = {
   getAllMyPatientsRecords,
   getHospitalRecords_DB,
   getAllMyRecords_DB, 
-  getAllMyPatientsRecords_DB
+  getAllMyPatientsRecords_DB,
+  getNeedUpdateList_DB,
+  update2UpToDate
 }
