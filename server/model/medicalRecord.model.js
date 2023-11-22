@@ -57,7 +57,11 @@ const MedicalRecords = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: sequelize.literal('now()'),
-    }
+    },
+    isIssued: { 
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
   },
   {
     timestamps: false,
