@@ -145,7 +145,6 @@ const checkUpdate = async (req, res) => {
       return res.status(204).send("Already up-to-date");
 
     for(let i=0; i<notUpdatedList.length; i++){
-      console.log(i)
       await jwtVcList.push(await issueHospitalVc(patientDID, notUpdatedList[i]));
     }
 
@@ -166,7 +165,7 @@ const issueHospitalVc = async (patientDID, hospital) => {
   dbData = dbData.map(record => record.dataValues); 
   console.log("issueHospitalVc dbData: ", dbData)
   var vcJwt;
-  await axios.post(`https://${serverIP}:5002/did/issue/vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
+  await axios.post(`http://${serverIP}:5002/did/issue/vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
     .then(result => {
       const hospitalVcJwt = result.data;
       console.log(hospitalVcJwt);
