@@ -9,6 +9,8 @@ const crypto = require('crypto');
 const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
 
   console.log(medicalRecord)
+  console.log(medicalRecord.hospital)
+
 
   const { 
     hospital, dn, hi, 
