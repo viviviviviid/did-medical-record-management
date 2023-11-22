@@ -281,7 +281,7 @@ const recordVp = async (req, res) => {
     await axios.post(`https://${serverIP}:5003/link/generate`, {payload: decodedVpContents, did: did})
     .then(result => {
       tempLink = result.data;
-      return res.status(200).send(tempLink);
+      res.status(200).send(tempLink);
     })
     .catch(err => console.log(err))
 
