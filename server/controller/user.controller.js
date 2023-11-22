@@ -112,7 +112,7 @@ const newRecord = async (req, res) => {
 
     console.log("newRecord body: ", req.body)
     // 새롭게 추가된 진료내용을 db에 저장 
-    await medicalRecordRegister(doctorDID, patientDID, req.body.recordData);
+    await medicalRecordRegister(doctorDID, patientDID, req.body.medicalRecord);
     // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
     const dbData = await getAllMyRecords_DB(patientDID);
     // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
