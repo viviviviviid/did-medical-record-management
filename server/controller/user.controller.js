@@ -2,7 +2,7 @@ require("dotenv").config();
 const db = require("../model/index.js");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB, getHospitalRecords_DB } = require("./medicalRecord.controller.js");
+const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB, getHospitalRecords_DB, getNeedUpdateList_DB, update2UpToDate } = require("./medicalRecord.controller.js");
 
 const serverIP = process.env.SERVER_IP_ADDRESS;
 
@@ -135,34 +135,44 @@ const newRecord = async (req, res) => {
   }
 }
 
+const checkUpdate = async (req, res) => {
+  try{
+    const patientDID = req.body.patientDID;
+    const notUpdatedList = getNeedUpdateList_DB(await getAllMyRecords_DB(patientDID));
+    var jwtVcList = [];
+    
+    if(notUpdatedList == null)
+      return res.status(204).send("Already up-to-date");
+
+    for(let i=0; i<notUpdatedList.length; i++){
+      jwtVcList.push(await issueHospitalVc(patientDID, notUpdatedList[i]));
+    }
+
+    update2UpToDate(patientDID)
+
+    return res.status(200).send(jwtVcList);
+  }catch(error){
+    console.log("checkUpdate function error: ", error);
+    return res.status(400).send(error);
+  }
+}
+
 /**
  * 환자가 진료 본 병원에 대한 Vc 발급 또는 재발급
  */
-const issueHospitalVc = async (req, res) => {
-  try{
-    const hospital = req.body.hospital;
-    const patientDID = req.body.did
-    // 테스트용 하드코딩
-    // var hospital = "서울병원";
-    // var patientDID = {
-    //   "did":"did:ethr:goerli:0x2CB175A972030643B8d2f169E351e393702a886a",
-    //   "address":"0x2CB175A972030643B8d2f169E351e393702a886a"
-    // }
-    var dbData = await getHospitalRecords_DB(patientDID, hospital);
-    dbData = dbData.map(record => record.dataValues); // 필터링
-    console.log("issueHospitalVc dbData: ", dbData)
-
-    await axios.post(`http://${serverIP}:5002/did/issue/vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
-      .then(result => {
-        const hospitalVcJwt = result.data;
-        console.log(hospitalVcJwt);
-	      return res.status(200).send(hospitalVcJwt);
-      })
-      .catch(err => console.log(err))
-  }catch(error){
-    console.log("issueHospitalVc function error: ",error);
-    return res.status(400).send(error);
-  }
+const issueHospitalVc = async (patientDID, hospital) => {
+  var dbData = await getHospitalRecords_DB(patientDID, hospital);
+  dbData = dbData.map(record => record.dataValues); 
+  console.log("issueHospitalVc dbData: ", dbData)
+  var vcJwt;
+  await axios.post(`https://${serverIP}:5002/did/issue/vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
+    .then(result => {
+      const hospitalVcJwt = result.data;
+      console.log(hospitalVcJwt);
+      vcJwt = hospitalVcJwt;
+    })
+    .catch(err => console.log(err))
+  return vcJwt
 }
 
 /**
@@ -393,11 +403,11 @@ const test = async (req, res) => {
 module.exports = {
   isUserRegistered,
   signUp,
+  checkUpdate,
   newRecord,
   recordVc,
   recordVp,
   getDoctorWaitingList_DB,
-  issueHospitalVc,
   issueVp,
   // jwtFromApp,
   test
