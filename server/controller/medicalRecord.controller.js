@@ -93,6 +93,8 @@ const getAllMyPatientsList_DB = async (doctorDID) => {
 }
 
 const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
+  doctorDID = JSON.stringify(doctorDID);
+  patientDID = JSON.stringify(patientDID);
   return await db.MedicalRecords.findAll({
     where: {
       doctorDID: doctorDID,
@@ -104,16 +106,10 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
 
 const getAllMyPatientList = async (req, res) => {
   try{
-	  await console.log("req.body", req.body)
-    // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
-    const decodedPayload = await jwt.decode(req.body.doctorJwt)
-	  await console.log("decodedPayload", decodedPayload);
-    const doctorDID = await decodedPayload.sub;
-    await console.log("doctorDID",doctorDID);
-    // 환자들 유저 정보 리스트만 필요
+    const doctorDID = req.body.doctorDID;
+    console.log("doctorDID",doctorDID);
     const dbData = await getAllMyPatientsList_DB(doctorDID);
-    console.log("dbData",dbData);
-    // 유저정보에서 wallet, did는 필요없음 -> 제거하고 보내야 함
+    console.log("dbData", dbData);
     res.status(200).send(dbData);
   }catch(error){
     console.log("getAllPatientRecords function error: ", error);
@@ -124,12 +120,9 @@ const getAllMyPatientList = async (req, res) => {
 const getAllMyPatientsRecords = async (req, res) => {
   try{
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
-    const decodedPayload = await jwt.decode(req.body.doctorJwt);
-    const doctorDID = decodedPayload.sub;
-    const patientDID = req.body.patientDid;
-    console.log("doctorDID: ", doctorDID);
-    console.log("patientDID: ", patientDID);
-    const dbData = await getAllMyPatientsRecords_DB(JSON.stringify(doctorDID), patientDID);
+    const doctorDID = req.body.doctorDID;
+    const patientDID = req.body.patientDID;
+    const dbData = await getAllMyPatientsRecords_DB(doctorDID, patientDID);
     console.log("dbData: ", dbData);
     res.status(200).send(dbData);
   }catch(error){
