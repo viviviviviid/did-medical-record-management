@@ -100,16 +100,14 @@ const userRegister = async (userInfo) => {
 const newRecord = async (req, res) => {
   try{
     console.log("/new-record")
-    var {newRecord, doctorDID, patientDID, vcJwt} = req.body
+    var {medicalRecord, doctorDID, patientDID: vcJwt} = req.body
+    console.log("medicalRecord: ", medicalRecord, "\ndoctorDID: ", doctorDID, "\nvcJwt: ", vcJwt)
     // 모바일 완료전까지만 환자는 하드코딩
-    const patientVcJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6Iu2ZmOyekCIsImVtYWlsIjoic2VvLW1pbnNlb2tAZGF1bS5uZXQiLCJiaXJ0aGRheSI6IjAwMDEwMSIsInBob25lTnVtYmVyIjoiMDEwLTM4MjktMTAyMiIsImlzRG9jdG9yIjp0cnVlLCJhZGRyZXNzIjoiMHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIn0sIm1lZGljYWxSZWNvcmRzIjoiNGY1M2NkYTE4YzJiYWEwYzAzNTRiYjVmOWEzZWNiZTVlZDEyYWI0ZDhlMTFiYTg3M2MyZjExMTYxMjAyYjk0NSIsImRvY3RvckxpY2Vuc2UiOmZhbHNlfX0sInN1YiI6eyJkaWQiOiJkaWQ6ZXRocjpnb2VybGk6MHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIiwiYWRkcmVzcyI6IjB4MkNCMTc1QTk3MjAzMDY0M0I4ZDJmMTY5RTM1MWUzOTM3MDJhODg2YSJ9LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgzZTcwMzkyOWM2YzQxYjAwZmJhM0FCMzU1RmM1OUUzNEE3MTQ3MTFGIn0.sZrMa1rOzbDJDmqCxEp15lJoF40mDQdfV83PcS_nWhkSis-GWCZo1ZhjV-KcD9lo1MtjutRpvtKPiMBf0bJJNwA"
-    patientDID = await jwt.decode(patientVcJwt).sub
-    
-    console.log("newRecord body: ", newRecord)
-    await medicalRecordRegister(doctorDID, patientDID, newRecord); // 병원 자체 DB에 저장
-    vcJwt = await issueVC(newRecord, patientDID, vcJwt);
+    vcJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6Iu2ZmOyekCIsImVtYWlsIjoic2VvLW1pbnNlb2tAZGF1bS5uZXQiLCJiaXJ0aGRheSI6IjAwMDEwMSIsInBob25lTnVtYmVyIjoiMDEwLTM4MjktMTAyMiIsImlzRG9jdG9yIjp0cnVlLCJhZGRyZXNzIjoiMHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIn0sIm1lZGljYWxSZWNvcmRzIjoiNGY1M2NkYTE4YzJiYWEwYzAzNTRiYjVmOWEzZWNiZTVlZDEyYWI0ZDhlMTFiYTg3M2MyZjExMTYxMjAyYjk0NSIsImRvY3RvckxpY2Vuc2UiOmZhbHNlfX0sInN1YiI6eyJkaWQiOiJkaWQ6ZXRocjpnb2VybGk6MHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIiwiYWRkcmVzcyI6IjB4MkNCMTc1QTk3MjAzMDY0M0I4ZDJmMTY5RTM1MWUzOTM3MDJhODg2YSJ9LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgzZTcwMzkyOWM2YzQxYjAwZmJhM0FCMzU1RmM1OUUzNEE3MTQ3MTFGIn0.sZrMa1rOzbDJDmqCxEp15lJoF40mDQdfV83PcS_nWhkSis-GWCZo1ZhjV-KcD9lo1MtjutRpvtKPiMBf0bJJNwA"
+    patientDID = await jwt.decode(vcJwt).sub
+    await medicalRecordRegister(doctorDID, patientDID, medicalRecord); // 병원 자체 DB에 저장
+    vcJwt = await issueVC(medicalRecord, patientDID, vcJwt);
     console.log("Updated vcJwt: ", vcJwt);
-    
     return vcJwt
   }catch(error){
     console.log(error);
@@ -117,16 +115,16 @@ const newRecord = async (req, res) => {
   }
 }
 
-const issueVC = async (newRecord, patientDID, vcJwt) => {
+const issueVC = async (medicalRecord, patientDID, vcJwt) => {
   var updatedVcJwt;
   if(vcJwt === null){ // 병원 vcJwt 없이 진료기록만 넘어왔을때 => 이 병원에서 진료한적이 없으므로 이번 기회에 이 병원 VC를 첫 발급 해줘야함
-    await axios.post(`http://${serverIP}:5002/did/issue/vc`, {newRecord: newRecord, patientDID: patientDID})
+    await axios.post(`http://localhost:5002/did/issue/vc`, {medicalRecord: medicalRecord, patientDID: patientDID})
     .then(result => {
       updatedVcJwt = result.data;
     })
     .catch(err => console.log(err))
   }else{             // 병원 vcJwt가 넘어왔을때 => 진료한적이 있다는 뜻 => 업데이트해서 재발급해줘야함
-    await axios.post(`http://${serverIP}:5002/did/reissue/vc`, {newRecord: newRecord, vcJwt: vcJwt})
+    await axios.post(`http://localhost:5002/did/update/vc`, {medicalRecord: medicalRecord, vcJwt: vcJwt})
     .then(result => {
       updatedVcJwt = result.data;
     })
@@ -157,37 +155,6 @@ const issueVC = async (newRecord, patientDID, vcJwt) => {
 //     return res.status(400).send(error);
 //   }
 // }
-
-/**
- * 환자가 진료 본 병원에 대한 Vc 첫발급
- */
-const issueHospitalVc = async (newRecord, patientDID) => {
-  // var vcJwt;
-  // await axios.post(`http://${serverIP}:5002/did/issue/vc`, {newRecord: newRecord, patientDID: patientDID})
-  //   .then(result => {
-  //     const hospitalVcJwt = result.data;
-  //     console.log(hospitalVcJwt);
-  //     vcJwt = hospitalVcJwt;
-  //   })
-  //   .catch(err => console.log(err))
-  // return vcJwt
-}
-
-/**
- * 환자가 진료 본 병원에 대한 Vc 업데이트 및 재발급
- */
-const reissueHospitalVc = async (newRecord, vcJwt) => {
-  // var vcJwt;
-  // await axios.post(`http://${serverIP}:5002/did/reissue/vc`, {newRecord: newRecord, vcJwt: vcJwt})
-  //   .then(result => {
-  //     const hospitalVcJwt = result.data;
-  //     console.log(hospitalVcJwt);
-  //     vcJwt = hospitalVcJwt;
-  //   })
-  //   .catch(err => console.log(err))
-  // return vcJwt
-}
-
 
 /**
  * 원하는 VC들을 선택해 VP로 변환 및 발급
@@ -417,7 +384,7 @@ const test = async (req, res) => {
 module.exports = {
   isUserRegistered,
   signUp,
-  checkUpdate,
+  // checkUpdate,
   newRecord,
   recordVc,
   recordVp,

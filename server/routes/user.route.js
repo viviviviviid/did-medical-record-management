@@ -4,7 +4,7 @@ const controller = require("../controller/user.controller");
 // POST
 router.post("/login", controller.isUserRegistered);
 router.post("/signup", controller.signUp);
-router.post("/update", controller.checkUpdate);
+// router.post("/update", controller.checkUpdate);
 router.post("/new-record", controller.newRecord);
 router.post("/record/vc", controller.recordVc);
 router.post("/record/vp", controller.recordVp)
