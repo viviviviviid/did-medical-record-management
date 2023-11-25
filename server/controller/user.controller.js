@@ -100,80 +100,94 @@ const userRegister = async (userInfo) => {
 const newRecord = async (req, res) => {
   try{
     console.log("/new-record")
-    // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
-    // const patientVcJwt = req.body.patientDID 
-    
+    var {newRecord, doctorDID, patientDID, vcJwt} = req.body
     // 모바일 완료전까지만 환자는 하드코딩
     const patientVcJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6Iu2ZmOyekCIsImVtYWlsIjoic2VvLW1pbnNlb2tAZGF1bS5uZXQiLCJiaXJ0aGRheSI6IjAwMDEwMSIsInBob25lTnVtYmVyIjoiMDEwLTM4MjktMTAyMiIsImlzRG9jdG9yIjp0cnVlLCJhZGRyZXNzIjoiMHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIn0sIm1lZGljYWxSZWNvcmRzIjoiNGY1M2NkYTE4YzJiYWEwYzAzNTRiYjVmOWEzZWNiZTVlZDEyYWI0ZDhlMTFiYTg3M2MyZjExMTYxMjAyYjk0NSIsImRvY3RvckxpY2Vuc2UiOmZhbHNlfX0sInN1YiI6eyJkaWQiOiJkaWQ6ZXRocjpnb2VybGk6MHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIiwiYWRkcmVzcyI6IjB4MkNCMTc1QTk3MjAzMDY0M0I4ZDJmMTY5RTM1MWUzOTM3MDJhODg2YSJ9LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgzZTcwMzkyOWM2YzQxYjAwZmJhM0FCMzU1RmM1OUUzNEE3MTQ3MTFGIn0.sZrMa1rOzbDJDmqCxEp15lJoF40mDQdfV83PcS_nWhkSis-GWCZo1ZhjV-KcD9lo1MtjutRpvtKPiMBf0bJJNwA"
-    const decodedPayload = await jwt.decode(patientVcJwt);
-    const patientDID = decodedPayload.sub
-    const userInfo = decodedPayload.vc.credentialSubject.userInfo;
-    const doctorDID = req.body.doctorDID;
-
-    console.log("newRecord body: ", req.body)
-    // 새롭게 추가된 진료내용을 db에 저장 
-    await medicalRecordRegister(doctorDID, patientDID, req.body.medicalRecord);
-    // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
-    const dbData = await getAllMyRecords_DB(patientDID);
-    // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
-    const hash = await createHash4DidUpdate(dbData);
-    // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
-    await axios.post(`http://${serverIP}:5002/did/new-record`, {hash: hash, decodedPayload:decodedPayload})
-      .then(result => {
-        const updatedVcJwt = result.data
-        const data = {
-          dbData: dbData,
-          updatedVcJwt: updatedVcJwt,
-        }
-        console.log(data)
-	      return res.status(200).send(data);
-      })
-      .catch(err => console.log(err))
+    patientDID = await jwt.decode(patientVcJwt).sub
+    
+    console.log("newRecord body: ", newRecord)
+    await medicalRecordRegister(doctorDID, patientDID, newRecord); // 병원 자체 DB에 저장
+    vcJwt = await issueVC(newRecord, patientDID, vcJwt);
+    console.log("Updated vcJwt: ", vcJwt);
+    
+    return vcJwt
   }catch(error){
     console.log(error);
     return res.status(400).send(error);
   }
 }
 
-const checkUpdate = async (req, res) => {
-  try{
-    const patientDID = req.body.patientDID;
-    const notUpdatedList = getNeedUpdateList_DB(await getAllMyRecords_DB(patientDID));
-    var jwtVcList = {};
-    
-    if(notUpdatedList == null)
-      return res.status(204).send("Already up-to-date");
-
-    await update2UpToDate(patientDID)
-
-    for(let i=0; i<notUpdatedList.length; i++){
-      jwtVcList[notUpdatedList[i]] = (await issueHospitalVc(patientDID, notUpdatedList[i]));
-    }
-
-    return res.status(200).send(jwtVcList);
-  }catch(error){
-    console.log("checkUpdate function error: ", error);
-    return res.status(400).send(error);
+const issueVC = async (newRecord, patientDID, vcJwt) => {
+  var updatedVcJwt;
+  if(vcJwt === null){ // 병원 vcJwt 없이 진료기록만 넘어왔을때 => 이 병원에서 진료한적이 없으므로 이번 기회에 이 병원 VC를 첫 발급 해줘야함
+    await axios.post(`http://${serverIP}:5002/did/issue/vc`, {newRecord: newRecord, patientDID: patientDID})
+    .then(result => {
+      updatedVcJwt = result.data;
+    })
+    .catch(err => console.log(err))
+  }else{             // 병원 vcJwt가 넘어왔을때 => 진료한적이 있다는 뜻 => 업데이트해서 재발급해줘야함
+    await axios.post(`http://${serverIP}:5002/did/reissue/vc`, {newRecord: newRecord, vcJwt: vcJwt})
+    .then(result => {
+      updatedVcJwt = result.data;
+    })
+    .catch(err => console.log(err))
   }
+  return updatedVcJwt
+}
+
+// 업데이트를 따로 체크할 필요 없이, 환자의 모바일에서 앱을 킬때마다 GET으로 내용이 대기중인지 확인하면 됨.
+// const checkUpdate = async (req, res) => {
+//   try{
+//     const patientDID = req.body.patientDID;
+//     const notUpdatedList = getNeedUpdateList_DB(await getAllMyRecords_DB(patientDID));
+//     var jwtVcList = {};
+    
+//     if(notUpdatedList == null)
+//       return res.status(204).send("Already up-to-date");
+
+//     await update2UpToDate(patientDID)
+
+//     for(let i=0; i<notUpdatedList.length; i++){
+//       jwtVcList[notUpdatedList[i]] = (await issueHospitalVc(patientDID, notUpdatedList[i]));
+//     }
+
+//     return res.status(200).send(jwtVcList);
+//   }catch(error){
+//     console.log("checkUpdate function error: ", error);
+//     return res.status(400).send(error);
+//   }
+// }
+
+/**
+ * 환자가 진료 본 병원에 대한 Vc 첫발급
+ */
+const issueHospitalVc = async (newRecord, patientDID) => {
+  // var vcJwt;
+  // await axios.post(`http://${serverIP}:5002/did/issue/vc`, {newRecord: newRecord, patientDID: patientDID})
+  //   .then(result => {
+  //     const hospitalVcJwt = result.data;
+  //     console.log(hospitalVcJwt);
+  //     vcJwt = hospitalVcJwt;
+  //   })
+  //   .catch(err => console.log(err))
+  // return vcJwt
 }
 
 /**
- * 환자가 진료 본 병원에 대한 Vc 발급 또는 재발급
+ * 환자가 진료 본 병원에 대한 Vc 업데이트 및 재발급
  */
-const issueHospitalVc = async (patientDID, hospital) => {
-  var dbData = await getHospitalRecords_DB(patientDID, hospital);
-  dbData = dbData.map(record => record.dataValues); 
-  console.log("issueHospitalVc dbData: ", dbData)
-  var vcJwt;
-  await axios.post(`http://${serverIP}:5002/did/issue/vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
-    .then(result => {
-      const hospitalVcJwt = result.data;
-      console.log(hospitalVcJwt);
-      vcJwt = hospitalVcJwt;
-    })
-    .catch(err => console.log(err))
-  return vcJwt
+const reissueHospitalVc = async (newRecord, vcJwt) => {
+  // var vcJwt;
+  // await axios.post(`http://${serverIP}:5002/did/reissue/vc`, {newRecord: newRecord, vcJwt: vcJwt})
+  //   .then(result => {
+  //     const hospitalVcJwt = result.data;
+  //     console.log(hospitalVcJwt);
+  //     vcJwt = hospitalVcJwt;
+  //   })
+  //   .catch(err => console.log(err))
+  // return vcJwt
 }
+
 
 /**
  * 원하는 VC들을 선택해 VP로 변환 및 발급

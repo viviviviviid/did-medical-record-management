@@ -60,39 +60,39 @@ const signUp_DID = async (req, res) => {
   }
 }
 
-const addRecordHash_DID = async (req, res) => {
-  console.log("/new-record")
-  const SUBJECT_DID = req.body.decodedPayload.sub;
-  const recordHash = req.body.hash;
-  const userInfo = req.body.decodedPayload.vc.credentialSubject.userInfo;
+// const addRecordHash_DID = async (req, res) => {
+//   console.log("/new-record")
+//   const SUBJECT_DID = req.body.decodedPayload.sub;
+//   const recordHash = req.body.hash;
+//   const userInfo = req.body.decodedPayload.vc.credentialSubject.userInfo;
 
-  const vcPayload = {
-    sub: SUBJECT_DID,
-    vc: {
-      '@context': ['https://www.w3.org/2018/credentials/v1'],
-      type: ['VerifiableCredential'],
-      credentialSubject: {
-        issuer: {
-          name: 'Medical Record Management Association',
-          address: process.env.ISSUER_ADDRESS,
-        },
-        userInfo: userInfo,
-        medicalRecords: recordHash,
-        doctorLicense: null,
-      }
-    }
-  }
+//   const vcPayload = {
+//     sub: SUBJECT_DID,
+//     vc: {
+//       '@context': ['https://www.w3.org/2018/credentials/v1'],
+//       type: ['VerifiableCredential'],
+//       credentialSubject: {
+//         issuer: {
+//           name: 'Medical Record Management Association',
+//           address: process.env.ISSUER_ADDRESS,
+//         },
+//         userInfo: userInfo,
+//         medicalRecords: recordHash,
+//         doctorLicense: null,
+//       }
+//     }
+//   }
 
-  const vcJwt = await createVcJwtWithPayload(vcPayload);
-  res.status(200).send(vcJwt)
-}
+//   const vcJwt = await createVcJwtWithPayload(vcPayload);
+//   res.status(200).send(vcJwt)
+// }
 
 const issueVc_DID = async (req, res) => {
   console.log("/issue-vc")
   console.log(req.body)
   const SUBJECT_DID = req.body.patientDID;
-  const hospital = req.body.hospital;
-  const medicalRecords = req.body.dbData;
+  const hospital = req.body.newRecord.hospital;
+  const medicalRecords = req.body.newRecord;
 
   const vcPayload = {
     sub: SUBJECT_DID,
@@ -111,6 +111,21 @@ const issueVc_DID = async (req, res) => {
   }
   console.log("issueVc_DID function vcPayload: ", vcPayload);
   const vcJwt = await createVcJwtWithPayload(vcPayload);
+  console.log("issueVc_DID function vcJwt: ", vcJwt);
+  res.status(200).send(vcJwt)
+}
+
+// vc의 내용을 업데이트하고 재발급해야할 경우 (특정 병원에서 진료 추가가 되었을때)
+const reissueVc_DID = async (req, res) => {
+  console.log("/reissue-vc")
+  console.log(req.body)
+  const newRecord = req.body.newRecord;
+  const vcJwt = req.body.vcJwt;
+
+  // vcJwt의 medicalrecord 부분에 내용에 newRecord를 추가
+ 
+  console.log("issueVc_DID function vcPayload: ", vcPayload);
+  vcJwt = await createVcJwtWithPayload(vcPayload);
   console.log("issueVc_DID function vcJwt: ", vcJwt);
   res.status(200).send(vcJwt)
 }
@@ -226,7 +241,7 @@ const verifyVp_DID = async (req, res) => {
 }
 
 export default { 
-  addRecordHash_DID, 
+  // addRecordHash_DID, 
   signUp_DID, 
   issueVp_DID, 
   issueVc_DID, 

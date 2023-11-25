@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 
 /**
- * 진료기록 DB에 등록
+ * 진료기록 병원 자체 DB에 등록
  */
 const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
 
