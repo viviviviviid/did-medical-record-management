@@ -214,6 +214,7 @@ const recordVp = async (req, res) => {
     const vpJwt = req.body.vpJwt;
     const did = req.body.did;
     var decodedVpContents;
+    console.log("recordVp body: ", req.body)
 
     const VCs = await extractVP(vpJwt);
     if (!(VCs.userInfoVC.length)){ // 신원정보 VC가 포함되지 않았을경우의 예외처리
