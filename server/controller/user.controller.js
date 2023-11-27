@@ -58,9 +58,8 @@ const signUp = async (req, res) => {
     console.log(req.body);
 	  let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
-    const hash = await createHash4DidUpdate([]); // 회원가입 전이므로 빈객체
 
-    await axios.post(`http://${serverIP}:5002/did/register`, {userInfo: req.body, hash: hash})
+    await axios.post(`http://${serverIP}:5002/did/register`, {userInfo: req.body})
       .then(res => {
         ({ jwt, wallet, SUBJECT_DID } = res.data);
         const userInfo = { name, email, birthday, phoneNumber, isDoctor, wallet, SUBJECT_DID };
@@ -100,79 +99,54 @@ const userRegister = async (userInfo) => {
 const newRecord = async (req, res) => {
   try{
     console.log("/new-record")
-    // 이미 환자에게 vcJwt를 받은 후 검증하였으므로 문제가 없다고 판단.
-    // const patientVcJwt = req.body.patientDID 
-    
+    var {medicalRecord, doctorDID, vpJwt} = req.body
     // 모바일 완료전까지만 환자는 하드코딩
-    const patientVcJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Imlzc3VlciI6eyJuYW1lIjoiTWVkaWNhbCBSZWNvcmQgTWFuYWdlbWVudCBBc3NvY2lhdGlvbiIsImFkZHJlc3MiOiIweDNGZTdEQjQ3MDcyMDBlY0RlN2Q0Nzg4YjgwNWYyMjU2RTNiQzQ4NjcifSwidXNlckluZm8iOnsibmFtZSI6Iu2ZmOyekCIsImVtYWlsIjoic2VvLW1pbnNlb2tAZGF1bS5uZXQiLCJiaXJ0aGRheSI6IjAwMDEwMSIsInBob25lTnVtYmVyIjoiMDEwLTM4MjktMTAyMiIsImlzRG9jdG9yIjp0cnVlLCJhZGRyZXNzIjoiMHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIn0sIm1lZGljYWxSZWNvcmRzIjoiNGY1M2NkYTE4YzJiYWEwYzAzNTRiYjVmOWEzZWNiZTVlZDEyYWI0ZDhlMTFiYTg3M2MyZjExMTYxMjAyYjk0NSIsImRvY3RvckxpY2Vuc2UiOmZhbHNlfX0sInN1YiI6eyJkaWQiOiJkaWQ6ZXRocjpnb2VybGk6MHgyQ0IxNzVBOTcyMDMwNjQzQjhkMmYxNjlFMzUxZTM5MzcwMmE4ODZhIiwiYWRkcmVzcyI6IjB4MkNCMTc1QTk3MjAzMDY0M0I4ZDJmMTY5RTM1MWUzOTM3MDJhODg2YSJ9LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgzZTcwMzkyOWM2YzQxYjAwZmJhM0FCMzU1RmM1OUUzNEE3MTQ3MTFGIn0.sZrMa1rOzbDJDmqCxEp15lJoF40mDQdfV83PcS_nWhkSis-GWCZo1ZhjV-KcD9lo1MtjutRpvtKPiMBf0bJJNwA"
-    const decodedPayload = await jwt.decode(patientVcJwt);
-    const patientDID = decodedPayload.sub
-    const userInfo = decodedPayload.vc.credentialSubject.userInfo;
-    const doctorDID = req.body.doctorDID;
+    vpJwt = "eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCJ9.eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVQcmVzZW50YXRpb24iXSwidmVyaWZpYWJsZUNyZWRlbnRpYWwiOlsiZXlKaGJHY2lPaUpGVXpJMU5rc3RVaUlzSW5SNWNDSTZJa3BYVkNKOS5leUoyWXlJNmV5SkFZMjl1ZEdWNGRDSTZXeUpvZEhSd2N6b3ZMM2QzZHk1M015NXZjbWN2TWpBeE9DOWpjbVZrWlc1MGFXRnNjeTkyTVNKZExDSjBlWEJsSWpwYklsWmxjbWxtYVdGaWJHVkRjbVZrWlc1MGFXRnNJbDBzSW1OeVpXUmxiblJwWVd4VGRXSnFaV04wSWpwN0ltbHpjM1ZsY2lJNmV5SnVZVzFsSWpvaVRXVmthV05oYkNCU1pXTnZjbVFnVFdGdVlXZGxiV1Z1ZENCQmMzTnZZMmxoZEdsdmJpSXNJbUZrWkhKbGMzTWlPaUl3ZUROR1pUZEVRalEzTURjeU1EQmxZMFJsTjJRME56ZzRZamd3TldZeU1qVTJSVE5pUXpRNE5qY2lmU3dpZFhObGNrbHVabThpT25zaWJtRnRaU0k2SXUyWm1PeWVrQ0lzSW1WdFlXbHNJam9pYzJWdkxXMXBibk5sYjJ0QVpHRjFiUzV1WlhRaUxDSmlhWEowYUdSaGVTSTZJakF3TURFd01TSXNJbkJvYjI1bFRuVnRZbVZ5SWpvaU1ERXdMVE00TWprdE1UQXlNaUlzSW1selJHOWpkRzl5SWpwMGNuVmxMQ0poWkdSeVpYTnpJam9pTUhneVEwSXhOelZCT1RjeU1ETXdOalF6UWpoa01tWXhOamxGTXpVeFpUTTVNemN3TW1FNE9EWmhJbjBzSW0xbFpHbGpZV3hTWldOdmNtUnpJam9pTkdZMU0yTmtZVEU0WXpKaVlXRXdZekF6TlRSaVlqVm1PV0V6WldOaVpUVmxaREV5WVdJMFpEaGxNVEZpWVRnM00yTXlaakV4TVRZeE1qQXlZamswTlNJc0ltUnZZM1J2Y2t4cFkyVnVjMlVpT21aaGJITmxmWDBzSW5OMVlpSTZleUprYVdRaU9pSmthV1E2WlhSb2NqcG5iMlZ5YkdrNk1IZ3lRMEl4TnpWQk9UY3lNRE13TmpRelFqaGtNbVl4TmpsRk16VXhaVE01TXpjd01tRTRPRFpoSWl3aVlXUmtjbVZ6Y3lJNklqQjRNa05DTVRjMVFUazNNakF6TURZME0wSTRaREptTVRZNVJUTTFNV1V6T1RNM01ESmhPRGcyWVNKOUxDSnBjM01pT2lKa2FXUTZaWFJvY2pwbmIyVnliR2s2TUhnelpUY3dNemt5T1dNMll6UXhZakF3Wm1KaE0wRkNNelUxUm1NMU9VVXpORUUzTVRRM01URkdJbjAuc1pyTWExck96YkRKRG1xQ3hFcDE1bEpvRjQwbURRZGZWODNQY1Nfbldoa1Npcy1HV0NabzFaaGpWLUtjRDlsbzFNdGp1dFJwdnRLUGlNQmYwYkpKTndBIiwiZXlKaGJHY2lPaUpGVXpJMU5rc3RVaUlzSW5SNWNDSTZJa3BYVkNKOS5leUoyWXlJNmV5SkFZMjl1ZEdWNGRDSTZXeUpvZEhSd2N6b3ZMM2QzZHk1M015NXZjbWN2TWpBeE9DOWpjbVZrWlc1MGFXRnNjeTkyTVNKZExDSjBlWEJsSWpwYklsWmxjbWxtYVdGaWJHVkRjbVZrWlc1MGFXRnNJbDBzSW1OeVpXUmxiblJwWVd4VGRXSnFaV04wSWpwN0ltbHpjM1ZsY2lJNmV5SnVZVzFsSWpvaVRXVmthV05oYkNCU1pXTnZjbVFnVFdGdVlXZGxiV1Z1ZENCQmMzTnZZMmxoZEdsdmJpSXNJbUZrWkhKbGMzTWlPaUl3ZUROR1pUZEVRalEzTURjeU1EQmxZMFJsTjJRME56ZzRZamd3TldZeU1qVTJSVE5pUXpRNE5qY2lmU3dpYUc5emNHbDBZV3dpT2lMc2hKenNtcmpyczVIc201QWlMQ0p0WldScFkyRnNVbVZqYjNKa2N5STZXM3NpYUc5emNHbDBZV3dpT2lMc2hKenNtcmpyczVIc201QWlMQ0prYmlJNkl1MlpqZXV3bGV5Q3JDSXNJbVIySWpvaU1qQXlNeTh4TVM4eU5TSXNJbWhwSWpvaTdKV1VJaXdpY0dnaU9pTHJzTEh0bUlqcnM1RWlMQ0p0WlNJNkl1MlZyZXlEbmV5Z25DSXNJbUZzSWpvaTZyQ1I2ckNCNjZXWUlpd2laR2tpT2lMc2dxenJwNTBpTENKMGNpSTZJdXV6dGVxMXJPdTJpT3F3Z0NJc0ltRmpJam9pN0pXSTdZT0E2cm1kN0lxMTY0dUk2NHVrSW4xZGZYMHNJbk4xWWlJNmV5SmthV1FpT2lKa2FXUTZaWFJvY2pwbmIyVnliR2s2TUhneVEwSXhOelZCT1RjeU1ETXdOalF6UWpoa01tWXhOamxGTXpVeFpUTTVNemN3TW1FNE9EWmhJaXdpWVdSa2NtVnpjeUk2SWpCNE1rTkNNVGMxUVRrM01qQXpNRFkwTTBJNFpESm1NVFk1UlRNMU1XVXpPVE0zTURKaE9EZzJZU0o5TENKcGMzTWlPaUprYVdRNlpYUm9janBuYjJWeWJHazZNSGcwT1VOa01qWTROVE5tUXpZd016WTRZMFE0TnpFMlFqQXlZamMxTnpjNFFUUTJOVU5FTlRReUluMC5fYU1kbU1CY09NZEZCczZYZ2F6TzNrUVhGZDZaRG9xMmJIRWs3SWdMQ0xCWEx4M1BiZUtVTFpOWjlFalViRllpRDhUTmJ1Y3JMbGw2eEljR0xyTzhNQUUiXX0sImlzcyI6ImRpZDpldGhyOmdvZXJsaToweDdmYWJmZEVlZDI1NThBQTI0NDc2NzdFNUZEMTU0RDFDRjQ1QzZCN0EifQ.OKyLtPKP10hUjETkgLwzqTsb7khZT1FSiNQvi37x2hd0pcGw5OKVClsa1e5IxtNZkdki1HkT7csKfIVb7M2ZogE"
+    const VCs = await extractVP(vpJwt, medicalRecord.hospital);
+    if (!(VCs.userInfoVC.length)){ // 신원정보 VC가 포함되지 않았을경우의 예외처리
+      res.status(400).send("Not contained userInfo VC in VP");
+      return;
+    }
+    patientDID = VCs.userInfoVC[0].sub;
+    await medicalRecordRegister(doctorDID, patientDID, medicalRecord); // 병원 자체 DB에 저장
+    vcJwt = await issueVC(medicalRecord, patientDID, VCs);
+    console.log("Updated vpJwt: ", vcJwt);
 
-    console.log("newRecord body: ", req.body)
-    // 새롭게 추가된 진료내용을 db에 저장 
-    await medicalRecordRegister(doctorDID, patientDID, req.body.medicalRecord);
-    // 방금 저장된 것을 포함, db에 저장된 환자의 모든 내용을 반환
-    const dbData = await getAllMyRecords_DB(patientDID);
-    // 그 내용 중 medicalRecords 카테고리에 새로운 해시 하나를 추가
-    const hash = await createHash4DidUpdate(dbData);
-    // 방금 만든 hash를 넣어 vcPayload를 재구성하고 vcJwt를 만들어 서명하기
-    await axios.post(`http://${serverIP}:5002/did/new-record`, {hash: hash, decodedPayload:decodedPayload})
-      .then(result => {
-        const updatedVcJwt = result.data
-        const data = {
-          dbData: dbData,
-          updatedVcJwt: updatedVcJwt,
-        }
-        console.log(data)
-	      return res.status(200).send(data);
-      })
-      .catch(err => console.log(err))
+    await axios.post(`https://${serverIP}:5003/link/generate`, {payload: vcJwt, did: patientDID})
+    .then(result => {
+      tempLink = result.data;
+      res.status(200).send(tempLink);
+    })
+    .catch(err => console.log(err))
+
   }catch(error){
     console.log(error);
     return res.status(400).send(error);
   }
 }
 
-const checkUpdate = async (req, res) => {
+const issueVC = async (medicalRecord, patientDID, VCs) => {
   try{
-    const patientDID = req.body.patientDID;
-    const notUpdatedList = getNeedUpdateList_DB(await getAllMyRecords_DB(patientDID));
-    var jwtVcList = {};
-    
-    if(notUpdatedList == null)
-      return res.status(204).send("Already up-to-date");
+    var updatedVcJwt;
 
-    await update2UpToDate(patientDID)
-
-    for(let i=0; i<notUpdatedList.length; i++){
-      jwtVcList[notUpdatedList[i]] = (await issueHospitalVc(patientDID, notUpdatedList[i]));
+    if(!(VCs.hospitalVC.length)){ // vpJwt의 내용중 병원 VC가 없을때 => 신원 정보 VC만 존재하므로, 이 병원에 대한 VC는 신규발급이어야함
+      await axios.post(`http://${serverIP}:5002/did/issue/vc`, {medicalRecord: medicalRecord, patientDID: patientDID})
+        .then(result => {
+          updatedVcJwt = result.data;
+        })
+        .catch(err => console.log(err))
+    }else{             // 병원 vcJwt가 넘어왔을때 => 진료한적이 있다는 뜻 => 업데이트해서 재발급해줘야함
+      await axios.post(`http://${serverIP}:5002/did/update/vc`, {medicalRecord: medicalRecord, hospitalVC: VCs.hospitalVC})
+        .then(result => {
+          updatedVcJwt = result.data;
+        })
+        .catch(err => console.log(err))
     }
-
-    return res.status(200).send(jwtVcList);
+    return updatedVcJwt;
   }catch(error){
-    console.log("checkUpdate function error: ", error);
+    console.log("issueVC function error: ",error);
     return res.status(400).send(error);
   }
-}
-
-/**
- * 환자가 진료 본 병원에 대한 Vc 발급 또는 재발급
- */
-const issueHospitalVc = async (patientDID, hospital) => {
-  var dbData = await getHospitalRecords_DB(patientDID, hospital);
-  dbData = dbData.map(record => record.dataValues); 
-  console.log("issueHospitalVc dbData: ", dbData)
-  var vcJwt;
-  await axios.post(`http://${serverIP}:5002/did/issue/vc`, {patientDID: patientDID, hospital: hospital, dbData:dbData})
-    .then(result => {
-      const hospitalVcJwt = result.data;
-      console.log(hospitalVcJwt);
-      vcJwt = hospitalVcJwt;
-    })
-    .catch(err => console.log(err))
-  return vcJwt
 }
 
 /**
@@ -211,14 +185,8 @@ const recordVc = async (req, res) => {
     console.log("/get-my-record")
     const vcJwt = req.body.vcJwt;
 
-    // 해쉬 관련된 검증 필요할때 해제하기
-    // let did, hashInJwt, integrityCheck; 
-
-    // vcJwt 검증
     await axios.post(`http://${serverIP}:5002/did/verify/vc`, {vcJwt: vcJwt})
     .then(result => {
-      // did = result.data.payload.sub;
-      // hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
       const verifyCheck = result.data.verified;
       if(!verifyCheck){
         res.status(400).send("vcJwt is not verified");
@@ -230,25 +198,6 @@ const recordVc = async (req, res) => {
       console.log("getRecord function: ", err)
       res.status(404).send(err);
     })
-
-    // DB 무결성 해쉬 관련된 검증 필요할때 해제하기
-    // // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
-    // const dbData = await getAllMyRecords_DB(did);
-    // console.log(dbData)
-  
-    // // vcJwt내의 medicalRecord의 hash와 dbData를 hash화 시켜 같은지 확인함으로써 무결성 검증
-    // const hashInDB = await createHash4DidUpdate(dbData);
-
-    // console.log("hashInDB: ", hashInDB)
-    // console.log("hashInJwt: ", hashInJwt)
-
-    // // 무결성 검증 integrityCheck가 OK라면 dbData를 보내줌
-    // integrityCheck = hashInDB === hashInJwt;
-
-    // // integrityCheck가 OK라면 dbData를 보내줌
-    // return integrityCheck 
-    // ? res.status(200).send(dbData)
-    // : res.status(404).send("Integrity check failed. Engineer will fix it")
   
   }catch(error){
     console.log(error);
@@ -262,19 +211,18 @@ const recordVc = async (req, res) => {
 const recordVp = async (req, res) => {
   try{
     console.log("/record/vp")
-    console.log("body: ",req.body)
     const vpJwt = req.body.vpJwt;
     const did = req.body.did;
     var decodedVpContents;
 
-    // 해쉬 관련된 검증 필요할때 해제하기
-    // let did, hashInJwt, integrityCheck; 
-
-    // vcJwt 검증
+    const VCs = await extractVP(vpJwt);
+    if (!(VCs.userInfoVC.length)){ // 신원정보 VC가 포함되지 않았을경우의 예외처리
+      res.status(400).send("Not contained userInfo VC in VP");
+      return;
+    }
+    
     await axios.post(`http://${serverIP}:5002/did/verify/vp`, {vpJwt: vpJwt})
     .then(result => {
-      // did = result.data.payload.sub;
-      // hashInJwt = result.data.payload.vc.credentialSubject.medicalRecords;
       const verifyCheck = result.data.verified;
       if(!verifyCheck){
         res.status(400).send("vpJwt is not verified");
@@ -289,31 +237,17 @@ const recordVp = async (req, res) => {
       res.status(400).send(err);
     })
 
-    await axios.post(`https://${serverIP}:5003/link/generate`, {payload: decodedVpContents, did: did})
+    const payload = {
+      decodedVpContents: decodedVpContents,
+      vpJwt: vpJwt
+    }
+
+    await axios.post(`https://${serverIP}:5003/link/generate`, {payload: payload, did: did})
     .then(result => {
       tempLink = result.data;
       res.status(200).send(tempLink);
     })
     .catch(err => console.log(err))
-
-    // DB 무결성 해쉬 관련된 검증 필요할때 해제하기
-    // // 문제가 없다면 vcJwt검증 api에서 받아온 did로 DB에서 내용 조회 후 반환.
-    // const dbData = await getAllMyRecords_DB(did);
-    // console.log(dbData)
-  
-    // // vcJwt내의 medicalRecord의 hash와 dbData를 hash화 시켜 같은지 확인함으로써 무결성 검증
-    // const hashInDB = await createHash4DidUpdate(dbData);
-
-    // console.log("hashInDB: ", hashInDB)
-    // console.log("hashInJwt: ", hashInJwt)
-
-    // // 무결성 검증 integrityCheck가 OK라면 dbData를 보내줌
-    // integrityCheck = hashInDB === hashInJwt;
-
-    // // integrityCheck가 OK라면 dbData를 보내줌
-    // return integrityCheck 
-    // ? res.status(200).send(dbData)
-    // : res.status(404).send("Integrity check failed. Engineer will fix it")
   
   }catch(error){
     console.log(error);
@@ -353,28 +287,26 @@ const getDoctorWaitingList_DB = async (req, res) => {
   }
 } 
 
-// /**
-//  * 모바일 기기에서 환자의 jwt 받아오는 함수
-//  */
-// const jwtFromApp = async (req, res) => {
-//   try{
-//     const vcJwt = req.body.patientVcJwt
-//     await jwtToWeb(vcJwt)
-//   }catch(error){
-//     return res.status(400).status(error)
-//   }
-// }
+const extractVP = async (vpJwt, hospital) => {
+  var result = {};
 
-// /**
-//  * 받아온 환자의 jwt를 의사의 웹으로 보내주는 함수
-//  */
-// const jwtToWeb = (vcJwt) => {
-//   try{
+  vpJwtContents = await jwt.decode(vpJwt).vp.verifiableCredential;
+  const VCs = vpJwtContents.map(el => {
+    return jwt.decode(el);
+  })
 
-//   }catch(error){
+  result["userInfoVC"] = VCs.filter(el => {
+    return el.vc.credentialSubject.userInfo 
+  })
 
-//   }
-// }
+  if(hospital !== null) {
+    result["hospitalVC"] = VCs.filter(el => {
+      return el.vc.credentialSubject.hospital === hospital
+    })
+  }
+  
+  return result
+}
 
 
 
@@ -389,27 +321,15 @@ const test = async (req, res) => {
     res.status(400).send("test fail")
   }
 }
-// ========================== 미완 ============================== //
-
-/**
- * 보유한 VC를 공유하기 위해 QR코드로 변환 후 화면에 송출
- */
-// const share = async (req, res) => {
-//     // VC가 유효기간이 지났는지 확인
-//     // claim을 통해 vc를 받은사람에 한해서, 의사에게 의료정보 공유할 시, vc 내용을 qr코드로 변환
-//     // 변환된 qr코드를 화면에 송출
-// }
 
 module.exports = {
   isUserRegistered,
   signUp,
-  checkUpdate,
   newRecord,
   recordVc,
   recordVp,
   getDoctorWaitingList_DB,
   issueVp,
-  // jwtFromApp,
   test
 };
 

@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
 dotenv.config({path: "./.env"});
-
 import { EthrDID, DelegateTypes } from 'ethr-did';
 import { createVerifiableCredentialJwt, verifyCredential, createVerifiablePresentationJwt, verifyPresentation } from 'did-jwt-vc';
 import ethers from "ethers";
 import did from "./did.instance.js";
+import jwt from 'jsonwebtoken';
 
 const chainNameOrId = "goerli"
 const rpcUrl = process.env.RPC_URL;
@@ -45,7 +45,6 @@ const signUp_DID = async (req, res) => {
             isDoctor: data.isDoctor,
             address: walletInfo.address,
           },
-          medicalRecords: req.body.hash,
           doctorLicense: false,
         }
       }
@@ -60,39 +59,39 @@ const signUp_DID = async (req, res) => {
   }
 }
 
-const addRecordHash_DID = async (req, res) => {
-  console.log("/new-record")
-  const SUBJECT_DID = req.body.decodedPayload.sub;
-  const recordHash = req.body.hash;
-  const userInfo = req.body.decodedPayload.vc.credentialSubject.userInfo;
+// const addRecordHash_DID = async (req, res) => {
+//   console.log("/new-record")
+//   const SUBJECT_DID = req.body.decodedPayload.sub;
+//   const recordHash = req.body.hash;
+//   const userInfo = req.body.decodedPayload.vc.credentialSubject.userInfo;
 
-  const vcPayload = {
-    sub: SUBJECT_DID,
-    vc: {
-      '@context': ['https://www.w3.org/2018/credentials/v1'],
-      type: ['VerifiableCredential'],
-      credentialSubject: {
-        issuer: {
-          name: 'Medical Record Management Association',
-          address: process.env.ISSUER_ADDRESS,
-        },
-        userInfo: userInfo,
-        medicalRecords: recordHash,
-        doctorLicense: null,
-      }
-    }
-  }
+//   const vcPayload = {
+//     sub: SUBJECT_DID,
+//     vc: {
+//       '@context': ['https://www.w3.org/2018/credentials/v1'],
+//       type: ['VerifiableCredential'],
+//       credentialSubject: {
+//         issuer: {
+//           name: 'Medical Record Management Association',
+//           address: process.env.ISSUER_ADDRESS,
+//         },
+//         userInfo: userInfo,
+//         medicalRecords: recordHash,
+//         doctorLicense: null,
+//       }
+//     }
+//   }
 
-  const vcJwt = await createVcJwtWithPayload(vcPayload);
-  res.status(200).send(vcJwt)
-}
+//   const vcJwt = await createVcJwtWithPayload(vcPayload);
+//   res.status(200).send(vcJwt)
+// }
 
 const issueVc_DID = async (req, res) => {
-  console.log("/issue-vc")
+  console.log("/issue/vc")
   console.log(req.body)
   const SUBJECT_DID = req.body.patientDID;
-  const hospital = req.body.hospital;
-  const medicalRecords = req.body.dbData;
+  const hospital = req.body.medicalRecord.hospital;
+  const medicalRecord = req.body.medicalRecord;
 
   const vcPayload = {
     sub: SUBJECT_DID,
@@ -105,7 +104,7 @@ const issueVc_DID = async (req, res) => {
           address: process.env.ISSUER_ADDRESS,
         },
         hospital: hospital,
-        medicalRecords: medicalRecords
+        medicalRecords: [medicalRecord]
       }
     }
   }
@@ -113,6 +112,26 @@ const issueVc_DID = async (req, res) => {
   const vcJwt = await createVcJwtWithPayload(vcPayload);
   console.log("issueVc_DID function vcJwt: ", vcJwt);
   res.status(200).send(vcJwt)
+}
+
+// vc의 내용을 업데이트하고 재발급해야할 경우 (특정 병원에서 진료 추가가 되었을때)
+const reissueVc_DID = async (req, res) => {
+  try{
+    console.log("/update/vc")
+    const newRecord = req.body.medicalRecord;
+    var hospitalVC = req.body.hospitalVC[0];
+    hospitalVC.vc.credentialSubject.medicalRecords.push(newRecord);
+    const vcPayload = {
+      sub: hospitalVC.sub,
+      vc: hospitalVC.vc,
+    }
+    const vcJwt = await createVcJwtWithPayload(vcPayload);
+    console.log("issueVc_DID function vcJwt: ", vcJwt);
+    res.status(200).send(vcJwt);
+  }catch(error){
+    console.log(error);
+    res.status(400).send(error);
+  }
 }
 
 /**
@@ -146,7 +165,7 @@ const createVcJwtWithPayload = async (vcPayload) => {
  */
 const verifyVc_DID = async (req, res) => {
   try{
-    console.log("/verify-vc")
+    console.log("/verify/vc")
     console.log(req.body)
     const vcJwt = req.body.vcJwt;
     const verifiedVC = await verifyCredential(vcJwt, did.resolver)
@@ -163,7 +182,7 @@ const verifyVc_DID = async (req, res) => {
  */
 const issueVp_DID = async (req, res) => {
   try{
-    console.log("/issue-vp")
+    console.log("/issue/vp")
     const vcJwts = req.body.vcJwts;
     console.log(vcJwts)
     const vpPayload = {
@@ -214,7 +233,7 @@ const createVpJwtWithPayload = async (vpPayload) => {
  */
 const verifyVp_DID = async (req, res) => {
   try{
-    console.log("/verify-vp")
+    console.log("/verify/vp")
     const vpJwt = req.body.vpJwt;
     const verifiedVP = await verifyPresentation(vpJwt, did.resolver)
     console.log(verifiedVP)
@@ -226,10 +245,11 @@ const verifyVp_DID = async (req, res) => {
 }
 
 export default { 
-  addRecordHash_DID, 
+  // addRecordHash_DID, 
   signUp_DID, 
-  issueVp_DID, 
   issueVc_DID, 
+  reissueVc_DID,
+  issueVp_DID, 
   verifyVc_DID, 
   verifyVp_DID 
 };
