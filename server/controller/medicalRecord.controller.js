@@ -15,9 +15,6 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
     ph, me, al, di, tr, ac
   } = medicalRecord;
 
-  console.log(hospital, dn, hi, 
-    ph, me, al, di, tr, ac)
-
   patientDID = JSON.stringify(patientDID)
   doctorDID = JSON.stringify(doctorDID)
 

@@ -45,7 +45,6 @@ const signUp_DID = async (req, res) => {
             isDoctor: data.isDoctor,
             address: walletInfo.address,
           },
-          medicalRecords: req.body.hash,
           doctorLicense: false,
         }
       }
@@ -91,7 +90,7 @@ const issueVc_DID = async (req, res) => {
   console.log("/issue/vc")
   console.log(req.body)
   const SUBJECT_DID = req.body.patientDID;
-  const hospital = req.body.newRecord.hospital;
+  const hospital = req.body.medicalRecord.hospital;
   const medicalRecord = req.body.medicalRecord;
 
   const vcPayload = {
@@ -105,7 +104,7 @@ const issueVc_DID = async (req, res) => {
           address: process.env.ISSUER_ADDRESS,
         },
         hospital: hospital,
-        medicalRecords: medicalRecord
+        medicalRecords: [medicalRecord]
       }
     }
   }
@@ -117,21 +116,22 @@ const issueVc_DID = async (req, res) => {
 
 // vc의 내용을 업데이트하고 재발급해야할 경우 (특정 병원에서 진료 추가가 되었을때)
 const reissueVc_DID = async (req, res) => {
-  console.log("/update/vc")
-  console.log(req.body)
-  const newRecord = req.body.medicalRecord;
-  const vcJwt = req.body.vcJwt;
-  const patientVC = await jwt.decode(vcJwt)
-  console.log(patientVC.vc.credentialSubject.medicalRecords)
-  console.log(typeof(patientVC.vc.credentialSubject.medicalRecords))
-  patientVC.vc.credentialSubject.medicalRecords.push(newRecord)
-
-
-  // vcJwt의 medicalrecord 부분에 내용에 newRecord를 추가
-  // console.log("issueVc_DID function vcPayload: ", vcPayload);
-  // vcJwt = await createVcJwtWithPayload(vcPayload);
-  // console.log("issueVc_DID function vcJwt: ", vcJwt);
-  // res.status(200).send(vcJwt)
+  try{
+    console.log("/update/vc")
+    const newRecord = req.body.medicalRecord;
+    var hospitalVC = req.body.hospitalVC[0];
+    hospitalVC.vc.credentialSubject.medicalRecords.push(newRecord);
+    const vcPayload = {
+      sub: hospitalVC.sub,
+      vc: hospitalVC.vc,
+    }
+    const vcJwt = await createVcJwtWithPayload(vcPayload);
+    console.log("issueVc_DID function vcJwt: ", vcJwt);
+    res.status(200).send(vcJwt);
+  }catch(error){
+    console.log(error);
+    res.status(400).send(error);
+  }
 }
 
 /**
