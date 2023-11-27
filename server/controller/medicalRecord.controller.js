@@ -127,7 +127,7 @@ const getAllMyPatientsRecords = async (req, res) => {
     console.log("dbData: ", dbData);
     res.status(200).send(dbData);
   }catch(error){
-    console.log("getAllPatientRecords function error: ", error);
+    console.log("getAllMyPatientsRecords function error: ", error);
     res.status(400).send(error);
   }
 }
