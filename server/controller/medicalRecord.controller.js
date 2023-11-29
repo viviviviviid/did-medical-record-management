@@ -107,6 +107,8 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
 
 const getAllMyPatientList = async (req, res) => {
   try{
+    console.log("/get-patients-list");
+    console.log("body: ", req.body)
     const doctorDID = req.body.doctorDID;
     console.log("doctorDID",doctorDID);
     const dbData = await getAllMyPatientsList_DB(doctorDID);
@@ -120,6 +122,8 @@ const getAllMyPatientList = async (req, res) => {
 
 const getAllMyPatientsRecords = async (req, res) => {
   try{
+    console.log("/get-all-patient-records");
+    console.log("body: ", req.body)
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
     const doctorDID = req.body.doctorDID;
     const patientDID = req.body.patientDID;
