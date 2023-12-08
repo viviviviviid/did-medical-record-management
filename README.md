@@ -2,12 +2,11 @@
 
 기존 진료기록에 대한 문제들을 해결하기 위해, DID 기술을 도입하여 진료기록보관과 신원정보의 주권을 개개인에게 부여합니다.
 
+## 관련 페이지
+
 ### 배포된 웹 페이지
-
-https://dmrs.space
-
+https://dmrs-b910d.web.app
 ### 프로젝트 설명 페이지
-
 https://bit.ly/viviviviviid-dmrs
 
 ## 용어정리
