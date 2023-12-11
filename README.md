@@ -6,6 +6,8 @@
 
 ### 배포된 웹 페이지
 https://dmrs-b910d.web.app
+### 클라이언트 레포지토리
+https://github.com/sjhong98/did-client-web
 ### 프로젝트 설명 페이지
 https://bit.ly/viviviviviid-dmrs
 
