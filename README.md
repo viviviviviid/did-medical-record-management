@@ -2,18 +2,20 @@
 
 기존 진료기록에 대한 문제들을 해결하기 위해, DID 기술을 도입하여 진료기록보관과 신원정보의 주권을 개개인에게 부여합니다.
 
-## 관련 페이지
+## 프로젝트 페이지
+### [1. 배포된 웹 페이지](https://dmrs-b910d.web.app)
+### [2. 클라이언트 레포지토리](https://github.com/sjhong98/did-client-web)
+### [3. 프로젝트 설명 페이지](https://bit.ly/viviviviviid-dmrs)
 
-### 배포된 웹 페이지
-https://dmrs-b910d.web.app
-### 클라이언트 레포지토리
-https://github.com/sjhong98/did-client-web
-### 프로젝트 설명 페이지
-https://bit.ly/viviviviviid-dmrs
+---
+
 
 ## 미리보기
 ![Workflow](images/DID.png)
 [상세설명 바로가기](https://github.com/viviviviviid/did-medical-record-management/tree/dev?tab=readme-ov-file#did-workflow)
+
+---
+
 
 ## 용어정리
 
@@ -52,8 +54,10 @@ https://bit.ly/viviviviviid-dmrs
 -  DID Registry (검증가능한 데이터 저장소 : Verifiable data registry)
     -  Issuer 식별자, 키 및 관련 데이터를 생성 또는 검증하는 중재 시스템. 보통 하나 이상의 시스템이 활용됩니다. (예, 분산원장, 탈중앙 DB, 정부 ID DB 등)
 
+---
 
 ## DID Workflow
+
 ![Workflow](images/DID.png)
 
 1. 환자(Holder)는 진료기록협회에 VC 발급 요청을 합니다.
