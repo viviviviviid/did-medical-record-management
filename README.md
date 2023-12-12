@@ -11,6 +11,10 @@ https://github.com/sjhong98/did-client-web
 ### 프로젝트 설명 페이지
 https://bit.ly/viviviviviid-dmrs
 
+## 미리보기
+![Workflow](images/DID.png)
+[상세설명 바로가기](https://github.com/viviviviviid/did-medical-record-management/tree/dev?tab=readme-ov-file#did-workflow)
+
 ## 용어정리
 
 - DID (탈중앙화 신원증명 : Decentralized Identity)
