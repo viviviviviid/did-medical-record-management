@@ -4,15 +4,12 @@ import { EthrDID, DelegateTypes } from 'ethr-did';
 import { createVerifiableCredentialJwt, verifyCredential, createVerifiablePresentationJwt, verifyPresentation } from 'did-jwt-vc';
 import ethers from "ethers";
 import did from "./did.instance.js";
-import jwt from 'jsonwebtoken';
 
 const chainNameOrId = "goerli"
-const rpcUrl = process.env.RPC_URL;
 
 const signUp_DID = async (req, res) => {
   try{
     console.log("/register")
-    console.log(req.body.userInfo);
     const data = req.body.userInfo;
 
     const wallet = ethers.Wallet.createRandom()
@@ -59,36 +56,9 @@ const signUp_DID = async (req, res) => {
   }
 }
 
-// const addRecordHash_DID = async (req, res) => {
-//   console.log("/new-record")
-//   const SUBJECT_DID = req.body.decodedPayload.sub;
-//   const recordHash = req.body.hash;
-//   const userInfo = req.body.decodedPayload.vc.credentialSubject.userInfo;
-
-//   const vcPayload = {
-//     sub: SUBJECT_DID,
-//     vc: {
-//       '@context': ['https://www.w3.org/2018/credentials/v1'],
-//       type: ['VerifiableCredential'],
-//       credentialSubject: {
-//         issuer: {
-//           name: 'Medical Record Management Association',
-//           address: process.env.ISSUER_ADDRESS,
-//         },
-//         userInfo: userInfo,
-//         medicalRecords: recordHash,
-//         doctorLicense: null,
-//       }
-//     }
-//   }
-
-//   const vcJwt = await createVcJwtWithPayload(vcPayload);
-//   res.status(200).send(vcJwt)
-// }
-
 const issueVc_DID = async (req, res) => {
   console.log("/issue/vc")
-  console.log(req.body)
+
   const SUBJECT_DID = req.body.patientDID;
   const hospital = req.body.medicalRecord.hospital;
   const medicalRecord = req.body.medicalRecord;
@@ -118,6 +88,7 @@ const issueVc_DID = async (req, res) => {
 const reissueVc_DID = async (req, res) => {
   try{
     console.log("/update/vc")
+
     const newRecord = req.body.medicalRecord;
     var hospitalVC = req.body.hospitalVC[0];
     hospitalVC.vc.credentialSubject.medicalRecords.push(newRecord);
@@ -166,7 +137,7 @@ const createVcJwtWithPayload = async (vcPayload) => {
 const verifyVc_DID = async (req, res) => {
   try{
     console.log("/verify/vc")
-    console.log(req.body)
+
     const vcJwt = req.body.vcJwt;
     const verifiedVC = await verifyCredential(vcJwt, did.resolver)
     console.log(verifiedVC)
@@ -183,8 +154,8 @@ const verifyVc_DID = async (req, res) => {
 const issueVp_DID = async (req, res) => {
   try{
     console.log("/issue/vp")
+
     const vcJwts = req.body.vcJwts;
-    console.log(vcJwts)
     const vpPayload = {
       vp: {
         '@context': ['https://www.w3.org/2018/credentials/v1'],
@@ -234,6 +205,7 @@ const createVpJwtWithPayload = async (vpPayload) => {
 const verifyVp_DID = async (req, res) => {
   try{
     console.log("/verify/vp")
+
     const vpJwt = req.body.vpJwt;
     const verifiedVP = await verifyPresentation(vpJwt, did.resolver)
     console.log(verifiedVP)
@@ -245,7 +217,6 @@ const verifyVp_DID = async (req, res) => {
 }
 
 export default { 
-  // addRecordHash_DID, 
   signUp_DID, 
   issueVc_DID, 
   reissueVc_DID,

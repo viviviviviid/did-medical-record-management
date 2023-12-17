@@ -8,6 +8,7 @@ import { ethers } from 'ethers';
 
 const chainNameOrId = 'goerli';
 const rpcUrl = process.env.RPC_URL;
+
 // JsonRpcProvider은 ethers의 안정화된 5.7.2 버전에서 사용가능 
 const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 const resolver = new Resolver(getResolver({ rpcUrl, name: "goerli" }));

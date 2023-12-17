@@ -12,10 +12,9 @@ const serverIP = process.env.SERVER_IP_ADDRESS;
  */
 const isUserRegistered = async (req, res) => {
   try {
-  console.log("/login")
-	console.log(req.body);
+    console.log("/login")
+
     const access_token = req.body.token.access_token;
-	console.log(access_token);
     const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -55,10 +54,9 @@ const userFind = async (userInfo) => {
 const signUp = async (req, res) => {
   try {
     console.log("/signup")
-    console.log(req.body);
+  
 	  let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
-
     await axios.post(`http://${serverIP}:5002/did/register`, {userInfo: req.body})
       .then(res => {
         ({ jwt, wallet, SUBJECT_DID } = res.data);
@@ -98,7 +96,8 @@ const userRegister = async (userInfo) => {
  */
 const newRecord = async (req, res) => {
   try{
-    console.log("/new-record")
+    console.log("/new-record");
+
     var {medicalRecord, doctorDID, vpJwt} = req.body
     // 모바일 완료전까지만 환자는 하드코딩
     const VCs = await extractVP(vpJwt, medicalRecord.hospital);
@@ -134,7 +133,7 @@ const issueVC = async (medicalRecord, patientDID, VCs) => {
           updatedVcJwt = result.data;
         })
         .catch(err => console.log(err))
-    }else{             // 병원 vcJwt가 넘어왔을때 => 진료한적이 있다는 뜻 => 업데이트해서 재발급해줘야함
+    }else{                        // 병원 vcJwt가 넘어왔을때 => 진료한적이 있다는 뜻 => 업데이트해서 재발급해줘야함
       await axios.post(`http://${serverIP}:5002/did/update/vc`, {medicalRecord: medicalRecord, hospitalVC: VCs.hospitalVC})
         .then(result => {
           updatedVcJwt = result.data;
@@ -182,8 +181,8 @@ const issueVp = async (req, res) => {
 const recordVc = async (req, res) => {
   try{
     console.log("/get-my-record")
-    const vcJwt = req.body.vcJwt;
 
+    const vcJwt = req.body.vcJwt;
     await axios.post(`http://${serverIP}:5002/did/verify/vc`, {vcJwt: vcJwt})
     .then(result => {
       const verifyCheck = result.data.verified;
@@ -209,7 +208,8 @@ const recordVc = async (req, res) => {
  */
 const recordVp = async (req, res) => {
   try{
-    console.log("/record/vp")
+    console.log("/record/vp");
+
     const vpJwt = req.body.vpJwt;
     const did = req.body.did;
     var decodedVpContents;
@@ -255,37 +255,33 @@ const recordVp = async (req, res) => {
   }
 }
 
-const getDoctorWaitingList_DB = async (req, res) => { 
-  try{
-    console.log("/get-doctor-waiting-list")
-    // 나중에 쿼리문 하나로 해결하기
+// const getDoctorWaitingList_DB = async (req, res) => { 
+//   try{
+//     console.log("/get-doctor-waiting-list")
+    
+//     const users = await db.User.findAll({
+//       where: { isDoctor: true },
+//       attributes: ["name", "birthday", "did"]
+//     });
 
-    // 1. isDoctor가 true인 모든 User 가져오기
-    const users = await db.User.findAll({
-      where: { isDoctor: true },
-      attributes: ["name", "birthday", "did"]
-    });
+//     const waitingList = [];
 
-    // 2. 각 did에 대해 Doctor 테이블에 존재하는지 확인하고, 존재한다면 User 목록에서 제거
-    const waitingList = [];
+//     for (const user of users) {
+//       const doctorExists = await db.Doctor.findOne({
+//         where: { did: user.did }
+//       });
 
-    for (const user of users) {
-      const doctorExists = await db.Doctor.findOne({
-        where: { did: user.did }
-      });
+//       if (!doctorExists) {
+//         waitingList.push(user);
+//       }
+//     }
 
-      // Doctor 테이블에 해당 did가 존재하지 않는 경우에만 목록에 추가
-      if (!doctorExists) {
-        waitingList.push(user);
-      }
-    }
-
-    res.status(200).send(waitingList)
-  }catch(error){
-    console.log("getDoctorWaitingList_DB function error: ",error)
-    res.status(400).send(error)
-  }
-} 
+//     res.status(200).send(waitingList)
+//   }catch(error){
+//     console.log("getDoctorWaitingList_DB function error: ",error)
+//     res.status(400).send(error)
+//   }
+// } 
 
 const extractVP = async (vpJwt, hospital) => {
   var result = {};
@@ -308,28 +304,13 @@ const extractVP = async (vpJwt, hospital) => {
   return result
 }
 
-
-
-const test = async (req, res) => { 
-  try{
-    issueHospitalVc()
-    console.log("/test")
-    console.log("test success")
-    res.status(200).send("test success")
-  }catch(error){
-    console.log("test fail")
-    res.status(400).send("test fail")
-  }
-}
-
 module.exports = {
   isUserRegistered,
   signUp,
   newRecord,
   recordVc,
   recordVp,
-  getDoctorWaitingList_DB,
+  // getDoctorWaitingList_DB,
   issueVp,
-  test
 };
 

@@ -67,3 +67,10 @@
 5. 의사는 VP가 유효한지 확인하기 위해, DID Registry 컨트랙트의 VP 검증 함수를 호출합니다.
 6. 의사는 컨트랙트의 반환값으로 VP 유효성 검사 결과를 받습니다.
 7. 이때 6번의 값이 참이라면, VP를 복호화하여 의사의 화면에 환자의 신원정보와 진료기록들을 띄워주게 됩니다.
+
+
+## Appendix
+
+1. 진료기록협회 Address : 0x3Fe7DB4707200ecDe7d4788b805f2256E3bC4867
+2. ERC-1056 DID Registry Contract : 0xdCa7EF03e98e0DC2B855bE647C39ABe984fcF21B
+3. 이용중인 블록체인 : Ethereum Gorile Network

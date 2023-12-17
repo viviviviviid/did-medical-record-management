@@ -8,8 +8,6 @@ const crypto = require('crypto');
  */
 const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
 
-  console.log(medicalRecord)
-
   const { 
     hospital, dn, hi, 
     ph, me, al, di, tr, ac
@@ -23,9 +21,7 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
 
   try {
     await db.MedicalRecords.create({
-      // DID
       doctorDID, patientDID,
-      // medicalRecord
       hospital, dn, hi, 
       ph, me, al, di, tr, ac
     });
