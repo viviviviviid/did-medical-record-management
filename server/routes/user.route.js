@@ -10,8 +10,6 @@ router.post("/record/vp", controller.recordVp)
 router.post("/issue/vp", controller.issueVp);
 
 // GET 
-router.get("/test", controller.test);
-router.get("/get-doctor-waiting-list", controller.getDoctorWaitingList_DB)
-
+// router.get("/get-doctor-waiting-list", controller.getDoctorWaitingList_DB)
 
 module.exports = router;
