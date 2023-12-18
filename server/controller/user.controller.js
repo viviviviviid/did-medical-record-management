@@ -2,7 +2,7 @@ require("dotenv").config();
 const db = require("../model/index.js");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB, getHospitalRecords_DB, getNeedUpdateList_DB, update2UpToDate } = require("./medicalRecord.controller.js");
+const { medicalRecordRegister } = require("./medicalRecord.controller.js");
 
 const serverIP = process.env.SERVER_IP_ADDRESS;
 
@@ -11,9 +11,8 @@ const serverIP = process.env.SERVER_IP_ADDRESS;
  * @returns DB 저장유무에 따른 boolean 반환 
  */
 const isUserRegistered = async (req, res) => {
+  console.log("/login")
   try {
-    console.log("/login")
-
     const access_token = req.body.token.access_token;
     const userInfo = await axios.post("https://kapi.kakao.com/v2/user/me", {}, {  // 두번째는 받는 파라미터, 세번째가 보내는 파라미터
       headers: {
@@ -52,9 +51,8 @@ const userFind = async (userInfo) => {
  * 회원가입
  */
 const signUp = async (req, res) => {
+  console.log("/signup")
   try {
-    console.log("/signup")
-  
 	  let jwt, wallet, SUBJECT_DID;
     const { name, email, birthday, phoneNumber, isDoctor } = req.body;
     await axios.post(`http://${serverIP}:5002/did/register`, {userInfo: req.body})
@@ -95,9 +93,8 @@ const userRegister = async (userInfo) => {
  * 신원 Vc에 진료결과의 Hash를 담아 Vc 재발급 및 협회 DB 등록
  */
 const newRecord = async (req, res) => {
+  console.log("/new-record");
   try{
-    console.log("/new-record");
-
     var {medicalRecord, doctorDID, vpJwt} = req.body
     // 모바일 완료전까지만 환자는 하드코딩
     const VCs = await extractVP(vpJwt, medicalRecord.hospital);
@@ -123,6 +120,9 @@ const newRecord = async (req, res) => {
   }
 }
 
+/**
+ * 병원 진료기록 VC 발급 / 업데이트 및 재발급
+ */
 const issueVC = async (medicalRecord, patientDID, VCs) => {
   try{
     var updatedVcJwt;
@@ -179,9 +179,8 @@ const issueVp = async (req, res) => {
  * 모바일 기기에서 보유중인 VC를 이용하여 1056 레지스트리를 조회
  */
 const recordVc = async (req, res) => {
+  console.log("/get-my-record")
   try{
-    console.log("/get-my-record")
-
     const vcJwt = req.body.vcJwt;
     await axios.post(`http://${serverIP}:5002/did/verify/vc`, {vcJwt: vcJwt})
     .then(result => {
@@ -207,9 +206,8 @@ const recordVc = async (req, res) => {
  * 모바일 기기에서 보유중인 VP를 이용하여 1056 레지스트리를 조회 및 GET url로 재구성
  */
 const recordVp = async (req, res) => {
+  console.log("/record/vp");
   try{
-    console.log("/record/vp");
-
     const vpJwt = req.body.vpJwt;
     const did = req.body.did;
     var decodedVpContents;

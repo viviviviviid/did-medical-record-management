@@ -4,9 +4,8 @@ const serverIP = process.env.SERVER_IP_ADDRESS;
 const tempAPIs = new Map(); // 임시 API 관리를 위한 맵
 
 const generateLink = async (req, res) => {
+  console.log("/generate")
   try{
-    console.log("/generate")
-
     var tempPath;
     if(!req.body.did){
       tempPath = Math.random().toString(36).substring(2, 15);
@@ -18,7 +17,6 @@ const generateLink = async (req, res) => {
     tempAPIs.set(tempPath, { payload });
 
     req.app.get(`/temp/${tempPath}`, (req, res) => {
-      console.log("/temp")
       if (tempAPIs.has(tempPath)) {
         const data = tempAPIs.get(tempPath);
         tempAPIs.delete(tempPath); // 첫 요청 후 API 삭제
