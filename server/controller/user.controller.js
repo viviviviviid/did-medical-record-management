@@ -2,7 +2,7 @@ require("dotenv").config();
 const db = require("../model/index.js");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const { medicalRecordRegister, createHash4DidUpdate, getAllMyRecords_DB, getHospitalRecords_DB, getNeedUpdateList_DB, update2UpToDate } = require("./medicalRecord.controller.js");
+const { medicalRecordRegister } = require("./medicalRecord.controller.js");
 
 const serverIP = process.env.SERVER_IP_ADDRESS;
 

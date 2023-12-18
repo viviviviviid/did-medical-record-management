@@ -33,15 +33,8 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
 }
 
 /**
- * JWT에 삽입할 유저진료기록의 해시값
+ * 중복 제거 필터
  */
-const createHash4DidUpdate = async (dbData) => {
-  const stringFormData = JSON.stringify(dbData);
-  const hash = crypto.createHash('sha256');
-  hash.update(stringFormData);
-  return hash.digest('hex');
-}
-
 const filter4nonDuplicate = async (targetArray) => {
   try{
     const nonDuplicated_Set = new Set(targetArray);
@@ -57,20 +50,9 @@ const filter4nonDuplicate = async (targetArray) => {
   }
 }
 
-const getAllMyRecords_DB = async (patientDID) => {
-  try{
-    patientDID = JSON.stringify(patientDID);
-    console.log(patientDID);
-    return await db.MedicalRecords.findAll({
-      where: {patientDID: patientDID},
-      order: [['id', 'DESC']], // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
-    });
-  }catch(error){
-    console.log("getAllMyRecords_DB function error :", error)
-    return error
-  }
-}
-
+/**
+ * DB상에서 진료했던 환자 리스트 조회
+ */
 const getAllMyPatientsList_DB = async (doctorDID) => {
   try{
     doctorDID = JSON.stringify(doctorDID);
@@ -89,6 +71,9 @@ const getAllMyPatientsList_DB = async (doctorDID) => {
   }
 }
 
+/**
+ * DB상에서 진료했던 환자들의 진료내역 조회
+ */
 const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
   doctorDID = JSON.stringify(doctorDID);
   patientDID = JSON.stringify(patientDID);
@@ -101,6 +86,9 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
   });
 }
 
+/**
+ * 진료했던 환자 리스트 조회
+ */
 const getAllMyPatientList = async (req, res) => {
   try{
     console.log("/get-patients-list");
@@ -116,6 +104,9 @@ const getAllMyPatientList = async (req, res) => {
   }
 }
 
+/**
+ * 진료했던 환자들의 진료내역 조회
+ */
 const getAllMyPatientsRecords = async (req, res) => {
   try{
     console.log("/get-all-patient-records");
@@ -132,44 +123,60 @@ const getAllMyPatientsRecords = async (req, res) => {
   }
 }
 
-const getHospitalRecords_DB = async (patientDID, hospital) => {
-  patientDID = JSON.stringify(patientDID);
-  return await db.MedicalRecords.findAll({
-    where: {
-      patientDID: patientDID,
-      hospital: hospital
-    },
-    order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
-  });
-}
-
-const getNeedUpdateList_DB = (medicalRecord) => {
-  console.log(medicalRecord);
-  var hospitals = medicalRecord
-    .filter(el => !el.dataValues.isIssued) // 발급된 이력이 있는지 확인
-    .map(el => el.dataValues.hospital); 
-  if (!(hospitals.length))
-    return null 
-  hospitals = Array.from(new Set(hospitals))
-  console.log("Need Update Hospital List: ", hospitals)
-  return hospitals;
-}
-
-const update2UpToDate = async (patientDID) => { // 환자의 모든 진료내역이 발급된적이 있다고 DB상에서 bool로 마킹
-  patientDID = JSON.stringify(patientDID)
-  await db.MedicalRecords.update({ isIssued: true }, { where: { patientDID: patientDID } });
-  console.log("All updated to true in isIssued column!")
-}
-
-
 module.exports = { 
   medicalRecordRegister, 
-  createHash4DidUpdate, 
   getAllMyPatientList, 
   getAllMyPatientsRecords,
-  getHospitalRecords_DB,
-  getAllMyRecords_DB, 
   getAllMyPatientsRecords_DB,
-  getNeedUpdateList_DB,
-  update2UpToDate
 }
+
+// 안쓰는 함수
+// const createHash4DidUpdate = async (dbData) => {
+//   const stringFormData = JSON.stringify(dbData);
+//   const hash = crypto.createHash('sha256');
+//   hash.update(stringFormData);
+//   return hash.digest('hex');
+// }
+//
+// const getHospitalRecords_DB = async (patientDID, hospital) => {
+//   patientDID = JSON.stringify(patientDID);
+//   return await db.MedicalRecords.findAll({
+//     where: {
+//       patientDID: patientDID,
+//       hospital: hospital
+//     },
+//     order: [['id', 'DESC']] // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+//   });
+// }
+//
+// const getNeedUpdateList_DB = (medicalRecord) => {
+//   console.log(medicalRecord);
+//   var hospitals = medicalRecord
+//     .filter(el => !el.dataValues.isIssued) // 발급된 이력이 있는지 확인
+//     .map(el => el.dataValues.hospital); 
+//   if (!(hospitals.length))
+//     return null 
+//   hospitals = Array.from(new Set(hospitals))
+//   console.log("Need Update Hospital List: ", hospitals)
+//   return hospitals;
+// }
+//
+// const update2UpToDate = async (patientDID) => { // 환자의 모든 진료내역이 발급된적이 있다고 DB상에서 bool로 마킹
+//   patientDID = JSON.stringify(patientDID)
+//   await db.MedicalRecords.update({ isIssued: true }, { where: { patientDID: patientDID } });
+//   console.log("All updated to true in isIssued column!")
+// }
+//
+// const getAllMyRecords_DB = async (patientDID) => {
+//   try{
+//     patientDID = JSON.stringify(patientDID);
+//     console.log(patientDID);
+//     return await db.MedicalRecords.findAll({
+//       where: {patientDID: patientDID},
+//       order: [['id', 'DESC']], // 내림차순(최근 -> 과거)로 정렬해서 변동성이 없도록
+//     });
+//   }catch(error){
+//     console.log("getAllMyRecords_DB function error :", error)
+//     return error
+//   }
+// }
