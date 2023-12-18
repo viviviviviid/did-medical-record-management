@@ -7,7 +7,6 @@ const crypto = require('crypto');
  * 진료기록 병원 자체 DB에 등록
  */
 const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
-
   const { 
     hospital, dn, hi, 
     ph, me, al, di, tr, ac
@@ -15,9 +14,6 @@ const medicalRecordRegister = async (doctorDID, patientDID, medicalRecord) => {
 
   patientDID = JSON.stringify(patientDID)
   doctorDID = JSON.stringify(doctorDID)
-
-  console.log("doctorDID: ", doctorDID)
-  console.log("patientDID: ", patientDID)
 
   try {
     await db.MedicalRecords.create({
@@ -90,13 +86,10 @@ const getAllMyPatientsRecords_DB = async (doctorDID, patientDID) => {
  * 진료했던 환자 리스트 조회
  */
 const getAllMyPatientList = async (req, res) => {
+  console.log("/get-patients-list");
   try{
-    console.log("/get-patients-list");
-    console.log("body: ", req.body)
     const doctorDID = req.body.doctorDID;
-    console.log("doctorDID",doctorDID);
     const dbData = await getAllMyPatientsList_DB(doctorDID);
-    console.log("dbData", dbData);
     res.status(200).send(dbData);
   }catch(error){
     console.log("getAllPatientRecords function error: ", error);
@@ -108,14 +101,12 @@ const getAllMyPatientList = async (req, res) => {
  * 진료했던 환자들의 진료내역 조회
  */
 const getAllMyPatientsRecords = async (req, res) => {
+  console.log("/get-all-patient-records");
   try{
-    console.log("/get-all-patient-records");
-    console.log("body: ", req.body)
     // 로그인 후 의사 개인 페이지에 온 것이므로 따로 검증할 필요는 없음
     const doctorDID = req.body.doctorDID;
     const patientDID = req.body.patientDID;
     const dbData = await getAllMyPatientsRecords_DB(doctorDID, patientDID);
-    console.log("dbData: ", dbData);
     res.status(200).send(dbData);
   }catch(error){
     console.log("getAllMyPatientsRecords function error: ", error);

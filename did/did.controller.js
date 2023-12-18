@@ -7,11 +7,14 @@ import did from "./did.instance.js";
 
 const chainNameOrId = "goerli"
 
+/**
+ * 환자 회원가입으로 DID 식별자 생성 및 신원 VC 발급
+ * @returns 신원 VC 반환
+ */
 const signUp_DID = async (req, res) => {
+  console.log("/register")
   try{
-    console.log("/register")
     const data = req.body.userInfo;
-
     const wallet = ethers.Wallet.createRandom()
     const walletInfo = {
       address: wallet.address,
@@ -56,6 +59,10 @@ const signUp_DID = async (req, res) => {
   }
 }
 
+/**
+ * 환자 병원 진료 후, 진료기록 VC 발급
+ * @returns 진료기록 VC 반환
+ */
 const issueVc_DID = async (req, res) => {
   console.log("/issue/vc")
 
@@ -78,17 +85,17 @@ const issueVc_DID = async (req, res) => {
       }
     }
   }
-  console.log("issueVc_DID function vcPayload: ", vcPayload);
   const vcJwt = await createVcJwtWithPayload(vcPayload);
-  console.log("issueVc_DID function vcJwt: ", vcJwt);
   res.status(200).send(vcJwt)
 }
 
-// vc의 내용을 업데이트하고 재발급해야할 경우 (특정 병원에서 진료 추가가 되었을때)
+/**
+ * 진료기록 VC의 내용을 업데이트하고 재발급해야할 경우 (특정 병원에서 진료 추가가 되었을때
+ * @returns 진료기록 VC 반환
+ */
 const reissueVc_DID = async (req, res) => {
+  console.log("/update/vc")
   try{
-    console.log("/update/vc")
-
     const newRecord = req.body.medicalRecord;
     var hospitalVC = req.body.hospitalVC[0];
     hospitalVC.vc.credentialSubject.medicalRecords.push(newRecord);
@@ -97,7 +104,6 @@ const reissueVc_DID = async (req, res) => {
       vc: hospitalVC.vc,
     }
     const vcJwt = await createVcJwtWithPayload(vcPayload);
-    console.log("issueVc_DID function vcJwt: ", vcJwt);
     res.status(200).send(vcJwt);
   }catch(error){
     console.log(error);
@@ -126,7 +132,6 @@ const createVcJwtWithPayload = async (vcPayload) => {
   
   // VC JWT 생성
   const vcJwt = await createVerifiableCredentialJwt(vcPayload, DELEGATE_ISSUER_DID);
-  
   return vcJwt;
 }
 
@@ -135,12 +140,10 @@ const createVcJwtWithPayload = async (vcPayload) => {
  * @returns 검증 유/무 반환
  */
 const verifyVc_DID = async (req, res) => {
+  console.log("/verify/vc")
   try{
-    console.log("/verify/vc")
-
     const vcJwt = req.body.vcJwt;
     const verifiedVC = await verifyCredential(vcJwt, did.resolver)
-    console.log(verifiedVC)
     res.status(200).send(verifiedVC);
   }catch(error){
     console.log(error);
@@ -149,12 +152,12 @@ const verifyVc_DID = async (req, res) => {
 }
 
 /**
- * 
+ * 전달받은 VC들로 VP를 구성 및 발급
+ * @returns vpJwt
  */
 const issueVp_DID = async (req, res) => {
+  console.log("/issue/vp")
   try{
-    console.log("/issue/vp")
-
     const vcJwts = req.body.vcJwts;
     const vpPayload = {
       vp: {
@@ -163,9 +166,7 @@ const issueVp_DID = async (req, res) => {
         verifiableCredential: vcJwts
       }
     }
-    console.log("issueVp_DID function vcPayload: ", vpPayload.vp);
     const vpJwt = await createVpJwtWithPayload(vpPayload)
-    console.log("issueVp_DID function vcJwt: ", vpJwt);
     res.status(200).send(vpJwt)
   }catch(error){
     console.log(error);
@@ -203,12 +204,10 @@ const createVpJwtWithPayload = async (vpPayload) => {
  * @returns 검증 유/무 반환
  */
 const verifyVp_DID = async (req, res) => {
+  console.log("/verify/vp")
   try{
-    console.log("/verify/vp")
-
     const vpJwt = req.body.vpJwt;
     const verifiedVP = await verifyPresentation(vpJwt, did.resolver)
-    console.log(verifiedVP)
     res.status(200).send(verifiedVP);
   }catch(error){
     console.log(error);
