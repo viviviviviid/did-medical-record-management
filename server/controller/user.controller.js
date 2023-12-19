@@ -281,6 +281,9 @@ const recordVp = async (req, res) => {
 //   }
 // } 
 
+/**
+ * VP 내의 VC들을 추출하여 필터링
+ */
 const extractVP = async (vpJwt, hospital) => {
   var result = {};
 
